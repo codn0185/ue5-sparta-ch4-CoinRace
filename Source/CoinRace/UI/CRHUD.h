@@ -7,16 +7,33 @@
 #include "CRHUD.generated.h"
 
 class UCRVehicleStatusWidget;
+class UCRChatWidget;
+
+// 채팅 입력 커밋 시 메시지를 송출하는 델리게이트
+DECLARE_DELEGATE_OneParam(
+	FOnChatMessageSubmitted,
+	const FString&);
 
 UCLASS()
 class COINRACE_API UCRHUD : public UUserWidget
 {
 	GENERATED_BODY()
 
+  public:
+	// 채팅 입력 커밋 시 실행되는 델리게이트
+	FOnChatMessageSubmitted OnChatMessageSubmitted;
+
   protected:
 	// UCRVehicleStatusWidget - 차량 정보 UI
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCRVehicleStatusWidget> VehicleStatusWidget;
+
+	// UCRChatWidget - 채팅 UI
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCRChatWidget> ChatWidget;
+
+  protected:
+	virtual void NativeConstruct() override;
 
   public:
 	// UCRVehicleStatusWidget의 속도 UI 변경

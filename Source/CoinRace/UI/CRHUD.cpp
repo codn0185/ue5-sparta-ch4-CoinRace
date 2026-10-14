@@ -2,7 +2,19 @@
 
 #include "CRVehicleStatusWidget.h"
 
-#include "Components/TextBlock.h"
+#include "Chat/CRChatWidget.h"
+
+void UCRHUD::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	// 채팅 입력 커밋 델리게이트 바인딩
+	ChatWidget->OnChatMessageSubmitted.BindLambda(
+		[this](const FString& Message)
+		{
+			OnChatMessageSubmitted.ExecuteIfBound(Message);
+		});
+}
 
 void UCRHUD::UpdateSpeed(float NewSpeed)
 {
