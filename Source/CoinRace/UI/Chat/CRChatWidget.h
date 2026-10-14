@@ -46,5 +46,6 @@ class COINRACE_API UCRChatWidget : public UUserWidget
 
   protected:
 	// 채팅 입력 커밋 시 호출
+	UFUNCTION()
 	void OnChatInputCommitted(const FText& Text, ETextCommit::Type CommitMethod);
 };
