@@ -6,8 +6,8 @@
 
 #include "CRGameMode.generated.h"
 
-UCLASS()
-class COINRACE_API ACRGameMode : public AGameModeBase
+UCLASS(MinimalAPI)
+class ACRGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
