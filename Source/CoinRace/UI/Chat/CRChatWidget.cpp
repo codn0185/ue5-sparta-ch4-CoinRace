@@ -21,7 +21,7 @@ void UCRChatWidget::AddChatMessage(const FCRChatData& ChatData)
 	UCRChatItem* ChatItem = NewObject<UCRChatItem>(this);
 	ChatItem->SetChatData(ChatData);
 
-	// 리스브튜에 추가
+	// 리스트뷰에 추가
 	ListView_ChatLog->AddItem(ChatItem);
 }
 
