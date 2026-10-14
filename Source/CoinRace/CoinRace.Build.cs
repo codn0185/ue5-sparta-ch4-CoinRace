@@ -11,7 +11,7 @@ public class CoinRace : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] {
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
 
-			"UMG",
+			"UMG", "SlateCore",
 		});
 
 		PublicIncludePaths.Add(ModuleDirectory);
