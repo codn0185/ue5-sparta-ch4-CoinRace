@@ -11,7 +11,7 @@ class UEditableTextBox;
 
 struct FCRChatData;
 
-// 채팅 입력 확정 시 메시지를 송출하는 델리게이트
+// 채팅 입력 커밋 시 메시지를 송출하는 델리게이트
 DECLARE_DELEGATE_OneParam(
 	FOnChatMessageSubmitted,
 	const FString&);
