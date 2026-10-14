@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerStart.h"
 #include "Players/CRPlayerController.h"
+#include "UI/Chat/CRChatData.h"
 
 ACRGameMode::ACRGameMode()
 {
@@ -56,4 +57,27 @@ bool ACRGameMode::IsPlayerStartAvailable(const APlayerStart* PlayerStart) const
 			QueryParams);
 
 	return !bVehicleExists;
+}
+
+void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, const FString& ChatMessage)
+{
+	// 월드 내 모든 ACRPlayerController 순회하여 채팅 전달
+	for (TActorIterator<ACRPlayerController> It(GetWorld()); It; ++It)
+	{
+		ACRPlayerController* Controller = *It;
+		if (IsValid(Controller) == false)
+		{
+			continue;
+		}
+
+		// 채팅 데이터 설정
+		FCRChatData ChatData;
+
+		ChatData.SenderNameString = GetNameSafe(SenderController);
+
+		ChatData.ChatMessageString = ChatMessage;
+
+		// 채팅 데이터 전달
+		Controller->ClientRPCReciveChatMessge(ChatData);
+	}
 }

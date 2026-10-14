@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/PlayerController.h"
+#include "UI/Chat/CRChatData.h"
 
 #include "CRPlayerController.generated.h"
 
@@ -40,6 +41,15 @@ class COINRACE_API ACRPlayerController : public APlayerController
 
 	/** Pointer to the UI widget */
 	TObjectPtr<UCRHUD> VehicleUI;
+
+	// RPC 메서드
+  public:
+	// 서버에 채팅 메시지 전송을 요청
+	UFUNCTION(Server, Reliable)
+	void ServerRPCSendChatMessage(const FString& ChatMessage);
+	// 서버로부터 받은 채팅 메시지를 UI에 추가
+	UFUNCTION(Client, Reliable)
+	void ClientRPCReciveChatMessge(const FCRChatData& ChatData);
 
 	// Begin Actor interface
   protected:

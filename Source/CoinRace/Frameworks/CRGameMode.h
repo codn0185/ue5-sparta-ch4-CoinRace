@@ -6,6 +6,8 @@
 
 #include "CRGameMode.generated.h"
 
+class ACRPlayerController;
+
 UCLASS(MinimalAPI)
 class ACRGameMode : public AGameModeBase
 {
@@ -26,4 +28,8 @@ class ACRGameMode : public AGameModeBase
 
 	UPROPERTY(EditDefaultsOnly)
 	FVector VehicleSpawnCheckOffset = FVector(00.f, 00.f, 80.f);
+
+  public:
+	// 채팅 입력 시 호출되어 모든 플레이어에게 전달
+	void BroadcastChatMessage(ACRPlayerController* SenderController, const FString& ChatMessage);
 };

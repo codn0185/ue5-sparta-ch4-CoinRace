@@ -3,9 +3,33 @@
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "Frameworks/CRGameMode.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "UI/CRHUD.h"
 #include "Vehicles/CRWheeledVehiclePawn.h"
+
+void ACRPlayerController::ServerRPCSendChatMessage_Implementation(const FString& ChatMessage)
+{
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this);
+	if (IsValid(GameMode) == false)
+	{
+		return;
+	}
+
+	ACRGameMode* CRGameMode = Cast<ACRGameMode>(GameMode);
+	if (IsValid(CRGameMode) == false)
+	{
+		return;
+	}
+
+	CRGameMode->BroadcastChatMessage(this, ChatMessage);
+}
+
+void ACRPlayerController::ClientRPCReciveChatMessge_Implementation(const FCRChatData& ChatData)
+{
+	VehicleUI->AddChatMessage(ChatData);
+}
 
 void ACRPlayerController::BeginPlay()
 {
@@ -22,6 +46,9 @@ void ACRPlayerController::BeginPlay()
 	check(VehicleUI);
 
 	VehicleUI->AddToViewport();
+
+	// 채팅 입력 커밋 델리게이트 바인딩
+	VehicleUI->OnChatMessageSubmitted.BindUObject(this, &ThisClass::ServerRPCSendChatMessage);
 }
 
 void ACRPlayerController::SetupInputComponent()
