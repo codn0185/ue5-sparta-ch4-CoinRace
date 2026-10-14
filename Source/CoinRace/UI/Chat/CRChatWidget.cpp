@@ -23,6 +23,9 @@ void UCRChatWidget::AddChatMessage(const FCRChatData& ChatData)
 
 	// 리스트뷰에 추가
 	ListView_ChatLog->AddItem(ChatItem);
+
+	// 리스트뷰 최신 채팅으로 스크롤
+	ListView_ChatLog->ScrollToBottom();
 }
 
 void UCRChatWidget::ClearChatMessages()
