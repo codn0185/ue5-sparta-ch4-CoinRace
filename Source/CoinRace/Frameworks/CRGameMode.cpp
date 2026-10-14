@@ -12,6 +12,32 @@ ACRGameMode::ACRGameMode()
 	PlayerControllerClass = ACRPlayerController::StaticClass();
 }
 
+void ACRGameMode::OnPostLogin(AController* NewPlayer)
+{
+	Super::OnPostLogin(NewPlayer);
+
+	// PlayerController 캐스팅
+	ACRPlayerController* PlayerController = Cast<ACRPlayerController>(NewPlayer);
+	if (IsValid(PlayerController) == true)
+	{
+		// 플레이어 추가
+		AllPlayerControllers.Add(PlayerController);
+	}
+}
+
+void ACRGameMode::Logout(AController* Exiting)
+{
+	// PlayerController 캐스팅
+	ACRPlayerController* PlayerController = Cast<ACRPlayerController>(Exiting);
+	if (IsValid(PlayerController) == true)
+	{
+		// 플레이어 제거
+		AllPlayerControllers.Remove(PlayerController);
+	}
+
+	Super::Logout(Exiting);
+}
+
 AActor* ACRGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
 	TArray<APlayerStart*> AvailablePlayerStarts;
@@ -61,10 +87,9 @@ bool ACRGameMode::IsPlayerStartAvailable(const APlayerStart* PlayerStart) const
 
 void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, const FString& ChatMessage)
 {
-	// 월드 내 모든 ACRPlayerController 순회하여 채팅 전달
-	for (TActorIterator<ACRPlayerController> It(GetWorld()); It; ++It)
+	// 등록된 플레이어 배열을 순회하여 채팅 전달
+	for (ACRPlayerController* Controller : AllPlayerControllers)
 	{
-		ACRPlayerController* Controller = *It;
 		if (IsValid(Controller) == false)
 		{
 			continue;

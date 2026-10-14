@@ -13,8 +13,17 @@ class ACRGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+  protected:
+	TArray<TObjectPtr<ACRPlayerController>> AllPlayerControllers;
+
   public:
 	ACRGameMode();
+
+  protected:
+	// 플레이어 로그인
+	virtual void OnPostLogin(AController* NewPlayer) override;
+	// 플레이어 로그아웃
+	virtual void Logout(AController* Exiting) override;
 
   protected:
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
