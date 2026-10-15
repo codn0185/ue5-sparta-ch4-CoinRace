@@ -74,6 +74,9 @@ class COINRACE_API ACRPlayerController : public APlayerController
   protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
+	// PlayerState가 레플리케이션 될 때 호출됨
+	virtual void OnRep_PlayerState() override;
+
 	// End PlayerController interface
 
   public:

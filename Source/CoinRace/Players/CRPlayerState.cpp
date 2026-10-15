@@ -2,6 +2,11 @@
 
 #include "Net/UnrealNetwork.h"
 
+void ACRPlayerState::OnRep_Coins()
+{
+	OnCoinsChanged.ExecuteIfBound(Coins);
+}
+
 void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

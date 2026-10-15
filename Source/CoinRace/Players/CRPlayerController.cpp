@@ -6,6 +6,7 @@
 #include "Frameworks/CRGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Players/CRPlayerState.h"
 #include "Systems/ChatWorldSubsystem.h"
 #include "UI/CRHUD.h"
 #include "Vehicles/CRWheeledVehiclePawn.h"
@@ -139,6 +140,27 @@ void ACRPlayerController::OnPossess(APawn* InPawn)
 
 	// get a pointer to the controlled pawn
 	VehiclePawn = CastChecked<ACRWheeledVehiclePawn>(InPawn);
+}
+
+void ACRPlayerController::OnRep_PlayerState()
+{
+	ACRPlayerState* PlayerState = GetPlayerState<ACRPlayerState>();
+	if (IsValid(PlayerState) == false)
+	{
+		return;
+	}
+
+	// PlayerState의 델리게이트 바인딩
+	TWeakObjectPtr<ACRPlayerController> WeakThis(this);
+
+	PlayerState->OnCoinsChanged.BindLambda(
+		[WeakThis](int32 NewCoins)
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->VehicleUI->SetCoins(NewCoins);
+			}
+		});
 }
 
 void ACRPlayerController::FocusChatInput()
