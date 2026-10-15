@@ -49,4 +49,7 @@ class COINRACE_API UCRHUD : public UUserWidget
 
 	// UCRChatWidget 채팅 클리어
 	void ClearChatMessages();
+
+	// UCRChatWidget 채팅 입력창 포커스
+	void FocusChatInput();
 };

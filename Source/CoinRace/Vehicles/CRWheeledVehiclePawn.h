@@ -67,6 +67,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ResetVehicleAction;
 
+	/** Focus Chat Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* FocusChatAction;
+
 	/** Keeps track of which camera is active */
 	bool bFrontCameraActive = false;
 
@@ -111,6 +115,9 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn
 
 	/** Handles reset vehicle input */
 	void ResetVehicle(const FInputActionValue& Value);
+
+	/** 채팅 입력 포커스 처리 */
+	void FocusChatInput(const FInputActionValue& Value);
 
 	/** Called when the brake lights are turned on or off */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Vehicle")

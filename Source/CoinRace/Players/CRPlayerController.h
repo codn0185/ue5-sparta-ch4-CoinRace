@@ -67,4 +67,7 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	virtual void OnPossess(APawn* InPawn) override;
 
 	// End PlayerController interface
+
+  public:
+	void FocusChatInput();
 };

@@ -94,3 +94,8 @@ void ACRPlayerController::OnPossess(APawn* InPawn)
 	// get a pointer to the controlled pawn
 	VehiclePawn = CastChecked<ACRWheeledVehiclePawn>(InPawn);
 }
+
+void ACRPlayerController::FocusChatInput()
+{
+	VehicleUI->FocusChatInput();
+}

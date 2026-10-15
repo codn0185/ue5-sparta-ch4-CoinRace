@@ -35,3 +35,8 @@ void UCRHUD::ClearChatMessages()
 {
 	ChatWidget->ClearChatMessages();
 }
+
+void UCRHUD::FocusChatInput()
+{
+	ChatWidget->FocusChatInput();
+}

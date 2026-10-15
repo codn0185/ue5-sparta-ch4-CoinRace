@@ -44,6 +44,9 @@ class COINRACE_API UCRChatWidget : public UUserWidget
 	// 채팅 클리어
 	void ClearChatMessages();
 
+	// 채팅 입력창 포커스
+	void FocusChatInput();
+
   protected:
 	// 채팅 입력 커밋 시 호출
 	UFUNCTION()

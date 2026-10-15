@@ -33,6 +33,12 @@ void UCRChatWidget::ClearChatMessages()
 	ListView_ChatLog->ClearListItems();
 }
 
+void UCRChatWidget::FocusChatInput()
+{
+	// 채팅 입력창에 키보드 포커스
+	EditableTextBox_ChatInput->SetKeyboardFocus();
+}
+
 void UCRChatWidget::OnChatInputCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
 	// 엔터 키 입력만 허용
@@ -40,6 +46,9 @@ void UCRChatWidget::OnChatInputCommitted(const FText& Text, ETextCommit::Type Co
 	{
 		return;
 	}
+
+	// 게임으로 입력 포커스 전환 (빈 입력이어도 게임으로 입력 포커스 전환)
+	GetOwningPlayer()->SetInputMode(FInputModeGameOnly());
 
 	// FString 타입 전환 (뒷부분 공백 제거)
 	const FString Message = Text.ToString().TrimEnd();

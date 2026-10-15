@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Players/CRPlayerController.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -82,6 +83,9 @@ void ACRWheeledVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// reset the vehicle
 		EnhancedInputComponent->BindAction(ResetVehicleAction, ETriggerEvent::Triggered, this, &ThisClass::ResetVehicle);
+
+		// Focus Chat Input
+		EnhancedInputComponent->BindAction(FocusChatAction, ETriggerEvent::Started, this, &ThisClass::FocusChatInput);
 	}
 	else
 	{
@@ -199,6 +203,17 @@ void ACRWheeledVehiclePawn::ResetVehicle(const FInputActionValue& Value)
 	GetMesh()->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
 	UE_LOG(LogTemplateVehicle, Error, TEXT("Reset Vehicle"));
+}
+
+void ACRWheeledVehiclePawn::FocusChatInput(const FInputActionValue& Value)
+{
+	ACRPlayerController* PlayerController = GetController<ACRPlayerController>();
+	if (IsValid(PlayerController) == false)
+	{
+		return;
+	}
+
+	PlayerController->FocusChatInput();
 }
 
 #undef LOCTEXT_NAMESPACE
