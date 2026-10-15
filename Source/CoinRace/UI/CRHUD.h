@@ -37,7 +37,7 @@ class COINRACE_API UCRHUD : public UUserWidget
 
 	// UCRCoinWidget - 코인 UI
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCRCoinWidget> CRCoinWidget;
+	TObjectPtr<UCRCoinWidget> CoinWidget;
 
   protected:
 	virtual void NativeConstruct() override;

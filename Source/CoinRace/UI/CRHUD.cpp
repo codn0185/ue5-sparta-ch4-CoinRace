@@ -44,5 +44,5 @@ void UCRHUD::FocusChatInput()
 
 void UCRHUD::SetCoins(int32 Amount)
 {
-	CRCoinWidget->SetCoins(Amount);
+	CoinWidget->SetCoins(Amount);
 }
