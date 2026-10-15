@@ -161,6 +161,15 @@ void ACRPlayerController::OnRep_PlayerState()
 				WeakThis->VehicleUI->SetCoins(NewCoins);
 			}
 		});
+
+	CRPS->OnBonusMaxSpeedChanged.BindLambda(
+		[WeakThis](float NewBonusMaxSpeed)
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->VehicleUI->SetBonusMaxSpeed(NewBonusMaxSpeed);
+			}
+		});
 }
 
 void ACRPlayerController::FocusChatInput()

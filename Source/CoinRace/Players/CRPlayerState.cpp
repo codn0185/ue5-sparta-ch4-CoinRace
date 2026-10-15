@@ -7,6 +7,11 @@ void ACRPlayerState::OnRep_Coins()
 	OnCoinsChanged.ExecuteIfBound(Coins);
 }
 
+void ACRPlayerState::OnRep_BonusMaxSpeed()
+{
+	OnBonusMaxSpeedChanged.ExecuteIfBound(BonusMaxSpeed);
+}
+
 void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

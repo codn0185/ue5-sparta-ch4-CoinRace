@@ -6,10 +6,15 @@
 
 #include "CRPlayerState.generated.h"
 
-// 코인 개수 변경 시 실행되는 델리게이트
+// Coins 변경 시 실행되는 델리게이트
 DECLARE_DELEGATE_OneParam(
 	FOnCoinsChanged,
 	const int32&);
+
+// BonusMaxSpeed 변경 시 실행되는 델리게이트
+DECLARE_DELEGATE_OneParam(
+	FOnBonusMaxSpeedChanged,
+	const float&);
 
 UCLASS()
 class COINRACE_API ACRPlayerState : public APlayerState
@@ -17,13 +22,19 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	GENERATED_BODY()
 
   public:
-	// 코인 개수 변경 델리게이트
+	// Coins 변경 델리게이트
 	FOnCoinsChanged OnCoinsChanged;
+	// BonusMaxSpeed 변경 델리게이트
+	FOnBonusMaxSpeedChanged OnBonusMaxSpeedChanged;
 
   protected:
 	// Coins 변경 시 호출
 	UFUNCTION()
 	void OnRep_Coins();
+
+	// BonusMaxSpeed 변경 시 호출
+	UFUNCTION()
+	void OnRep_BonusMaxSpeed();
 
   protected:
 	// 플레이어 이름
@@ -35,7 +46,7 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	int32 Coins = 0;
 
 	// 보너스 속도
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_BonusMaxSpeed)
 	float BonusMaxSpeed = 0.f;
 
   protected:
