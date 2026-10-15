@@ -3,6 +3,7 @@
 #include "EngineUtils.h"
 
 #include "Engine/World.h"
+#include "Frameworks/CRGameState.h"
 #include "GameFramework/PlayerStart.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
@@ -10,6 +11,7 @@
 
 ACRGameMode::ACRGameMode()
 {
+	GameStateClass = ACRGameState::StaticClass();
 	PlayerControllerClass = ACRPlayerController::StaticClass();
 	PlayerStateClass = ACRPlayerState::StaticClass();
 }
