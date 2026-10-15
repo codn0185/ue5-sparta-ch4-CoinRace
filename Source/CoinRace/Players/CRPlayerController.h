@@ -50,6 +50,9 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	// 서버로부터 받은 채팅 메시지를 UI에 추가
 	UFUNCTION(Client, Reliable)
 	void ClientRPCReciveChatMessge(const FChatData& ChatData);
+	// 서버로부터 채팅 로그를 받아 동기화
+	UFUNCTION(Client, Reliable)
+	void ClientRPCSyncChatLog(const TArray<FChatData>& ChatLog);
 
   protected:
 	// BeginPlay() 직후 호출되어, 플레이어가 준비됨을 서버에 알림

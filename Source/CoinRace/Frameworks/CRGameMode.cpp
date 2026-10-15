@@ -50,10 +50,7 @@ void ACRGameMode::OnPlayerInitialized(ACRPlayerController* Player)
 	if (IsValid(ChatWorldSubsystem) == true)
 	{
 		const TArray<FChatData>& ChatLog = ChatWorldSubsystem->GetChatLog();
-		for (const FChatData& ChatData : ChatLog)
-		{
-			Player->ClientRPCReciveChatMessge(ChatData);
-		}
+		Player->ClientRPCSyncChatLog(ChatLog);
 	}
 }
 

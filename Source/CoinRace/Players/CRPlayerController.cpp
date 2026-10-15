@@ -6,6 +6,7 @@
 #include "Frameworks/CRGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Systems/ChatWorldSubsystem.h"
 #include "UI/CRHUD.h"
 #include "Vehicles/CRWheeledVehiclePawn.h"
 
@@ -47,6 +48,14 @@ void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
 	}
 
 	CRGameMode->OnPlayerInitialized(this);
+}
+
+void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChatData>& ChatLog)
+{
+	for (const FChatData& ChatData : ChatLog)
+	{
+		VehicleUI->AddChatMessage(ChatData);
+	}
 }
 
 void ACRPlayerController::BeginPlay()
@@ -111,7 +120,7 @@ void ACRPlayerController::Tick(float Delta)
 void ACRPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-
+		
 	// get a pointer to the controlled pawn
 	VehiclePawn = CastChecked<ACRWheeledVehiclePawn>(InPawn);
 }
