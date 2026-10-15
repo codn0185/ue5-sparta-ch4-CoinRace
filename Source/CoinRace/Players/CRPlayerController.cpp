@@ -27,7 +27,7 @@ void ACRPlayerController::ServerRPCSendChatMessage_Implementation(const FString&
 	CRGameMode->BroadcastChatMessage(this, ChatMessage);
 }
 
-void ACRPlayerController::ClientRPCReciveChatMessge_Implementation(const FChatData& ChatData)
+void ACRPlayerController::ClientRPCReciveChatMessage_Implementation(const FChatData& ChatData)
 {
 	VehicleUI->AddChatMessage(ChatData);
 }
@@ -120,7 +120,7 @@ void ACRPlayerController::Tick(float Delta)
 void ACRPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-		
+
 	// get a pointer to the controlled pawn
 	VehiclePawn = CastChecked<ACRWheeledVehiclePawn>(InPawn);
 }

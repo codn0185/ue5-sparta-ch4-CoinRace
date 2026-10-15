@@ -113,7 +113,7 @@ void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, co
 	{
 		if (IsValid(Controller) == true)
 		{
-			Controller->ClientRPCReciveChatMessge(ChatData);
+			Controller->ClientRPCReciveChatMessage(ChatData);
 		}
 	}
 
