@@ -10,6 +10,16 @@ void UChatWorldSubsystem::AddChatData(const FChatData& NewChatData)
 	ChatLog.Add(NewChatData);
 }
 
+void UChatWorldSubsystem::SetChatLog(const TArray<FChatData>& InChatLog)
+{
+	ChatLog = InChatLog;
+}
+
+void UChatWorldSubsystem::ClearChatLog()
+{
+	ChatLog.Empty();
+}
+
 const TArray<FChatData>& UChatWorldSubsystem::GetChatLog() const
 {
 	return ChatLog;

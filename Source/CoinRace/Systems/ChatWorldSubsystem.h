@@ -43,6 +43,12 @@ class COINRACE_API UChatWorldSubsystem : public UWorldSubsystem
 	// 채팅 추가
 	void AddChatData(const FChatData& NewChatData);
 
+	// 채팅 로그 설정
+	void SetChatLog(const TArray<FChatData>& InChatLog);
+
+	// 채팅 로그 초기화
+	void ClearChatLog();
+
 	// 채팅 로그 반환
 	const TArray<FChatData>& GetChatLog() const;
 };
