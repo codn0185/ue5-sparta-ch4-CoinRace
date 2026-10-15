@@ -20,17 +20,6 @@ void ACRGameMode::OnPostLogin(AController* NewPlayer)
 	{
 		// 플레이어 추가
 		AllPlayerControllers.Add(PlayerController);
-
-		// 이전 채팅 내역 동기화
-		UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
-		if (IsValid(ChatWorldSubsystem) == true)
-		{
-			const TArray<FChatData>& ChatLog = ChatWorldSubsystem->GetChatLog();
-			for (const FChatData& ChatData : ChatLog)
-			{
-				PlayerController->ClientRPCReciveChatMessge(ChatData);
-			}
-		}
 	}
 
 	Super::OnPostLogin(NewPlayer);
@@ -47,6 +36,25 @@ void ACRGameMode::Logout(AController* Exiting)
 	}
 
 	Super::Logout(Exiting);
+}
+
+void ACRGameMode::OnPlayerInitialized(ACRPlayerController* Player)
+{
+	if (IsValid(Player) == false)
+	{
+		return;
+	}
+
+	// 이전 채팅 내역 동기화
+	UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
+	if (IsValid(ChatWorldSubsystem) == true)
+	{
+		const TArray<FChatData>& ChatLog = ChatWorldSubsystem->GetChatLog();
+		for (const FChatData& ChatData : ChatLog)
+		{
+			Player->ClientRPCReciveChatMessge(ChatData);
+		}
+	}
 }
 
 AActor* ACRGameMode::ChoosePlayerStart_Implementation(AController* Player)

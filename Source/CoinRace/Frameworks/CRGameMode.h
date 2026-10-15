@@ -25,6 +25,10 @@ class ACRGameMode : public AGameModeBase
 	// 플레이어 로그아웃
 	virtual void Logout(AController* Exiting) override;
 
+  public:
+	// 플레이어 초기화 완료 후 호출
+	void OnPlayerInitialized(ACRPlayerController* Player);
+
   protected:
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 

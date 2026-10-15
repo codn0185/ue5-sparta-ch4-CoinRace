@@ -31,6 +31,24 @@ void ACRPlayerController::ClientRPCReciveChatMessge_Implementation(const FChatDa
 	VehicleUI->AddChatMessage(ChatData);
 }
 
+void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
+{
+	// GameMode에 플레이어 초기화 완료 알림
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this);
+	if (IsValid(GameMode) == false)
+	{
+		return;
+	}
+
+	ACRGameMode* CRGameMode = Cast<ACRGameMode>(GameMode);
+	if (IsValid(CRGameMode) == false)
+	{
+		return;
+	}
+
+	CRGameMode->OnPlayerInitialized(this);
+}
+
 void ACRPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -49,6 +67,9 @@ void ACRPlayerController::BeginPlay()
 
 	// 채팅 입력 커밋 델리게이트 바인딩
 	VehicleUI->OnChatMessageSubmitted.BindUObject(this, &ThisClass::ServerRPCSendChatMessage);
+
+	// 플레이어 준비됨을 서버에 알림
+	ServerRPCNotifyPlayerInitialized();
 }
 
 void ACRPlayerController::SetupInputComponent()

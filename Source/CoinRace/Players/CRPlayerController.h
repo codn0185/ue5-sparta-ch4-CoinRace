@@ -51,6 +51,11 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	UFUNCTION(Client, Reliable)
 	void ClientRPCReciveChatMessge(const FChatData& ChatData);
 
+  protected:
+	// BeginPlay() 직후 호출되어, 플레이어가 준비됨을 서버에 알림
+	UFUNCTION(Server, Reliable)
+	void ServerRPCNotifyPlayerInitialized();
+
 	// Begin Actor interface
   protected:
 	virtual void BeginPlay() override;
