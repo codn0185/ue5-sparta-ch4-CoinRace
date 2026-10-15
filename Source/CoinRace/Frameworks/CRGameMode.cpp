@@ -5,11 +5,13 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerStart.h"
 #include "Players/CRPlayerController.h"
+#include "Players/CRPlayerState.h"
 #include "Systems/ChatWorldSubsystem.h"
 
 ACRGameMode::ACRGameMode()
 {
 	PlayerControllerClass = ACRPlayerController::StaticClass();
+	PlayerStateClass = ACRPlayerState::StaticClass();
 }
 
 void ACRGameMode::OnPostLogin(AController* NewPlayer)
