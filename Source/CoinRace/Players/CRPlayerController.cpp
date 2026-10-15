@@ -29,14 +29,30 @@ void ACRPlayerController::ServerRPCSendChatMessage_Implementation(const FString&
 
 void ACRPlayerController::ClientRPCReciveChatMessage_Implementation(const FChatData& ChatData)
 {
+	// 채팅 UI에 채팅 메시지 추가
 	VehicleUI->AddChatMessage(ChatData);
+
+	// ChatWorldSubsystem의 채팅 로그에 추가
+	UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
+	if (IsValid(ChatWorldSubsystem) == true)
+	{
+		ChatWorldSubsystem->AddChatData(ChatData);
+	}
 }
 
 void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChatData>& ChatLog)
 {
+	// 채팅 UI에 채팅 로그 동기화
 	for (const FChatData& ChatData : ChatLog)
 	{
 		VehicleUI->AddChatMessage(ChatData);
+	}
+
+	// ChatWorldSubsystem의 채팅 로그 동기화
+	UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
+	if (IsValid(ChatWorldSubsystem) == true)
+	{
+		ChatWorldSubsystem->SetChatLog(ChatLog);
 	}
 }
 
