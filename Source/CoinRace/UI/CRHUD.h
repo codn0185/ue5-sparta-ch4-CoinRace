@@ -36,6 +36,7 @@ class COINRACE_API UCRHUD : public UUserWidget
 	TObjectPtr<UCRChatWidget> ChatWidget;
 
 	// UCRCoinWidget - 코인 UI
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCRCoinWidget> CRCoinWidget;
 
   protected:
