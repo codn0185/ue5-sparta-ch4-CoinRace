@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Utilities/SpeedUnit.h"
 
 #include "CRBonusMaxSpeedWidget.generated.h"
 
@@ -21,14 +22,19 @@ class COINRACE_API UCRBonusMaxSpeedWidget : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_SpeedUnit;
 
-	// 속도 단위 설정 - "Km/h" or "MPH"
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Vehicle)
-	bool bIsMPH = false;
+  protected:
+	// UI에 표시할 속도 단위
+	FSpeedUnit UISpeedUnit = SpeedUnit::KPH;
+	// 현재 원본(cm/s) 보너스 최대 속도
+	float CurrentBonusMaxSpeed = 0.f;
 
   protected:
 	virtual void NativeConstruct() override;
 
   public:
+	// 속도 단위 설정
+	void SetSpeedUnit(const FSpeedUnit& NewSpeedUnit);
+
 	// 속도 값 설정
 	void SetBonusMaxSpeed(float NewBonusMaxSpeed);
 };

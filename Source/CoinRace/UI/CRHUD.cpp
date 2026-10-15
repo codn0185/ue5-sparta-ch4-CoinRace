@@ -18,6 +18,12 @@ void UCRHUD::NativeConstruct()
 		});
 }
 
+void UCRHUD::SetSpeedUnit(const FSpeedUnit& NewSpeedUnit)
+{
+	VehicleStatusWidget->SetSpeedUnit(NewSpeedUnit);
+	BonusMaxSpeedWidget->SetSpeedUnit(NewSpeedUnit);
+}
+
 void UCRHUD::UpdateSpeed(float NewSpeed)
 {
 	VehicleStatusWidget->UpdateSpeed(NewSpeed);

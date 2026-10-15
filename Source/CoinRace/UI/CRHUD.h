@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Utilities/SpeedUnit.h"
 
 #include "CRHUD.generated.h"
 
@@ -40,9 +41,16 @@ class COINRACE_API UCRHUD : public UUserWidget
 	TObjectPtr<class UCRBonusMaxSpeedWidget> BonusMaxSpeedWidget;
 
   protected:
+	// UI에 표시할 속도 단위
+	FSpeedUnit UISpeedUnit = SpeedUnit::KPH;
+
+  protected:
 	virtual void NativeConstruct() override;
 
   public:
+	// UI 속도 단위 설정
+	void SetSpeedUnit(const FSpeedUnit& NewSpeedUnit);
+
 	// UCRVehicleStatusWidget의 속도 UI 변경
 	void UpdateSpeed(float NewSpeed);
 	// UCRVehicleStatusWidget의 기어 UI 변경

@@ -6,16 +6,23 @@ void UCRVehicleStatusWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 
-	TextBlock_SpeedUnit->SetText(FText::FromString(
-		bIsMPH
-			? TEXT("MPH")
-			: TEXT("km/h")));
+	UpdateSpeed(0);
+	TextBlock_SpeedUnit->SetText(FText::FromString(UISpeedUnit.DisplayString));
+}
+
+void UCRVehicleStatusWidget::SetSpeedUnit(const FSpeedUnit& NewSpeedUnit)
+{
+	UISpeedUnit = NewSpeedUnit;
+
+	// UI 업데이트
+	TextBlock_SpeedUnit->SetText(FText::FromString(UISpeedUnit.DisplayString));
+	UpdateSpeed(CurrentSpeed);
 }
 
 void UCRVehicleStatusWidget::UpdateSpeed(float NewSpeed)
 {
-	// 단위에 맞춰 속도 포맷
-	float FormattedSpeed = FMath::Abs(NewSpeed) * (bIsMPH ? 0.022f : 0.036f);
+	// 현재 속도 설정
+	CurrentSpeed = NewSpeed;
 
 	// 텍스트 변환 설정
 	FNumberFormattingOptions Options;
@@ -23,7 +30,9 @@ void UCRVehicleStatusWidget::UpdateSpeed(float NewSpeed)
 	Options.SetMinimumIntegralDigits(3);                  // 정수 3자리 표시
 	Options.SetMaximumFractionalDigits(0);                // 소수점 표시 X
 
-	TextBlock_SpeedValue->SetText(FText::AsNumber(FormattedSpeed, &Options));
+	TextBlock_SpeedValue->SetText(FText::AsNumber(
+		UISpeedUnit.ConvertSpeed(FMath::Abs(CurrentSpeed)), // 단위에 맞춰 속도 값 변환
+		&Options));
 }
 
 void UCRVehicleStatusWidget::UpdateGear(int32 NewGear)

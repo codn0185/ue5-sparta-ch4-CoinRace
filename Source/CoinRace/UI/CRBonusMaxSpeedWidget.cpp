@@ -7,11 +7,16 @@ void UCRBonusMaxSpeedWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	SetBonusMaxSpeed(0);
+	TextBlock_SpeedUnit->SetText(FText::FromString(UISpeedUnit.DisplayString));
+}
 
-	TextBlock_SpeedUnit->SetText(FText::FromString(
-		bIsMPH
-			? TEXT("MPH")
-			: TEXT("km/h")));
+void UCRBonusMaxSpeedWidget::SetSpeedUnit(const FSpeedUnit& NewSpeedUnit)
+{
+	UISpeedUnit = NewSpeedUnit;
+
+	// UI 업데이트
+	TextBlock_SpeedUnit->SetText(FText::FromString(UISpeedUnit.DisplayString));
+	SetBonusMaxSpeed(CurrentBonusMaxSpeed);
 }
 
 void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
@@ -23,16 +28,18 @@ void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 		return;
 	}
 
+	// 현재 보너스 최대 속도 설정
+	CurrentBonusMaxSpeed = NewBonusMaxSpeed;
+
 	// 보너스 적용 -> 표시하기
 	SetVisibility(ESlateVisibility::Visible);
-
-	// 단위에 맞춰 속도 포맷
-	float FormattedSpeed = FMath::Abs(NewBonusMaxSpeed) * (bIsMPH ? 0.022f : 0.036f);
 
 	// 텍스트 변환 설정
 	FNumberFormattingOptions Options;
 	Options.SetRoundingMode(ERoundingMode::HalfFromZero); // 반올림
 	Options.SetMaximumFractionalDigits(0);                // 소수점 표시 X
 
-	TextBlock_SpeedValue->SetText(FText::AsNumber(FormattedSpeed, &Options));
+	TextBlock_SpeedValue->SetText(FText::AsNumber(
+		UISpeedUnit.ConvertSpeed(FMath::Abs(CurrentBonusMaxSpeed)), // 단위에 맞춰 속도 값 변환
+		&Options));
 }
