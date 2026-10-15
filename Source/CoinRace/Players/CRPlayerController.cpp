@@ -32,6 +32,14 @@ void ACRPlayerController::ClientRPCReciveChatMessage_Implementation(const FChatD
 	VehicleUI->AddChatMessage(ChatData);
 }
 
+void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChatData>& ChatLog)
+{
+	for (const FChatData& ChatData : ChatLog)
+	{
+		VehicleUI->AddChatMessage(ChatData);
+	}
+}
+
 void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
 {
 	// GameMode에 플레이어 초기화 완료 알림
@@ -48,14 +56,6 @@ void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
 	}
 
 	CRGameMode->OnPlayerInitialized(this);
-}
-
-void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChatData>& ChatLog)
-{
-	for (const FChatData& ChatData : ChatLog)
-	{
-		VehicleUI->AddChatMessage(ChatData);
-	}
 }
 
 void ACRPlayerController::BeginPlay()
