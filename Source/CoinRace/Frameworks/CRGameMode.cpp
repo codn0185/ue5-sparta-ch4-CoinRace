@@ -22,6 +22,14 @@ void ACRGameMode::OnPostLogin(AController* NewPlayer)
 	{
 		// 플레이어 추가
 		AllPlayerControllers.Add(PlayerController);
+
+		// PlayerState의 이름 설정
+		ACRPlayerState* PlayerState = PlayerController->GetPlayerState<ACRPlayerState>();
+		if (IsValid(PlayerState) == true)
+		{
+			FString PlayerName = FString::Printf(TEXT("Player %d"), AllPlayerControllers.Num());
+			PlayerState->SetPlayerName(PlayerName);
+		}
 	}
 
 	Super::OnPostLogin(NewPlayer);
@@ -107,7 +115,12 @@ void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, co
 {
 	// 채팅 데이터 설정
 	FChatData ChatData;
-	ChatData.SenderNameString = GetNameSafe(SenderController);
+
+	ACRPlayerState* PlayerState = SenderController->GetPlayerState<ACRPlayerState>();
+	if (IsValid(PlayerState) == true)
+	{
+		ChatData.SenderNameString = PlayerState->GetPlayerName();
+	}
 	ChatData.ChatMessageString = ChatMessage;
 
 	// 등록된 플레이어 배열을 순회하여 채팅 전달
