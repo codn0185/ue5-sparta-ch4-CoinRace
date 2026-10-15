@@ -31,4 +31,16 @@ UCLASS()
 class COINRACE_API UChatWorldSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
+
+  protected:
+	// 보관할 채팅 로그의 최대 개수
+	static inline int32 MaxChatLogCount = 20;
+
+	// 보관된 채팅 목록 (큐 방식)
+	TArray<FChatData> ChatLog;
+
+  public:
+	void AddChatData(const FChatData& NewChatData);
+
+	const TArray<FChatData>& GetChatLog() const;
 };
