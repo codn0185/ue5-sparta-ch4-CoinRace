@@ -14,15 +14,26 @@ ACRGameMode::ACRGameMode()
 
 void ACRGameMode::OnPostLogin(AController* NewPlayer)
 {
-	Super::OnPostLogin(NewPlayer);
-
 	// PlayerController 캐스팅
 	ACRPlayerController* PlayerController = Cast<ACRPlayerController>(NewPlayer);
 	if (IsValid(PlayerController) == true)
 	{
 		// 플레이어 추가
 		AllPlayerControllers.Add(PlayerController);
+
+		// 이전 채팅 내역 동기화
+		UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
+		if (IsValid(ChatWorldSubsystem) == true)
+		{
+			const TArray<FChatData>& ChatLog = ChatWorldSubsystem->GetChatLog();
+			for (const FChatData& ChatData : ChatLog)
+			{
+				PlayerController->ClientRPCReciveChatMessge(ChatData);
+			}
+		}
 	}
+
+	Super::OnPostLogin(NewPlayer);
 }
 
 void ACRGameMode::Logout(AController* Exiting)
@@ -87,22 +98,24 @@ bool ACRGameMode::IsPlayerStartAvailable(const APlayerStart* PlayerStart) const
 
 void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, const FString& ChatMessage)
 {
+	// 채팅 데이터 설정
+	FChatData ChatData;
+	ChatData.SenderNameString = GetNameSafe(SenderController);
+	ChatData.ChatMessageString = ChatMessage;
+
 	// 등록된 플레이어 배열을 순회하여 채팅 전달
 	for (ACRPlayerController* Controller : AllPlayerControllers)
 	{
-		if (IsValid(Controller) == false)
+		if (IsValid(Controller) == true)
 		{
-			continue;
+			Controller->ClientRPCReciveChatMessge(ChatData);
 		}
+	}
 
-		// 채팅 데이터 설정
-		FChatData ChatData;
-
-		ChatData.SenderNameString = GetNameSafe(SenderController);
-
-		ChatData.ChatMessageString = ChatMessage;
-
-		// 채팅 데이터 전달
-		Controller->ClientRPCReciveChatMessge(ChatData);
+	// 채팅 로그에 저장
+	UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
+	if (IsValid(ChatWorldSubsystem) == true)
+	{
+		ChatWorldSubsystem->AddChatData(ChatData);
 	}
 }
