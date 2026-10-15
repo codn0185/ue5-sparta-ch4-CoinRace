@@ -1,11 +1,11 @@
 ﻿#include "CRChatItem.h"
 
-FCRChatData UCRChatItem::GetChatData() const
+FChatData UCRChatItem::GetChatData() const
 {
 	return ChatData;
 }
 
-void UCRChatItem::SetChatData(const FCRChatData InChatData)
+void UCRChatItem::SetChatData(const FChatData& InChatData)
 {
 	ChatData = InChatData;
 }

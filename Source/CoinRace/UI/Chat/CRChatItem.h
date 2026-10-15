@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include "CRChatData.h"
 #include "CoreMinimal.h"
 
+#include "Systems/ChatWorldSubsystem.h"
 #include "UObject/NoExportTypes.h"
 
 #include "CRChatItem.generated.h"
@@ -13,10 +13,10 @@ class COINRACE_API UCRChatItem : public UObject
 	GENERATED_BODY()
 
   protected:
-	FCRChatData ChatData;
+	FChatData ChatData;
 
   public:
-	FCRChatData GetChatData() const;
+	FChatData GetChatData() const;
 
-	void SetChatData(const FCRChatData InChatData);
+	void SetChatData(const FChatData& InChatData);
 };

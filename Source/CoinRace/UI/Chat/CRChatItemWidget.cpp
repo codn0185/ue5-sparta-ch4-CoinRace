@@ -1,9 +1,9 @@
 ﻿#include "CRChatItemWidget.h"
 
-#include "CRChatData.h"
 #include "CRChatItem.h"
 
 #include "Components/TextBlock.h"
+#include "Systems/ChatWorldSubsystem.h"
 
 void UCRChatItemWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -16,7 +16,7 @@ void UCRChatItemWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 	}
 
 	// 채팅 데이터
-	const FCRChatData ChatData = ChatItem->GetChatData();
+	const FChatData ChatData = ChatItem->GetChatData();
 
 	// TextBlock_SenderName 위젯 설정
 	TextBlock_SenderName->SetText(FText::FromString(ChatData.SenderNameString));

@@ -9,7 +9,7 @@
 class UCRVehicleStatusWidget;
 class UCRChatWidget;
 
-struct FCRChatData;
+struct FChatData;
 
 // 채팅 입력 커밋 시 메시지를 송출하는 델리게이트
 DECLARE_DELEGATE_OneParam(
@@ -45,7 +45,7 @@ class COINRACE_API UCRHUD : public UUserWidget
 	void UpdateGear(int32 NewGear);
 
 	// UCRChatWidget 채팅 추가
-	void AddChatMessage(const FCRChatData& ChatData);
+	void AddChatMessage(const FChatData& ChatData);
 
 	// UCRChatWidget 채팅 클리어
 	void ClearChatMessages();

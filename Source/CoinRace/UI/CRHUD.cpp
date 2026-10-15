@@ -26,7 +26,7 @@ void UCRHUD::UpdateGear(int32 NewGear)
 	VehicleStatusWidget->UpdateGear(NewGear);
 }
 
-void UCRHUD::AddChatMessage(const FCRChatData& ChatData)
+void UCRHUD::AddChatMessage(const FChatData& ChatData)
 {
 	ChatWidget->AddChatMessage(ChatData);
 }

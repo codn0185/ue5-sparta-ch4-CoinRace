@@ -2,10 +2,12 @@
 
 #include "CoreMinimal.h"
 
-#include "CRChatData.generated.h"
+#include "Subsystems/WorldSubsystem.h"
+
+#include "ChatWorldSubsystem.generated.h"
 
 USTRUCT()
-struct FCRChatData
+struct FChatData
 {
 	GENERATED_BODY()
 
@@ -23,4 +25,10 @@ struct FCRChatData
 	// 채팅 메시지 색상
 	UPROPERTY()
 	FLinearColor ChatMessageColor = FLinearColor::White;
+};
+
+UCLASS()
+class COINRACE_API UChatWorldSubsystem : public UWorldSubsystem
+{
+	GENERATED_BODY()
 };

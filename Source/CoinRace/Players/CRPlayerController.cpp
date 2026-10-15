@@ -26,7 +26,7 @@ void ACRPlayerController::ServerRPCSendChatMessage_Implementation(const FString&
 	CRGameMode->BroadcastChatMessage(this, ChatMessage);
 }
 
-void ACRPlayerController::ClientRPCReciveChatMessge_Implementation(const FCRChatData& ChatData)
+void ACRPlayerController::ClientRPCReciveChatMessge_Implementation(const FChatData& ChatData)
 {
 	VehicleUI->AddChatMessage(ChatData);
 }

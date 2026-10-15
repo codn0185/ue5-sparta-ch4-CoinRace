@@ -5,7 +5,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerStart.h"
 #include "Players/CRPlayerController.h"
-#include "UI/Chat/CRChatData.h"
+#include "Systems/ChatWorldSubsystem.h"
 
 ACRGameMode::ACRGameMode()
 {
@@ -96,7 +96,7 @@ void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, co
 		}
 
 		// 채팅 데이터 설정
-		FCRChatData ChatData;
+		FChatData ChatData;
 
 		ChatData.SenderNameString = GetNameSafe(SenderController);
 

@@ -3,13 +3,13 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/PlayerController.h"
-#include "UI/Chat/CRChatData.h"
 
 #include "CRPlayerController.generated.h"
 
 class UInputMappingContext;
 class ACRWheeledVehiclePawn;
 class UCRHUD;
+struct FChatData;
 
 UCLASS()
 class COINRACE_API ACRPlayerController : public APlayerController
@@ -49,7 +49,7 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	void ServerRPCSendChatMessage(const FString& ChatMessage);
 	// 서버로부터 받은 채팅 메시지를 UI에 추가
 	UFUNCTION(Client, Reliable)
-	void ClientRPCReciveChatMessge(const FCRChatData& ChatData);
+	void ClientRPCReciveChatMessge(const FChatData& ChatData);
 
 	// Begin Actor interface
   protected:

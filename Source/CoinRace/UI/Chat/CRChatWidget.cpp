@@ -2,7 +2,7 @@
 
 #include "Components/EditableTextBox.h"
 #include "Components/ListView.h"
-#include "UI/Chat/CRChatData.h"
+#include "Systems/ChatWorldSubsystem.h"
 #include "UI/Chat/CRChatItem.h"
 
 void UCRChatWidget::NativeConstruct()
@@ -15,7 +15,7 @@ void UCRChatWidget::NativeConstruct()
 		&ThisClass::OnChatInputCommitted);
 }
 
-void UCRChatWidget::AddChatMessage(const FCRChatData& ChatData)
+void UCRChatWidget::AddChatMessage(const FChatData& ChatData)
 {
 	// 채팅 아이템 오브젝트 생성 및 설정
 	UCRChatItem* ChatItem = NewObject<UCRChatItem>(this);
