@@ -3,6 +3,7 @@
 #include "CRVehicleStatusWidget.h"
 
 #include "Chat/CRChatWidget.h"
+#include "UI/CRCoinWidget.h"
 
 void UCRHUD::NativeConstruct()
 {
@@ -39,4 +40,9 @@ void UCRHUD::ClearChatMessages()
 void UCRHUD::FocusChatInput()
 {
 	ChatWidget->FocusChatInput();
+}
+
+void UCRHUD::SetCoins(int32 Amount)
+{
+	CRCoinWidget->SetCoins(Amount);
 }

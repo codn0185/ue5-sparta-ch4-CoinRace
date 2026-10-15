@@ -8,6 +8,7 @@
 
 class UCRVehicleStatusWidget;
 class UCRChatWidget;
+class UCRCoinWidget;
 
 struct FChatData;
 
@@ -34,6 +35,9 @@ class COINRACE_API UCRHUD : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCRChatWidget> ChatWidget;
 
+	// UCRCoinWidget - 코인 UI
+	TObjectPtr<UCRCoinWidget> CRCoinWidget;
+
   protected:
 	virtual void NativeConstruct() override;
 
@@ -52,4 +56,7 @@ class COINRACE_API UCRHUD : public UUserWidget
 
 	// UCRChatWidget 채팅 입력창 포커스
 	void FocusChatInput();
+
+	// UCRCoinWidget 코인 설정
+	void SetCoins(int32 Amount);
 };
