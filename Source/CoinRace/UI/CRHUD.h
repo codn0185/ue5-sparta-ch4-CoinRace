@@ -9,6 +9,7 @@
 class UCRVehicleStatusWidget;
 class UCRChatWidget;
 class UCRCoinWidget;
+class UCRBonusMaxSpeedWidget;
 
 struct FChatData;
 
@@ -39,25 +40,29 @@ class COINRACE_API UCRHUD : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCRCoinWidget> CoinWidget;
 
+	// UCRBonusMaxSpeedWidget - 보너스 최대 속도 UI
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCRBonusMaxSpeedWidget> BonusMaxSpeedWidget;
+
   protected:
 	virtual void NativeConstruct() override;
 
   public:
 	// UCRVehicleStatusWidget의 속도 UI 변경
 	void UpdateSpeed(float NewSpeed);
-
 	// UCRVehicleStatusWidget의 기어 UI 변경
 	void UpdateGear(int32 NewGear);
 
 	// UCRChatWidget 채팅 추가
 	void AddChatMessage(const FChatData& ChatData);
-
 	// UCRChatWidget 채팅 클리어
 	void ClearChatMessages();
-
 	// UCRChatWidget 채팅 입력창 포커스
 	void FocusChatInput();
 
 	// UCRCoinWidget 코인 설정
 	void SetCoins(int32 Amount);
+
+	// UCRBonusMaxSpeedWidget 보너스 최대 속도 설정
+	void SetBonusMaxSpeed(float NewBonusMaxSpeed);
 };

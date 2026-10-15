@@ -3,6 +3,7 @@
 #include "CRVehicleStatusWidget.h"
 
 #include "Chat/CRChatWidget.h"
+#include "UI/CRBonusMaxSpeedWidget.h"
 #include "UI/CRCoinWidget.h"
 
 void UCRHUD::NativeConstruct()
@@ -45,4 +46,9 @@ void UCRHUD::FocusChatInput()
 void UCRHUD::SetCoins(int32 Amount)
 {
 	CoinWidget->SetCoins(Amount);
+}
+
+void UCRHUD::SetBonusMaxSpeed(float NewBonusMaxSpeed)
+{
+	BonusMaxSpeedWidget->SetBonusMaxSpeed(NewBonusMaxSpeed);
 }
