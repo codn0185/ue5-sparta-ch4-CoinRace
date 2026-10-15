@@ -20,6 +20,10 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	UPROPERTY(Replicated)
 	int32 Coins = 0;
 
+	// 보너스 속도
+	UPROPERTY(Replicated)
+	float BonusMaxSpeed = 0.f;
+
   protected:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -35,4 +39,9 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	void AddCoins(int32 Amount);
 	// 코인 차감 시도 - 성공 여부 반환
 	bool TryRemoveCoins(int32 Amount);
+
+	// 보너스 속도 반환
+	float GetBonusMaxSpeed() const;
+	// 보너스 속도 추가
+	void AddBonusMaxSpeed(float Amount);
 };
