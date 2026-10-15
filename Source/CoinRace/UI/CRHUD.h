@@ -6,11 +6,6 @@
 
 #include "CRHUD.generated.h"
 
-class UCRVehicleStatusWidget;
-class UCRChatWidget;
-class UCRCoinWidget;
-class UCRBonusMaxSpeedWidget;
-
 struct FChatData;
 
 // 채팅 입력 커밋 시 메시지를 송출하는 델리게이트
@@ -30,19 +25,19 @@ class COINRACE_API UCRHUD : public UUserWidget
   protected:
 	// UCRVehicleStatusWidget - 차량 정보 UI
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCRVehicleStatusWidget> VehicleStatusWidget;
+	TObjectPtr<class UCRVehicleStatusWidget> VehicleStatusWidget;
 
 	// UCRChatWidget - 채팅 UI
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCRChatWidget> ChatWidget;
+	TObjectPtr<class UCRChatWidget> ChatWidget;
 
 	// UCRCoinWidget - 코인 UI
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCRCoinWidget> CoinWidget;
+	TObjectPtr<class UCRCoinWidget> CoinWidget;
 
 	// UCRBonusMaxSpeedWidget - 보너스 최대 속도 UI
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCRBonusMaxSpeedWidget> BonusMaxSpeedWidget;
+	TObjectPtr<class UCRBonusMaxSpeedWidget> BonusMaxSpeedWidget;
 
   protected:
 	virtual void NativeConstruct() override;
