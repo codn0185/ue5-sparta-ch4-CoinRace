@@ -21,7 +21,7 @@ void ACRPlayerState::ServerRPCAddCoins_Implementation(int32 Amount)
 	AddCoins(Amount);
 }
 
-void ACRPlayerState::ServerRPCTryRemoveCoins_Implementation(int32 Amount)
+void ACRPlayerState::ServerRPCRemoveCoins_Implementation(int32 Amount)
 {
 	TryRemoveCoins(Amount);
 }

@@ -38,7 +38,7 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	void ServerRPCAddCoins(int32 Amount);
 	// 서버에 Coins 감소 요청
 	UFUNCTION(Server, Reliable)
-	void ServerRPCTryRemoveCoins(int32 Amount);
+	void ServerRPCRemoveCoins(int32 Amount);
 
 	// 서버에 BonusMaxSpeed 증가 요청
 	UFUNCTION(Server, Reliable)
