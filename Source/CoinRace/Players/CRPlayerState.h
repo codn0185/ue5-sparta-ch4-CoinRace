@@ -37,10 +37,6 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	void OnRep_BonusMaxSpeed();
 
   protected:
-	// 플레이어 이름
-	UPROPERTY(Replicated)
-	FString PlayerName;
-
 	// 코인 개수
 	UPROPERTY(ReplicatedUsing = OnRep_Coins)
 	int32 Coins = 0;
@@ -70,11 +66,6 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	void ServerRPCAddBonusMaxSpeed(float Amount);
 
   public:
-	// 플레이어 이름 반환
-	FString GetPlayerName() const;
-	// 플레이어 이름 설정
-	void SetPlayerName(const FString& InPlayerName);
-
 	// 코인 개수 반환
 	int32 GetCoins() const;
 	// 코인 추가
