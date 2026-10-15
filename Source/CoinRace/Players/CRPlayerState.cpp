@@ -7,6 +7,7 @@ void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, PlayerName);
+	DOREPLIFETIME_CONDITION(ThisClass, Coins, COND_OwnerOnly);
 }
 
 FString ACRPlayerState::GetPlayerName() const
@@ -17,4 +18,43 @@ FString ACRPlayerState::GetPlayerName() const
 void ACRPlayerState::SetPlayerName(const FString& InPlayerName)
 {
 	PlayerName = InPlayerName;
+}
+
+int32 ACRPlayerState::GetCoins() const
+{
+	return Coins;
+}
+
+void ACRPlayerState::AddCoins(int32 Amount)
+{
+	// 서버에서만 수정 가능하도록 제한
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	if (Amount <= 0)
+	{
+		return;
+	}
+
+	Coins += Amount;
+}
+
+bool ACRPlayerState::TryRemoveCoins(int32 Amount)
+{
+	// 서버에서만 수정 가능하도록 제한
+	if (HasAuthority() == false)
+	{
+		return false;
+	}
+
+	if (Amount <= 0 || Coins <= Amount)
+	{
+		return false;
+	}
+
+	Coins -= Amount;
+
+	return true;
 }

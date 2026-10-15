@@ -16,6 +16,10 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	UPROPERTY(Replicated)
 	FString PlayerName;
 
+	// 코인 개수
+	UPROPERTY(Replicated)
+	int32 Coins = 0;
+
   protected:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -24,4 +28,11 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	FString GetPlayerName() const;
 	// 플레이어 이름 설정
 	void SetPlayerName(const FString& InPlayerName);
+
+	// 코인 개수 반환
+	int32 GetCoins() const;
+	// 코인 추가
+	void AddCoins(int32 Amount);
+	// 코인 차감 시도 - 성공 여부 반환
+	bool TryRemoveCoins(int32 Amount);
 };
