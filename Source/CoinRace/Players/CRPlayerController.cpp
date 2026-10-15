@@ -144,8 +144,8 @@ void ACRPlayerController::OnPossess(APawn* InPawn)
 
 void ACRPlayerController::OnRep_PlayerState()
 {
-	ACRPlayerState* PlayerState = GetPlayerState<ACRPlayerState>();
-	if (IsValid(PlayerState) == false)
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
 	{
 		return;
 	}
@@ -153,7 +153,7 @@ void ACRPlayerController::OnRep_PlayerState()
 	// PlayerState의 델리게이트 바인딩
 	TWeakObjectPtr<ACRPlayerController> WeakThis(this);
 
-	PlayerState->OnCoinsChanged.BindLambda(
+	CRPS->OnCoinsChanged.BindLambda(
 		[WeakThis](int32 NewCoins)
 		{
 			if (WeakThis.IsValid())
