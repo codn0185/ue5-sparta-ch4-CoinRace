@@ -86,6 +86,9 @@ void ACRWheeledVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// Focus Chat Input
 		EnhancedInputComponent->BindAction(FocusChatAction, ETriggerEvent::Started, this, &ThisClass::FocusChatInput);
+
+		// Attack
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ThisClass::AttackInput);
 	}
 	else
 	{
@@ -214,6 +217,11 @@ void ACRWheeledVehiclePawn::FocusChatInput(const FInputActionValue& Value)
 	}
 
 	PlayerController->FocusChatInput();
+}
+
+void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
+{
+	// TODO
 }
 
 #undef LOCTEXT_NAMESPACE
