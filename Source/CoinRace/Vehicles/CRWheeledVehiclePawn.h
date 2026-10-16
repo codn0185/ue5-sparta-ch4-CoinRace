@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "WheeledVehiclePawn.h"
 
+#include "Interfaces/CoinStealableInterface.h"
+
 #include "CRWheeledVehiclePawn.generated.h"
 
 class UCameraComponent;
@@ -15,7 +17,8 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
 
 UCLASS()
-class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn
+class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
+										   public ICoinStealableInterface
 {
 	GENERATED_BODY()
 
@@ -161,4 +164,8 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn
 	{
 		return ChaosVehicleMovement;
 	}
+
+  public:
+	// ICoinStealableInterface 인터페이스 구현
+	virtual int32 StealCoins(int32 Amount) override;
 };
