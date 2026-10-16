@@ -12,6 +12,7 @@ class USpringArmComponent;
 class UCapsuleComponent;
 class UChaosWheeledVehicleMovementComponent;
 class UInputAction;
+class UParticleSystem;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -82,6 +83,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	/** Keeps track of which camera is active */
 	bool bFrontCameraActive = false;
 
+  protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effects)
+	UParticleSystem* HitParticle;
+
   public:
 	ACRWheeledVehiclePawn();
 
@@ -133,6 +138,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	// 공격 입력함을 서버에 알림
 	UFUNCTION(Server, Reliable)
 	void ServerRPCAttack();
+
+	// 충돌 시 모든 클라이언트에게 보여야 하는 이펙트 재생
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastRPCPlayHitEffect(const FVector& HitLocation, const FVector& HitNormal);
 
 	/** Called when the brake lights are turned on or off */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Vehicle")

@@ -8,6 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystem.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
 
@@ -224,6 +226,24 @@ void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 {
 	// 서버로 공격 입력함을 알림
 	ServerRPCAttack();
+}
+
+void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVector& HitLocation, const FVector& HitNormal)
+{
+	// 클라이언트만 이펙트 재생
+	if (HasAuthority() == true)
+	{
+		return;
+	}
+
+	if (IsValid(HitParticle) == true)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticle,
+			HitLocation,
+			HitNormal.Rotation());
+	}
 }
 
 int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
