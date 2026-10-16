@@ -278,6 +278,17 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 		ECC_Visibility,
 		QueryParams);
 
+	// 디버그 라인 그리기
+	DrawDebugLine(
+		GetWorld(),
+		StartLocation,
+		EndLocation,
+		bHit ? FColor::Green : FColor::Red, // 충돌 성공: 빨간색 / 충돌 실패: 초록색
+		false,
+		2.0f,
+		0,
+		2.0f);
+
 	// 공격 성공
 	if (bHit == true)
 	{
