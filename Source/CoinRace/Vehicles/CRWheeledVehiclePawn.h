@@ -7,8 +7,9 @@
 
 class UCameraComponent;
 class USpringArmComponent;
-class UInputAction;
+class UCapsuleComponent;
 class UChaosWheeledVehicleMovementComponent;
+class UInputAction;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -125,6 +126,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn
 
 	/** 공격 입력 처리 */
 	void AttackInput(const FInputActionValue& Value);
+
+	// 공격 입력함을 서버에 알림
+	UFUNCTION(Server, Reliable)
+	void ServerRPCAttack();
 
 	/** Called when the brake lights are turned on or off */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Vehicle")

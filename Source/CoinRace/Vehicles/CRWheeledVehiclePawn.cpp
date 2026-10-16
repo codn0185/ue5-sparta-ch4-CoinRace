@@ -221,7 +221,45 @@ void ACRWheeledVehiclePawn::FocusChatInput(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 {
-	// TODO
+	// 서버로 공격 입력함을 알림
+	ServerRPCAttack();
+}
+
+void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
+{
+	// 시작 & 종료 위치
+	const FVector StartLocation = GetActorLocation() + 50 * GetActorUpVector();
+	const FVector EndLocation = StartLocation + GetActorForwardVector() * 700.f;
+
+	// 콜리전 설정
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this); // 자기 자신 무시
+
+	// 충돌 결과
+	FHitResult HitResult;
+
+	// 라인 트레이스 실행
+	const bool bHit = GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		StartLocation,
+		EndLocation,
+		ECC_Visibility,
+		QueryParams);
+
+	// 공격 성공
+	if (bHit == true)
+	{
+		// 공격 수행
+		AActor* HitActor = HitResult.GetActor();
+		if (HitResult.GetActor()->IsA(ACRWheeledVehiclePawn::StaticClass()) == true)
+		{
+			UE_LOG(LogTemp, Error, TEXT("공격 성공: %s"), *GetNameSafe(HitResult.GetActor()));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("공격 실패: %s"), *GetNameSafe(HitResult.GetActor()));
+		}
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
