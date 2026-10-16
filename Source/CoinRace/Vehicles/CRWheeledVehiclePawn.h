@@ -91,6 +91,14 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effects)
 	USoundBase* HitSound;
 
+  protected:
+	// 공격 딜레이
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float AttackCooldown = 1.f;
+
+	// 공격 쿨다운 타이머
+	FTimerHandle AttackCooldownTimerHandle;
+
   public:
 	ACRWheeledVehiclePawn();
 

@@ -321,6 +321,20 @@ void ACRWheeledVehiclePawn::PlayCoinStolenEffect(const FVector& HitLocation, con
 
 void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 {
+	UWorld* World = GetWorld();
+
+	// 공격 가능 여부 확인
+	if (World->GetTimerManager().IsTimerActive(AttackCooldownTimerHandle) == true) // 공격 쿨다운
+	{
+		return;
+	}
+
+	// 공격 쿨다운 활성화
+	World->GetTimerManager().SetTimer(
+		AttackCooldownTimerHandle,
+		AttackCooldown,
+		false);
+
 	// 시작 & 종료 위치
 	const FVector StartLocation = GetActorLocation() + 50 * GetActorUpVector();
 	const FVector EndLocation = StartLocation + GetActorForwardVector() * 700.f;
@@ -333,7 +347,7 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 	FHitResult HitResult;
 
 	// 라인 트레이스 실행
-	const bool bHit = GetWorld()->LineTraceSingleByChannel(
+	const bool bHit = World->LineTraceSingleByChannel(
 		HitResult,
 		StartLocation,
 		EndLocation,
@@ -342,7 +356,7 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 
 	// 디버그 라인 그리기
 	DrawDebugLine(
-		GetWorld(),
+		World,
 		StartLocation,
 		EndLocation,
 		bHit ? FColor::Green : FColor::Red, // 충돌 성공: 빨간색 / 충돌 실패: 초록색
