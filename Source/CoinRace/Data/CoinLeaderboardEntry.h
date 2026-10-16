@@ -12,11 +12,18 @@ struct FCoinLeaderboardEntry
 
   public:
 	// 순위
+	UPROPERTY()
 	int32 Rank = 0;
+
 	// 플레이어 ID
+	UPROPERTY()
 	int32 PlayerId = INDEX_NONE;
+
 	// 플레이어 이름
+	UPROPERTY()
 	FString PlayerName;
+
 	// 코인 수
+	UPROPERTY()
 	int32 Coins = 0;
 };
