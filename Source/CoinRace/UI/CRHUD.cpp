@@ -2,9 +2,10 @@
 
 #include "CRVehicleStatusWidget.h"
 
-#include "Chat/CRChatWidget.h"
 #include "UI/CRBonusMaxSpeedWidget.h"
 #include "UI/CRCoinWidget.h"
+#include "UI/Chat/CRChatWidget.h"
+#include "UI/CoinLeaderboard/CRCoinLeaderboardWidget.h"
 
 void UCRHUD::NativeConstruct()
 {
@@ -57,4 +58,14 @@ void UCRHUD::SetCoins(int32 Amount)
 void UCRHUD::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 {
 	BonusMaxSpeedWidget->SetBonusMaxSpeed(NewBonusMaxSpeed);
+}
+
+void UCRHUD::UpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
+{
+	CoinLeaderboardWidget->UpdateCoinLeaderboard(CoinLeaderboard);
+}
+
+void UCRHUD::ClearCoinLeaderboard()
+{
+	CoinLeaderboardWidget->ClearCoinLeaderboard();
 }

@@ -8,6 +8,7 @@
 #include "CRHUD.generated.h"
 
 struct FChatData;
+struct FCoinLeaderboardEntry;
 
 // 채팅 입력 커밋 시 메시지를 송출하는 델리게이트
 DECLARE_DELEGATE_OneParam(
@@ -40,6 +41,10 @@ class COINRACE_API UCRHUD : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCRBonusMaxSpeedWidget> BonusMaxSpeedWidget;
 
+	// UCRCoinLeaderboardWidget - 코인 리더보드 UI
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCRCoinLeaderboardWidget> CoinLeaderboardWidget;
+
   protected:
 	// UI에 표시할 속도 단위
 	FSpeedUnit UISpeedUnit = SpeedUnit::KPH;
@@ -68,4 +73,9 @@ class COINRACE_API UCRHUD : public UUserWidget
 
 	// UCRBonusMaxSpeedWidget 보너스 최대 속도 설정
 	void SetBonusMaxSpeed(float NewBonusMaxSpeed);
+
+	// UCRCoinLeaderboardWidget 코인 리더보드 업데이트
+	void UpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard);
+	// UCRCoinLeaderboardWidget 코인 리더보드 초기화
+	void ClearCoinLeaderboard();
 };

@@ -76,7 +76,7 @@ void ACRPlayerController::ServerRPCOnCoinsUpdated_Implementation(const int32 New
 
 void ACRPlayerController::ClientRPCUpdateCoinLeaderboard_Implementation(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
 {
-	// TODO: 코인 리더보드 위젯에 업데이트
+	VehicleUI->UpdateCoinLeaderboard(CoinLeaderboard);
 }
 
 void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
