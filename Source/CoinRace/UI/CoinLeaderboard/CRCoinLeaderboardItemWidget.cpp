@@ -19,7 +19,7 @@ void UCRCoinLeaderboardItemWidget::NativeOnListItemObjectSet(UObject* ListItemOb
 	// TextBlock_Rank 위젯 설정
 	TextBlock_Rank->SetText(FText::AsNumber(CoinLeaderboardData.Rank));
 	// TextBlock_PlayerName 위젯 설정
-	TextBlock_Rank->SetText(FText::FromString(CoinLeaderboardData.PlayerName));
+	TextBlock_PlayerName->SetText(FText::FromString(CoinLeaderboardData.PlayerName));
 	// TextBlock_Coins 위젯 설정
-	TextBlock_Rank->SetText(FText::AsNumber(CoinLeaderboardData.Coins));
+	TextBlock_Coins->SetText(FText::AsNumber(CoinLeaderboardData.Coins));
 }
