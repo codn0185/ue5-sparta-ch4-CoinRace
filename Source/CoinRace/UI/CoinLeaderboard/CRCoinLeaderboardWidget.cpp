@@ -5,18 +5,17 @@
 
 void UCRCoinLeaderboardWidget::UpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
 {
-	UCRCoinLeaderboardItem* CoinLeaderboardItem = NewObject<UCRCoinLeaderboardItem>(this);
-	if (IsValid(CoinLeaderboardItem) == false)
-	{
-		return;
-	}
 
 	ClearCoinLeaderboard();
 
 	for (const FCoinLeaderboardEntry& CoinLeaderboardData : CoinLeaderboard)
 	{
-		CoinLeaderboardItem->SetCoinLeaderboardData(CoinLeaderboardData);
-		ListView_CoinLeaderboard->AddItem(CoinLeaderboardItem);
+		UCRCoinLeaderboardItem* CoinLeaderboardItem = NewObject<UCRCoinLeaderboardItem>(this);
+		if (IsValid(CoinLeaderboardItem) == true)
+		{
+			CoinLeaderboardItem->SetCoinLeaderboardData(CoinLeaderboardData);
+			ListView_CoinLeaderboard->AddItem(CoinLeaderboardItem);
+		}
 	}
 }
 
