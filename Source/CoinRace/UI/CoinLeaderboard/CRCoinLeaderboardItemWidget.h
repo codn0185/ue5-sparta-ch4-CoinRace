@@ -8,6 +8,7 @@
 #include "CRCoinLeaderboardItemWidget.generated.h"
 
 class UTextBlock;
+class UBorder;
 
 UCLASS()
 class COINRACE_API UCRCoinLeaderboardItemWidget : public UUserWidget, public IUserObjectListEntry
@@ -26,6 +27,14 @@ class COINRACE_API UCRCoinLeaderboardItemWidget : public UUserWidget, public IUs
 	// 코인 개수
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_Coins;
+
+	// 일반 배경
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UBorder> Border_NormalBackground;
+
+	// 하이라이트 배경
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UBorder> Border_HighlightBackground;
 
   protected:
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
