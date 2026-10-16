@@ -29,4 +29,8 @@ class COINRACE_API UCoinLeaderboardWorldSubsystem : public UWorldSubsystem
 	void RemovePlayerFromCoinLeaderboard(const int32 PlayerId);
 	// 코인 리더보드 업데이트
 	void UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCoins);
+
+  protected:
+	// 리더보드 순위 갱신
+	void RefreshCoinLeaderboardRanks();
 };

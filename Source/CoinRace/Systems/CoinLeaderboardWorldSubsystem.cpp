@@ -21,20 +21,16 @@ void UCoinLeaderboardWorldSubsystem::AddPlayerToCoinLeaderboard(const int32 Play
 
 	// 코인 리더보드 항목 생성
 	FCoinLeaderboardEntry NewEntry;
-	NewEntry.Rank = CoinLeaderboard.Num() + 1;
 	NewEntry.PlayerId = PlayerId;
 	NewEntry.PlayerName = PlayerName;
 	NewEntry.Coins = 0;
 
-	// 동점 시 공동 순위 설정
-	if (CoinLeaderboard.IsEmpty() == false && CoinLeaderboard.Last().Coins == NewEntry.Coins)
-	{
-		NewEntry.Rank = CoinLeaderboard.Last().Rank;
-	}
-
 	// 새 항목 추가
-	CoinLeaderboard.Add(NewEntry);
-	CoinLeaderboardIndexMap.Add(PlayerId, CoinLeaderboard.Num() - 1);
+	const int32 NewIndex = CoinLeaderboard.Add(NewEntry);
+	CoinLeaderboardIndexMap.Add(PlayerId, NewIndex);
+
+	// 순위 갱신
+	RefreshCoinLeaderboardRanks();
 }
 
 void UCoinLeaderboardWorldSubsystem::RemovePlayerFromCoinLeaderboard(const int32 PlayerId)
@@ -52,22 +48,14 @@ void UCoinLeaderboardWorldSubsystem::RemovePlayerFromCoinLeaderboard(const int32
 	CoinLeaderboard.RemoveAt(RemoveIndex);
 	CoinLeaderboardIndexMap.Remove(PlayerId);
 
-	// 순위 및 인덱스 갱신
+	// 뒷 순위 인덱스 갱신
 	for (int32 Index = RemoveIndex; Index < CoinLeaderboard.Num(); ++Index)
 	{
-		// 동점자는 같은 순위
-		if (Index > 0 && CoinLeaderboard[Index].Coins == CoinLeaderboard[Index - 1].Coins)
-		{
-			CoinLeaderboard[Index].Rank = CoinLeaderboard[Index - 1].Rank;
-		}
-		else
-		{
-			CoinLeaderboard[Index].Rank = Index + 1;
-		}
-
-		// 인덱스 갱신
 		CoinLeaderboardIndexMap[CoinLeaderboard[Index].PlayerId] = Index;
 	}
+
+	// 순위 갱신
+	RefreshCoinLeaderboardRanks();
 }
 
 void UCoinLeaderboardWorldSubsystem::UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCoins)
@@ -91,7 +79,7 @@ void UCoinLeaderboardWorldSubsystem::UpdateCoinLeaderboard(const int32 PlayerId,
 		const int32 PreviousIndex = CurrentIndex - 1;
 
 		// 이전 플레이어보다 코인이 많지 않으면 이동 종료
-		if (CoinLeaderboard[CurrentIndex].Coins <= CoinLeaderboard[PreviousIndex].Coins)
+		if (CoinLeaderboard[CurrentIndex].Coins < CoinLeaderboard[PreviousIndex].Coins)
 		{
 			break;
 		}
@@ -99,26 +87,9 @@ void UCoinLeaderboardWorldSubsystem::UpdateCoinLeaderboard(const int32 PlayerId,
 		// 플레이어 교체
 		CoinLeaderboard.Swap(CurrentIndex, PreviousIndex);
 
-		// 교체된 플레이어 참조
-		FCoinLeaderboardEntry& CurrentEntry = CoinLeaderboard[CurrentIndex];
-		FCoinLeaderboardEntry& PreviousEntry = CoinLeaderboard[PreviousIndex];
-
-		// 이동한 플레이어의 공동 순위 갱신
-		if (PreviousIndex > 0 && PreviousEntry.Coins == CoinLeaderboard[PreviousIndex - 1].Coins)
-		{
-			PreviousEntry.Rank = CoinLeaderboard[PreviousIndex - 1].Rank;
-		}
-		else
-		{
-			PreviousEntry.Rank = PreviousIndex + 1;
-		}
-
-		// 밀려난 플레이어의 순위 갱신
-		CurrentEntry.Rank = CurrentIndex + 1;
-
 		// 인덱스 갱신
-		CoinLeaderboardIndexMap[CurrentEntry.PlayerId] = CurrentIndex;
-		CoinLeaderboardIndexMap[PreviousEntry.PlayerId] = PreviousIndex;
+		CoinLeaderboardIndexMap[CoinLeaderboard[CurrentIndex].PlayerId] = CurrentIndex;
+		CoinLeaderboardIndexMap[CoinLeaderboard[PreviousIndex].PlayerId] = PreviousIndex;
 
 		--CurrentIndex;
 	}
@@ -130,7 +101,7 @@ void UCoinLeaderboardWorldSubsystem::UpdateCoinLeaderboard(const int32 PlayerId,
 		const int32 NextIndex = CurrentIndex + 1;
 
 		// 다음 플레이어보다 코인이 적지 않으면 이동 종료
-		if (CoinLeaderboard[CurrentIndex].Coins >= CoinLeaderboard[NextIndex].Coins)
+		if (CoinLeaderboard[CurrentIndex].Coins > CoinLeaderboard[NextIndex].Coins)
 		{
 			break;
 		}
@@ -138,27 +109,29 @@ void UCoinLeaderboardWorldSubsystem::UpdateCoinLeaderboard(const int32 PlayerId,
 		// 플레이어 교체
 		CoinLeaderboard.Swap(CurrentIndex, NextIndex);
 
-		// 교체된 플레이어 참조
-		FCoinLeaderboardEntry& CurrentEntry = CoinLeaderboard[CurrentIndex];
-		FCoinLeaderboardEntry& NextEntry = CoinLeaderboard[NextIndex];
+		// 인덱스 갱신
+		CoinLeaderboardIndexMap[CoinLeaderboard[CurrentIndex].PlayerId] = CurrentIndex;
+		CoinLeaderboardIndexMap[CoinLeaderboard[NextIndex].PlayerId] = NextIndex;
 
-		// 앞으로 이동한 플레이어의 공동 순위 갱신
-		if (CurrentIndex > 0 && CurrentEntry.Coins == CoinLeaderboard[CurrentIndex - 1].Coins)
+		++CurrentIndex;
+	}
+
+	// 순위 갱신
+	RefreshCoinLeaderboardRanks();
+}
+
+void UCoinLeaderboardWorldSubsystem::RefreshCoinLeaderboardRanks()
+{
+	for (int32 Index = 0; Index < CoinLeaderboard.Num(); ++Index)
+	{
+		// 동점이면 같은 순위
+		if (Index > 0 && CoinLeaderboard[Index].Coins == CoinLeaderboard[Index - 1].Coins)
 		{
-			CurrentEntry.Rank = CoinLeaderboard[CurrentIndex - 1].Rank;
+			CoinLeaderboard[Index].Rank = CoinLeaderboard[Index - 1].Rank;
 		}
 		else
 		{
-			CurrentEntry.Rank = CurrentIndex + 1;
+			CoinLeaderboard[Index].Rank = Index + 1;
 		}
-
-		// 뒤로 이동한 플레이어의 순위 갱신
-		NextEntry.Rank = NextIndex + 1;
-
-		// 인덱스 갱신
-		CoinLeaderboardIndexMap[CurrentEntry.PlayerId] = CurrentIndex;
-		CoinLeaderboardIndexMap[NextEntry.PlayerId] = NextIndex;
-
-		++CurrentIndex;
 	}
 }
