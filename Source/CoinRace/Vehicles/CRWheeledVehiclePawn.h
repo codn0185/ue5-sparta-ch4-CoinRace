@@ -141,7 +141,7 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 
 	// 충돌 시 모든 클라이언트에게 보여야 하는 이펙트 재생
 	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastRPCPlayHitEffect(const FVector& HitLocation, const FVector& HitNormal);
+	void MulticastRPCPlayCoinStolenEffect(const FVector& HitLocation, const FVector& HitNormal);
 
 	/** Called when the brake lights are turned on or off */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Vehicle")

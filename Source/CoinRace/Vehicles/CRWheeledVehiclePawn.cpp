@@ -228,7 +228,7 @@ void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 	ServerRPCAttack();
 }
 
-void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVector& HitLocation, const FVector& HitNormal)
+void ACRWheeledVehiclePawn::MulticastRPCPlayCoinStolenEffect_Implementation(const FVector& HitLocation, const FVector& HitNormal)
 {
 	// 클라이언트만 이펙트 재생
 	if (HasAuthority() == true)
