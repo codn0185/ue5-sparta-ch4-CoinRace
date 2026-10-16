@@ -69,7 +69,7 @@ bool ACRPlayerState::TryRemoveCoins(int32 Amount)
 		return false;
 	}
 
-	if (Amount <= 0 || Coins <= Amount)
+	if (Amount <= 0 || Coins < Amount)
 	{
 		return false;
 	}
