@@ -279,6 +279,7 @@ int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
 
 void ACRWheeledVehiclePawn::PlayCoinStolenEffect(const FVector& HitLocation, const FVector& HitNormal)
 {
+	MulticastRPCPlayCoinStolenEffect(HitLocation, HitNormal);
 }
 
 void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
