@@ -244,6 +244,32 @@ void ACRWheeledVehiclePawn::MulticastRPCPlayCoinStolenEffect_Implementation(cons
 			HitLocation,
 			HitNormal.Rotation());
 	}
+	else
+	{
+		// 충돌 위치 표시
+		DrawDebugSphere(
+			GetWorld(),
+			HitLocation,
+			15.0f,
+			12,
+			FColor::Red,
+			false,
+			3.0f,
+			0,
+			2.0f);
+
+		// 충돌 노멀 방향 표시
+		DrawDebugDirectionalArrow(
+			GetWorld(),
+			HitLocation,
+			HitLocation + HitNormal * 100.0f,
+			20.0f,
+			FColor::Yellow,
+			false,
+			3.0f,
+			0,
+			2.0f);
+	}
 }
 
 int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
@@ -328,6 +354,9 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 		{
 			// 코인 빼앗기
 			const int32 StolenCoins = CoinStealable->StealCoins(5);
+
+			// 피격 이펙트 재생
+			CoinStealable->PlayCoinStolenEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
 
 			// 빼앗은 코인 추가
 			if (StolenCoins > 0)
