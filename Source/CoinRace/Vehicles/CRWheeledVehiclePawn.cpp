@@ -228,6 +228,12 @@ void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 
 int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return 0;
+	}
+
 	// ACRPlayerState 검증
 	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
 	if (IsValid(CRPS) == false)
