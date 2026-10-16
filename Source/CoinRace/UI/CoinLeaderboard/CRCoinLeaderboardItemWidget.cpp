@@ -1,5 +1,6 @@
 ﻿#include "CRCoinLeaderboardItemWidget.h"
 
+#include "Components/Border.h"
 #include "Components/TextBlock.h"
 #include "UI/CoinLeaderboard/CRCoinLeaderboardItem.h"
 
@@ -22,4 +23,16 @@ void UCRCoinLeaderboardItemWidget::NativeOnListItemObjectSet(UObject* ListItemOb
 	TextBlock_PlayerName->SetText(FText::FromString(CoinLeaderboardData.PlayerName));
 	// TextBlock_Coins 위젯 설정
 	TextBlock_Coins->SetText(FText::AsNumber(CoinLeaderboardData.Coins));
+
+	// 배경 설정
+	if (CoinLeaderboardItem->IsOwner() == true) // 하이라이트 On
+	{
+		Border_NormalBackground->SetVisibility(ESlateVisibility::Hidden);
+		Border_HighlightBackground->SetVisibility(ESlateVisibility::Visible);
+	}
+	else // 하이라이트 Off
+	{
+		Border_NormalBackground->SetVisibility(ESlateVisibility::Visible);
+		Border_HighlightBackground->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
