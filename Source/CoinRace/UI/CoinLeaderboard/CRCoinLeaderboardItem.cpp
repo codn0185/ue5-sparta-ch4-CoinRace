@@ -9,3 +9,13 @@ void UCRCoinLeaderboardItem::SetCoinLeaderboardData(FCoinLeaderboardEntry InCoin
 {
 	CoinLeaderboardData = InCoinLeaderboardData;
 }
+
+bool UCRCoinLeaderboardItem::IsOwner() const
+{
+	return bIsOwner;
+}
+
+void UCRCoinLeaderboardItem::SetIsOwner(bool bInIsOwner)
+{
+	bIsOwner = bInIsOwner;
+}
