@@ -12,6 +12,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
+#include "Sound/SoundBase.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -236,6 +237,7 @@ void ACRWheeledVehiclePawn::MulticastRPCPlayCoinStolenEffect_Implementation(cons
 		return;
 	}
 
+	// 파티클 재생
 	if (IsValid(HitParticle) == true)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(
@@ -269,6 +271,15 @@ void ACRWheeledVehiclePawn::MulticastRPCPlayCoinStolenEffect_Implementation(cons
 			3.0f,
 			0,
 			2.0f);
+	}
+
+	// 사운드 재생
+	if (IsValid(HitSound) == true)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			GetWorld(),
+			HitSound,
+			HitLocation);
 	}
 }
 

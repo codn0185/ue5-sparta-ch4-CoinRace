@@ -84,8 +84,12 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	bool bFrontCameraActive = false;
 
   protected:
+	// 충돌 파티클
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effects)
 	UParticleSystem* HitParticle;
+	// 충돌 사운드
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effects)
+	USoundBase* HitSound;
 
   public:
 	ACRWheeledVehiclePawn();
