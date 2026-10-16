@@ -1,6 +1,5 @@
 ﻿#include "CoinLeaderboardWorldSubsystem.h"
 
-
 void UCoinLeaderboardWorldSubsystem::ServerRPCClearCoinLeaderboard_Implementation()
 {
 	// GameMode가 호출
@@ -17,7 +16,6 @@ void UCoinLeaderboardWorldSubsystem::ServerRPCRemovePlayerFromCoinLeaderboard_Im
 void UCoinLeaderboardWorldSubsystem::ServerRPCUpdateCoinLeaderboard_Implementation(const int32 PlayerId, const int32 NewCoins)
 {
 }
-
 
 void UCoinLeaderboardWorldSubsystem::ClientRPCClearCoinLeaderboard_Implementation()
 {
