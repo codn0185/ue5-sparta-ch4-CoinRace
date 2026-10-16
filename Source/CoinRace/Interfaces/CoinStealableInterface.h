@@ -17,6 +17,9 @@ class COINRACE_API ICoinStealableInterface
 	GENERATED_BODY()
 
   public:
-	// 빼앗을 코인 수를 전달하고, 실제로 빼앗은 코인 수를 반환
+	// 코인을 빼앗기고, 실제로 빼앗긴 수량을 반환
 	virtual int32 StealCoins(int32 Amount) = 0;
+
+	// 코인을 빼앗길 때 이펙트 재생
+	virtual void PlayCoinStolenEffect(const FVector& HitLocation, const FVector& HitNormal) = 0;
 };

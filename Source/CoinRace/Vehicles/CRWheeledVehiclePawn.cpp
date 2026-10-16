@@ -277,6 +277,10 @@ int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
 	return Amount;
 }
 
+void ACRWheeledVehiclePawn::PlayCoinStolenEffect(const FVector& HitLocation, const FVector& HitNormal)
+{
+}
+
 void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 {
 	// 시작 & 종료 위치
