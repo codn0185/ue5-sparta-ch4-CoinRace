@@ -44,5 +44,11 @@ class ACRGameMode : public AGameModeBase
 
   public:
 	// 채팅 입력 시 호출되어 모든 플레이어에게 전달
-	void BroadcastChatMessage(ACRPlayerController* SenderController, const FString& ChatMessage);
+	void BroadcastChatMessage(ACRPlayerController* SenderController, const FString& ChatMessage) const;
+
+	// 코인 개수 변경 시 호출해서 코인 리더보드 업데이트
+	void UpdateCoinLeaderboard(ACRPlayerController* Player, const int32 NewCoins) const;
+
+	// 코인 리더보드 업데이트 시 호출되어 모든 플레이어게 전달
+	void BroadcastCoinLeaderboardUpdate() const;
 };

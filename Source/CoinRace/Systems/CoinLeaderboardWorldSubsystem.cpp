@@ -1,5 +1,40 @@
 ﻿#include "CoinLeaderboardWorldSubsystem.h"
 
+
+void UCoinLeaderboardWorldSubsystem::ServerRPCClearCoinLeaderboard_Implementation()
+{
+	// GameMode가 호출
+}
+
+void UCoinLeaderboardWorldSubsystem::ServerRPCAddPlayerToCoinLeaderboard_Implementation(const int32 PlayerId, const FString& PlayerName)
+{
+}
+
+void UCoinLeaderboardWorldSubsystem::ServerRPCRemovePlayerFromCoinLeaderboard_Implementation(const int32 PlayerId)
+{
+}
+
+void UCoinLeaderboardWorldSubsystem::ServerRPCUpdateCoinLeaderboard_Implementation(const int32 PlayerId, const int32 NewCoins)
+{
+}
+
+
+void UCoinLeaderboardWorldSubsystem::ClientRPCClearCoinLeaderboard_Implementation()
+{
+}
+
+void UCoinLeaderboardWorldSubsystem::ClientRPCUpdateCoinLeaderboard_Implementation(const int32 PlayerId, const int32 NewCoins)
+{
+}
+
+void UCoinLeaderboardWorldSubsystem::ClientRPCRemovePlayerFromCoinLeaderboard_Implementation(const int32 PlayerId)
+{
+}
+
+void UCoinLeaderboardWorldSubsystem::ClientRPCAddPlayerToCoinLeaderboard_Implementation(const int32 PlayerId, const FString& PlayerName)
+{
+}
+
 const TArray<FCoinLeaderboardEntry>& UCoinLeaderboardWorldSubsystem::GetCoinLeaderboard() const
 {
 	return CoinLeaderboard;

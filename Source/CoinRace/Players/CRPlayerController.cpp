@@ -57,6 +57,28 @@ void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChat
 	}
 }
 
+void ACRPlayerController::ServerRPCOnCoinsUpdated_Implementation(const int32 NewCoins)
+{
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this);
+	if (IsValid(GameMode) == false)
+	{
+		return;
+	}
+
+	ACRGameMode* CRGameMode = Cast<ACRGameMode>(GameMode);
+	if (IsValid(CRGameMode) == false)
+	{
+		return;
+	}
+
+	CRGameMode->UpdateCoinLeaderboard(this, NewCoins);
+}
+
+void ACRPlayerController::ClientRPCUpdateCoinLeaderboard_Implementation(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
+{
+	// TODO: 코인 리더보드 위젯에 업데이트
+}
+
 void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
 {
 	// GameMode에 플레이어 초기화 완료 알림
@@ -159,6 +181,7 @@ void ACRPlayerController::OnRep_PlayerState()
 			if (WeakThis.IsValid())
 			{
 				WeakThis->VehicleUI->SetCoins(NewCoins);
+				WeakThis->ServerRPCOnCoinsUpdated(NewCoins);
 			}
 		});
 

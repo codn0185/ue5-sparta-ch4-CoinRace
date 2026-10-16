@@ -10,6 +10,7 @@ class UInputMappingContext;
 class ACRWheeledVehiclePawn;
 class UCRHUD;
 struct FChatData;
+struct FCoinLeaderboardEntry;
 
 UCLASS()
 class COINRACE_API ACRPlayerController : public APlayerController
@@ -53,6 +54,13 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	// 서버로부터 채팅 로그를 받아 동기화
 	UFUNCTION(Client, Reliable)
 	void ClientRPCSyncChatLog(const TArray<FChatData>& ChatLog);
+
+	// 코인 개수 변경 시 호출되어, 플레이어의 코인 개수가 변경됨을 서버에 알림
+	UFUNCTION(Server, Reliable)
+	void ServerRPCOnCoinsUpdated(const int32 NewCoins);
+	// 서버로부터 코인 리더보드를 받아 업데이트
+	UFUNCTION(Client, Reliable)
+	void ClientRPCUpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard);
 
   protected:
 	// BeginPlay() 직후 호출되어, 플레이어가 준비됨을 서버에 알림
