@@ -13,7 +13,7 @@ class COINRACE_API ACoinItem : public AItemBase
 
   protected:
 	// 획득할 코인 수량
-	UPROPERTY(EditAnywhere, Category = "Item|Properties")
+	UPROPERTY(EditAnywhere, Category = "Item|Properties", meta = (ClampMin = "0", UIMin = "0"))
 	int32 Coins = 10;
 
   protected:
