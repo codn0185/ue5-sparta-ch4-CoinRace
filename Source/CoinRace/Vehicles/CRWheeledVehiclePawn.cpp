@@ -319,6 +319,32 @@ void ACRWheeledVehiclePawn::PlayCoinStolenEffect(const FVector& HitLocation, con
 	MulticastRPCPlayCoinStolenEffect(HitLocation, HitNormal);
 }
 
+void ACRWheeledVehiclePawn::AddCoins(int32 Amount)
+{
+	// ACRPlayerState 검증
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return;
+	}
+
+	// 코인 추가
+	CRPS->AddCoins(Amount);
+}
+
+void ACRWheeledVehiclePawn::AddBonusMaxSpeed(float Amount)
+{
+	// ACRPlayerState 검증
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return;
+	}
+
+	// 추가 최대 속도 증가
+	CRPS->AddBonusMaxSpeed(Amount);
+}
+
 void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 {
 	UWorld* World = GetWorld();

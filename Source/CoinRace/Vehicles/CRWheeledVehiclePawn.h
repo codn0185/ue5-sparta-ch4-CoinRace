@@ -4,6 +4,7 @@
 #include "WheeledVehiclePawn.h"
 
 #include "Interfaces/CoinStealableInterface.h"
+#include "Interfaces/ItemEffectReceiverInterface.h"
 
 #include "CRWheeledVehiclePawn.generated.h"
 
@@ -19,7 +20,8 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
 
 UCLASS()
 class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
-										   public ICoinStealableInterface
+										   public ICoinStealableInterface,
+										   public IItemEffectReceiverInterface
 {
 	GENERATED_BODY()
 
@@ -192,4 +194,11 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	virtual int32 StealCoins(int32 Amount) override;
 	// 코인을 빼앗길 때 이펙트 재생
 	virtual void PlayCoinStolenEffect(const FVector& HitLocation, const FVector& HitNormal) override;
+
+  public:
+	/** IItemEffectReceiverInterface 인터페이스 구현 */
+	// 코인 추가
+	virtual void AddCoins(int32 Amount) override;
+	// 추가 최대 속도 증가
+	virtual void AddBonusMaxSpeed(float Amount) override;
 };
