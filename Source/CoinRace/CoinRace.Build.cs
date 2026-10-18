@@ -12,6 +12,8 @@ public class CoinRace : ModuleRules
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
 
 			"UMG", "SlateCore",
+
+			"Niagara",
 		});
 
 		PublicIncludePaths.Add(ModuleDirectory);

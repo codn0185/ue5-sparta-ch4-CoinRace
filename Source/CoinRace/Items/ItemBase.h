@@ -25,9 +25,13 @@ class COINRACE_API AItemBase : public AActor
 	TObjectPtr<USphereComponent> SphereComp;
 
   protected:
-	// 아이템 획득 파티클
+	// 아이템 획득 Cascade 파티클
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item|Effects")
 	TObjectPtr<UParticleSystem> PickupParticle;
+
+	// 아이템 획득 Niagara 시스템
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item|Effects")
+	TObjectPtr<class UNiagaraSystem> PickupNiagara;
 
 	// 아이템 획득 사운드
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item|Effects")

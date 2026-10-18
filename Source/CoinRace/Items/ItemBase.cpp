@@ -1,5 +1,8 @@
 ﻿#include "ItemBase.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
+
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -55,13 +58,23 @@ void AItemBase::MulticastRPCPlayPickupEffect_Implementation()
 
 	UWorld* World = GetWorld();
 
-	// 파티클 재생
+	// Cascade 파티클 재생
 	if (IsValid(PickupParticle) == true)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(
 			World,
 			PickupParticle,
 			GetActorLocation());
+	}
+
+	// Niagara 시스템 재생
+	if (IsValid(PickupNiagara) == true)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			World,
+			PickupNiagara,
+			GetActorLocation(),
+			FRotator::ZeroRotator);
 	}
 
 	// 사운드 재생
