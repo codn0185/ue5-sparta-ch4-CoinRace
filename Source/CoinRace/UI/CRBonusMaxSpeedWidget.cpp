@@ -27,7 +27,7 @@ void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 	// 텍스트 변환 설정
 	FNumberFormattingOptions Options;
 	Options.SetRoundingMode(ERoundingMode::HalfFromZero); // 반올림
-	Options.SetMaximumFractionalDigits(0);                // 소수점 표시 X
+	Options.SetMaximumFractionalDigits(2);                // 소수점 2자리 표시
 
 	TextBlock_SpeedValue->SetText(FText::AsNumber(
 		UISpeedUnit.ConvertSpeed(FMath::Abs(CurrentBonusMaxSpeed)), // 단위에 맞춰 속도 값 변환
