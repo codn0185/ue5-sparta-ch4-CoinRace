@@ -45,7 +45,7 @@ class COINRACE_API AItemBase : public AActor
 		PURE_VIRTUAL(ThisClass::Apply); // 순수가상함수
 
 	// 모든 클라이언트에 아이템 획득 이펙트 재생
-	UFUNCTION(NetMulticast, Unreliable)
+	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPCPlayPickupEffect();
 
   protected:
