@@ -24,19 +24,6 @@ void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 	// 현재 보너스 최대 속도 설정
 	CurrentBonusMaxSpeed = NewBonusMaxSpeed;
 
-	// 보너스 없음 -> 숨기기
-	if (CurrentBonusMaxSpeed <= 0)
-	{
-		SetVisibility(ESlateVisibility::Hidden);
-		return;
-	}
-
-	// 현재 보너스 최대 속도 설정
-	CurrentBonusMaxSpeed = NewBonusMaxSpeed;
-
-	// 보너스 적용 -> 표시하기
-	SetVisibility(ESlateVisibility::Visible);
-
 	// 텍스트 변환 설정
 	FNumberFormattingOptions Options;
 	Options.SetRoundingMode(ERoundingMode::HalfFromZero); // 반올림

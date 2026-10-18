@@ -58,6 +58,12 @@ void UCRHUD::SetCoins(int32 Amount)
 void UCRHUD::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 {
 	BonusMaxSpeedWidget->SetBonusMaxSpeed(NewBonusMaxSpeed);
+
+	// 0 이하면 숨기기
+	BonusMaxSpeedWidget->SetVisibility(
+		NewBonusMaxSpeed > 0.f
+			? ESlateVisibility::Visible
+			: ESlateVisibility::Hidden);
 }
 
 void UCRHUD::UpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
