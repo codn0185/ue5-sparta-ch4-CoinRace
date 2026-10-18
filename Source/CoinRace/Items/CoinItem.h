@@ -12,6 +12,7 @@ class COINRACE_API ACoinItem : public AItemBase
 	GENERATED_BODY()
 
   protected:
+	// 획득할 코인 수량
 	UPROPERTY(EditAnywhere, Category = "Item|Properties")
 	int32 Coins = 10;
 
