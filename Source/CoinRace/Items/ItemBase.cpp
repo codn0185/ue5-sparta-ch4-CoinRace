@@ -18,6 +18,7 @@ AItemBase::AItemBase()
 	// StaticMeshComp 생성
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComp"));
 	SetRootComponent(StaticMeshComp);
+	StaticMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 콜리전 제거
 
 	// SphereComp 생성
 	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
