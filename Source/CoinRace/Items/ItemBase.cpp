@@ -49,7 +49,7 @@ void AItemBase::MulticastRPCPlayPickupEffect_Implementation()
 	// 클라이언트에서만 재생
 	if (HasAuthority() == true)
 	{
-		true;
+		return;
 	}
 
 	UWorld* World = GetWorld();
