@@ -105,6 +105,16 @@ void AItemBase::OnBeginOverlap(
 	if (IItemEffectReceiverInterface* Target = Cast<IItemEffectReceiverInterface>(Other))
 	{
 		// 아이템 효과 적용
-		Apply(Target);
+		bool bSuccess = Apply(Target);
+
+		// 획득 성공 후 처리
+		if (bSuccess == true)
+		{
+			// 효과 재생
+			MulticastRPCPlayPickupEffect();
+
+			// 아이템 제거
+			Destroy();
+		}
 	}
 }

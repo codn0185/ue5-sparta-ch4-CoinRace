@@ -44,9 +44,9 @@ class COINRACE_API AItemBase : public AActor
 	virtual void BeginPlay() override;
 
   protected:
-	// 아이템 효과 적용
-	virtual void Apply(IItemEffectReceiverInterface* Target)
-		PURE_VIRTUAL(ThisClass::Apply); // 순수가상함수
+	// 아이템 효과 적용 (성공 여부 반환)
+	virtual bool Apply(IItemEffectReceiverInterface* Target)
+		PURE_VIRTUAL(ThisClass::Apply, return false;); // 순수가상함수
 
 	// 모든 클라이언트에 아이템 획득 이펙트 재생
 	UFUNCTION(NetMulticast, Reliable)

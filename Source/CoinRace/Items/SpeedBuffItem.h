@@ -18,5 +18,5 @@ class COINRACE_API ASpeedBuffItem : public AItemBase
 
   protected:
 	// 아이템 효과 적용
-	virtual void Apply(IItemEffectReceiverInterface* Target) override;
+	virtual bool Apply(IItemEffectReceiverInterface* Target) override;
 };
