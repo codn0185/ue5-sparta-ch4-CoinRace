@@ -11,6 +11,10 @@ void UCRHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// UI 초기 상태 설정
+	SetCoins(0);
+	SetBonusMaxSpeed(0.f);
+
 	// 채팅 입력 커밋 델리게이트 바인딩
 	ChatWidget->OnChatMessageSubmitted.BindLambda(
 		[this](const FString& Message)
