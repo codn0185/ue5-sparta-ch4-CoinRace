@@ -26,11 +26,11 @@ class COINRACE_API AItemBase : public AActor
 
   protected:
 	// 아이템 획득 파티클
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Effects")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item|Effects")
 	TObjectPtr<UParticleSystem> PickupParticle;
 
 	// 아이템 획득 사운드
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Effects")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item|Effects")
 	TObjectPtr<USoundBase> PickupSound;
 
   public:
