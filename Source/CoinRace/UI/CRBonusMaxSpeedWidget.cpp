@@ -21,8 +21,11 @@ void UCRBonusMaxSpeedWidget::SetSpeedUnit(const FSpeedUnit& NewSpeedUnit)
 
 void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 {
+	// 현재 보너스 최대 속도 설정
+	CurrentBonusMaxSpeed = NewBonusMaxSpeed;
+
 	// 보너스 없음 -> 숨기기
-	if (NewBonusMaxSpeed <= 0)
+	if (CurrentBonusMaxSpeed <= 0)
 	{
 		SetVisibility(ESlateVisibility::Hidden);
 		return;
