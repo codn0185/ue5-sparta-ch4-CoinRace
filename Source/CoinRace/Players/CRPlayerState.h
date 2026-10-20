@@ -9,12 +9,12 @@
 // Coins 변경 시 실행되는 델리게이트
 DECLARE_DELEGATE_OneParam(
 	FOnCoinsChanged,
-	const int32&);
+	int32);
 
 // BonusMaxSpeed 변경 시 실행되는 델리게이트
 DECLARE_DELEGATE_OneParam(
 	FOnBonusMaxSpeedChanged,
-	const float&);
+	float);
 
 UCLASS()
 class COINRACE_API ACRPlayerState : public APlayerState
