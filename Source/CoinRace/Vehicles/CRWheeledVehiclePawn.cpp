@@ -307,8 +307,15 @@ int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
 		return 0;
 	}
 
+	// ACRPlayerController 검증
+	ACRPlayerController* CRPC = GetController<ACRPlayerController>();
+	if (IsValid(CRPC) == false)
+	{
+		return 0;
+	}
+
 	// 코인 감소
-	CRPS->ServerRPCRemoveCoins(Amount);
+	CRPC->ServerRPCRemoveCoins(Amount);
 
 	// 빼앗긴 코인 반환
 	return Amount;
@@ -321,28 +328,28 @@ void ACRWheeledVehiclePawn::PlayCoinStolenEffect(const FVector& HitLocation, con
 
 void ACRWheeledVehiclePawn::AddCoins(int32 Amount)
 {
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// ACRPlayerController 검증
+	ACRPlayerController* CRPC = GetController<ACRPlayerController>();
+	if (IsValid(CRPC) == false)
 	{
 		return;
 	}
 
 	// 코인 추가
-	CRPS->AddCoins(Amount);
+	CRPC->ServerRPCAddCoins(Amount);
 }
 
 void ACRWheeledVehiclePawn::AddBonusMaxSpeed(float Amount)
 {
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// ACRPlayerController 검증
+	ACRPlayerController* CRPC = GetController<ACRPlayerController>();
+	if (IsValid(CRPC) == false)
 	{
 		return;
 	}
 
 	// 추가 최대 속도 증가
-	CRPS->AddBonusMaxSpeed(Amount);
+	CRPC->ServerRPCAddBonusMaxSpeed(Amount);
 }
 
 void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
@@ -394,9 +401,9 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 	// 공격 성공
 	if (bHit == true)
 	{
-		// ACRPlayerState 검증
-		ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-		if (IsValid(CRPS) == false)
+		// ACRPlayerController 검증
+		ACRPlayerController* CRPC = GetController<ACRPlayerController>();
+		if (IsValid(CRPC) == false)
 		{
 			return;
 		}
@@ -412,7 +419,7 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 			// 빼앗은 코인 추가
 			if (StolenCoins > 0)
 			{
-				CRPS->ServerRPCAddCoins(StolenCoins);
+				CRPC->ServerRPCAddCoins(StolenCoins);
 			}
 		}
 	}

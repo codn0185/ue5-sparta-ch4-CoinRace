@@ -48,23 +48,6 @@ class COINRACE_API ACRPlayerState : public APlayerState
   protected:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-	/** 값 변경 함수를 서버에서 호출하여 모든 클라이언트에 반영되도록 함 */
-  public:
-	// 서버에 PlayerName 변경 요청
-	UFUNCTION(Server, Reliable)
-	void ServerRPCSetPlayerName(const FString& InPlayerName);
-
-	// 서버에 Coins 증가 요청
-	UFUNCTION(Server, Reliable)
-	void ServerRPCAddCoins(int32 Amount);
-	// 서버에 Coins 감소 요청
-	UFUNCTION(Server, Reliable)
-	void ServerRPCRemoveCoins(int32 Amount);
-
-	// 서버에 BonusMaxSpeed 증가 요청
-	UFUNCTION(Server, Reliable)
-	void ServerRPCAddBonusMaxSpeed(float Amount);
-
   public:
 	// 코인 개수 반환
 	int32 GetCoins() const;

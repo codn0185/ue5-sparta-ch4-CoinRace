@@ -55,6 +55,17 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	UFUNCTION(Client, Reliable)
 	void ClientRPCSyncChatLog(const TArray<FChatData>& ChatLog);
 
+	// 서버에 코인 추가를 알림
+	UFUNCTION(Server, Reliable)
+	void ServerRPCAddCoins(const int32 Amount);
+	// 서버에 코인 제거를 알림
+	UFUNCTION(Server, Reliable)
+	void ServerRPCRemoveCoins(const int32 Amount);
+
+	// 서버에 추가 최대 속도 증가를 알림
+	UFUNCTION(Server, Reliable)
+	void ServerRPCAddBonusMaxSpeed(const float Amount);
+
 	// 코인 개수 변경 시 호출되어, 플레이어의 코인 개수가 변경됨을 서버에 알림
 	UFUNCTION(Server, Reliable)
 	void ServerRPCOnCoinsUpdated(const int32 NewCoins);

@@ -20,26 +20,6 @@ void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	DOREPLIFETIME_CONDITION(ThisClass, BonusMaxSpeed, COND_OwnerOnly);
 }
 
-void ACRPlayerState::ServerRPCSetPlayerName_Implementation(const FString& InPlayerName)
-{
-	SetPlayerName(InPlayerName);
-}
-
-void ACRPlayerState::ServerRPCAddCoins_Implementation(int32 Amount)
-{
-	AddCoins(Amount);
-}
-
-void ACRPlayerState::ServerRPCRemoveCoins_Implementation(int32 Amount)
-{
-	TryRemoveCoins(Amount);
-}
-
-void ACRPlayerState::ServerRPCAddBonusMaxSpeed_Implementation(float Amount)
-{
-	AddBonusMaxSpeed(Amount);
-}
-
 int32 ACRPlayerState::GetCoins() const
 {
 	return Coins;

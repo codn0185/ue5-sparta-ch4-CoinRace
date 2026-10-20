@@ -57,6 +57,39 @@ void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChat
 	}
 }
 
+void ACRPlayerController::ServerRPCAddCoins_Implementation(const int32 Amount)
+{
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return;
+	}
+
+	CRPS->AddCoins(Amount);
+}
+
+void ACRPlayerController::ServerRPCRemoveCoins_Implementation(const int32 Amount)
+{
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return;
+	}
+
+	CRPS->TryRemoveCoins(Amount);
+}
+
+void ACRPlayerController::ServerRPCAddBonusMaxSpeed_Implementation(const float Amount)
+{
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return;
+	}
+
+	CRPS->AddBonusMaxSpeed(Amount);
+}
+
 void ACRPlayerController::ServerRPCOnCoinsUpdated_Implementation(const int32 NewCoins)
 {
 	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this);
