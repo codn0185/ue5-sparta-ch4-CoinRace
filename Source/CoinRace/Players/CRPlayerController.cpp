@@ -175,7 +175,7 @@ void ACRPlayerController::OnRep_PlayerState()
 	// PlayerState의 델리게이트 바인딩
 	TWeakObjectPtr<ACRPlayerController> WeakThis(this);
 
-	CRPS->OnCoinsChanged.BindLambda(
+	CRPS->OnCoinsChanged.AddLambda(
 		[WeakThis](int32 NewCoins)
 		{
 			if (WeakThis.IsValid())
@@ -185,7 +185,7 @@ void ACRPlayerController::OnRep_PlayerState()
 			}
 		});
 
-	CRPS->OnBonusMaxSpeedChanged.BindLambda(
+	CRPS->OnBonusMaxSpeedChanged.AddLambda(
 		[WeakThis](float NewBonusMaxSpeed)
 		{
 			if (WeakThis.IsValid())

@@ -7,12 +7,12 @@
 #include "CRPlayerState.generated.h"
 
 // Coins 변경 시 실행되는 델리게이트
-DECLARE_DELEGATE_OneParam(
+DECLARE_MULTICAST_DELEGATE_OneParam(
 	FOnCoinsChanged,
 	int32);
 
 // BonusMaxSpeed 변경 시 실행되는 델리게이트
-DECLARE_DELEGATE_OneParam(
+DECLARE_MULTICAST_DELEGATE_OneParam(
 	FOnBonusMaxSpeedChanged,
 	float);
 
