@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 
-#include "Frameworks/CRGameState.h"
+#include "Data/ChatEntry.h"
 #include "UObject/NoExportTypes.h"
 
 #include "CRChatItem.generated.h"
@@ -13,10 +13,10 @@ class COINRACE_API UCRChatItem : public UObject
 	GENERATED_BODY()
 
   protected:
-	FChatData ChatData;
+	FChatEntry ChatData;
 
   public:
-	FChatData GetChatData() const;
+	FChatEntry GetChatData() const;
 
-	void SetChatData(const FChatData& InChatData);
+	void SetChatData(const FChatEntry& InChatData);
 };

@@ -1,9 +1,8 @@
 ﻿#include "CRChatItemWidget.h"
 
-#include "CRChatItem.h"
-
 #include "Components/TextBlock.h"
-#include "Frameworks/CRGameState.h"
+#include "Data/ChatEntry.h"
+#include "UI/Chat/CRChatItem.h"
 
 void UCRChatItemWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -16,7 +15,7 @@ void UCRChatItemWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 	}
 
 	// 채팅 데이터
-	const FChatData ChatData = ChatItem->GetChatData();
+	const FChatEntry ChatData = ChatItem->GetChatData();
 
 	// TextBlock_SenderName 위젯 설정
 	TextBlock_SenderName->SetText(FText::FromString(ChatData.SenderNameString));

@@ -3,6 +3,7 @@
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "Data/ChatEntry.h"
 #include "Frameworks/CRGameMode.h"
 #include "Frameworks/CRGameState.h"
 #include "Kismet/GameplayStatics.h"
@@ -28,7 +29,7 @@ void ACRPlayerController::ServerRPCSendChatMessage_Implementation(const FString&
 	CRGameMode->BroadcastChatMessage(this, ChatMessage);
 }
 
-void ACRPlayerController::ClientRPCReciveChatMessage_Implementation(const FChatData& ChatData)
+void ACRPlayerController::ClientRPCReciveChatMessage_Implementation(const FChatEntry& ChatData)
 {
 	// 채팅 UI에 채팅 메시지 추가
 	VehicleUI->AddChatMessage(ChatData);
@@ -41,10 +42,10 @@ void ACRPlayerController::ClientRPCReciveChatMessage_Implementation(const FChatD
 	}
 }
 
-void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChatData>& ChatLog)
+void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChatEntry>& ChatLog)
 {
 	// 채팅 UI에 채팅 로그 동기화
-	for (const FChatData& ChatData : ChatLog)
+	for (const FChatEntry& ChatData : ChatLog)
 	{
 		VehicleUI->AddChatMessage(ChatData);
 	}

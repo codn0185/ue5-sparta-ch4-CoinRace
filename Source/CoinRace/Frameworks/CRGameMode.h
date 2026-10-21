@@ -6,6 +6,8 @@
 
 #include "CRGameMode.generated.h"
 
+struct FChatEntry;
+
 class ACRPlayerController;
 
 UCLASS(MinimalAPI)

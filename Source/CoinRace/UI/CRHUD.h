@@ -7,7 +7,7 @@
 
 #include "CRHUD.generated.h"
 
-struct FChatData;
+struct FChatEntry;
 struct FCoinLeaderboardEntry;
 
 // 채팅 입력 커밋 시 메시지를 송출하는 델리게이트
@@ -62,7 +62,7 @@ class COINRACE_API UCRHUD : public UUserWidget
 	void UpdateGear(int32 NewGear);
 
 	// UCRChatWidget 채팅 추가
-	void AddChatMessage(const FChatData& ChatData);
+	void AddChatMessage(const FChatEntry& ChatData);
 	// UCRChatWidget 채팅 클리어
 	void ClearChatMessages();
 	// UCRChatWidget 채팅 입력창 포커스

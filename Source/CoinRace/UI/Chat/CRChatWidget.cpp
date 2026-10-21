@@ -15,7 +15,7 @@ void UCRChatWidget::NativeConstruct()
 		&ThisClass::OnChatInputCommitted);
 }
 
-void UCRChatWidget::AddChatMessage(const FChatData& ChatData)
+void UCRChatWidget::AddChatMessage(const FChatEntry& ChatData)
 {
 	// 채팅 아이템 오브젝트 생성 및 설정
 	UCRChatItem* ChatItem = NewObject<UCRChatItem>(this);

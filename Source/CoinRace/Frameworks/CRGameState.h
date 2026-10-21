@@ -6,27 +6,7 @@
 
 #include "CRGameState.generated.h"
 
-/** 채팅 데이터 */
-USTRUCT()
-struct FChatData
-{
-	GENERATED_BODY()
-
-  public:
-	// 송신자 이름
-	UPROPERTY()
-	FString SenderNameString = TEXT("None");
-	// 송신자 이름 색상
-	UPROPERTY()
-	FLinearColor SenderNameColor = FLinearColor::Gray;
-
-	// 채팅 메시지
-	UPROPERTY()
-	FString ChatMessageString;
-	// 채팅 메시지 색상
-	UPROPERTY()
-	FLinearColor ChatMessageColor = FLinearColor::White;
-};
+struct FChatEntry;
 
 UCLASS()
 class COINRACE_API ACRGameState : public AGameStateBase
@@ -45,18 +25,18 @@ class COINRACE_API ACRGameState : public AGameStateBase
 	int32 MaxChatLogCount = 20;
 
 	// 채팅 로그
-	TArray<FChatData> ChatLog;
+	TArray<FChatEntry> ChatLog;
 
   public:
 	// 채팅 추가
-	void AddChatData(const FChatData& NewChatData);
+	void AddChatData(const FChatEntry& NewChatData);
 
 	// 채팅 로그 설정
-	void SetChatLog(const TArray<FChatData>& InChatLog);
+	void SetChatLog(const TArray<FChatEntry>& InChatLog);
 
 	// 채팅 로그 초기화
 	void ClearChatLog();
 
 	// 채팅 로그 반환
-	const TArray<FChatData>& GetChatLog() const;
+	const TArray<FChatEntry>& GetChatLog() const;
 };

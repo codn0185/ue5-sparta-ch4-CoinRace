@@ -9,6 +9,10 @@
 #include "Players/CRPlayerState.h"
 #include "Systems/CoinLeaderboardWorldSubsystem.h"
 
+#include "Data/ChatEntry.h"
+
+
+
 ACRGameMode::ACRGameMode()
 {
 	GameStateClass = ACRGameState::StaticClass();
@@ -86,7 +90,7 @@ void ACRGameMode::OnPlayerInitialized(ACRPlayerController* Player)
 	ACRGameState* CRGS = GetGameState<ACRGameState>();
 	if (IsValid(CRGS) == true)
 	{
-		const TArray<FChatData>& ChatLog = CRGS->GetChatLog();
+		const TArray<FChatEntry>& ChatLog = CRGS->GetChatLog();
 		Player->ClientRPCSyncChatLog(ChatLog);
 	}
 
@@ -149,7 +153,7 @@ bool ACRGameMode::IsPlayerStartAvailable(const APlayerStart* PlayerStart) const
 void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, const FString& ChatMessage) const
 {
 	// 채팅 데이터 설정
-	FChatData ChatData;
+	FChatEntry ChatData;
 
 	ACRPlayerState* PlayerState = SenderController->GetPlayerState<ACRPlayerState>();
 	if (IsValid(PlayerState) == true)

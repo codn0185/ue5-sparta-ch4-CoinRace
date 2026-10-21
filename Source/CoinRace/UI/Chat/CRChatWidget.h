@@ -9,7 +9,7 @@
 class UListView;
 class UEditableTextBox;
 
-struct FChatData;
+struct FChatEntry;
 
 // 채팅 입력 커밋 시 메시지를 송출하는 델리게이트
 DECLARE_DELEGATE_OneParam(
@@ -39,7 +39,7 @@ class COINRACE_API UCRChatWidget : public UUserWidget
 
   public:
 	// 채팅 추가
-	void AddChatMessage(const FChatData& ChatData);
+	void AddChatMessage(const FChatEntry& ChatData);
 
 	// 채팅 클리어
 	void ClearChatMessages();
