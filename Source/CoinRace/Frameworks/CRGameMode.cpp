@@ -2,16 +2,12 @@
 
 #include "EngineUtils.h"
 
+#include "Data/ChatEntry.h"
 #include "Engine/World.h"
 #include "Frameworks/CRGameState.h"
 #include "GameFramework/PlayerStart.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
-#include "Systems/CoinLeaderboardWorldSubsystem.h"
-
-#include "Data/ChatEntry.h"
-
-
 
 ACRGameMode::ACRGameMode()
 {
@@ -54,12 +50,12 @@ void ACRGameMode::Logout(AController* Exiting)
 		ACRPlayerState* PlayerState = PlayerController->GetPlayerState<ACRPlayerState>();
 		if (IsValid(PlayerState) == true)
 		{
-			UCoinLeaderboardWorldSubsystem* CoinLeaderboardWorldSubsystem = GetWorld()->GetSubsystem<UCoinLeaderboardWorldSubsystem>();
-			if (IsValid(CoinLeaderboardWorldSubsystem) == true)
+			ACRGameState* CRGS = GetGameState<ACRGameState>();
+			if (IsValid(CRGS) == true)
 			{
 				const int32 PlayerId = PlayerState->GetPlayerId();
 
-				CoinLeaderboardWorldSubsystem->RemovePlayerFromCoinLeaderboard(PlayerId);
+				CRGS->RemovePlayerFromCoinLeaderboard(PlayerId);
 				BroadcastCoinLeaderboardUpdate(); // 코인 리더보드 변경 알림
 			}
 		}
@@ -86,19 +82,16 @@ void ACRGameMode::OnPlayerInitialized(ACRPlayerController* Player)
 	const int32 PlayerId = PlayerState->GetPlayerId();
 	const FString& PlayerName = PlayerState->GetPlayerName();
 
-	// 이전 채팅 내역 동기화
+	// ACRGameState 검증
 	ACRGameState* CRGS = GetGameState<ACRGameState>();
 	if (IsValid(CRGS) == true)
 	{
+		// 이전 채팅 내역 동기화
 		const TArray<FChatEntry>& ChatLog = CRGS->GetChatLog();
 		Player->ClientRPCSyncChatLog(ChatLog);
-	}
 
-	// 코인 리더보드에 추가
-	UCoinLeaderboardWorldSubsystem* CoinLeaderboardWorldSubsystem = GetWorld()->GetSubsystem<UCoinLeaderboardWorldSubsystem>();
-	if (IsValid(CoinLeaderboardWorldSubsystem) == true)
-	{
-		CoinLeaderboardWorldSubsystem->AddPlayerToCoinLeaderboard(PlayerId, PlayerName);
+		// 코인 리더보드에 플레이어 추가
+		CRGS->AddPlayerToCoinLeaderboard(PlayerId, PlayerName);
 		BroadcastCoinLeaderboardUpdate(); // 코인 리더보드 변경 알림
 	}
 }
@@ -192,24 +185,24 @@ void ACRGameMode::UpdateCoinLeaderboard(ACRPlayerController* Player, const int32
 	const int32 PlayerId = PlayerState->GetPlayerId();
 
 	// 코인 리더보드에 추가
-	UCoinLeaderboardWorldSubsystem* CoinLeaderboardWorldSubsystem = GetWorld()->GetSubsystem<UCoinLeaderboardWorldSubsystem>();
-	if (IsValid(CoinLeaderboardWorldSubsystem) == true)
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == true)
 	{
-		CoinLeaderboardWorldSubsystem->UpdateCoinLeaderboard(PlayerId, NewCoins);
+		CRGS->UpdateCoinLeaderboard(PlayerId, NewCoins);
 		BroadcastCoinLeaderboardUpdate(); // 코인 리더보드 변경 알림
 	}
 }
 
 void ACRGameMode::BroadcastCoinLeaderboardUpdate() const
 {
-	// UCoinLeaderboardWorldSubsystem 검증
-	UCoinLeaderboardWorldSubsystem* CoinLeaderboardWorldSubsystem = GetWorld()->GetSubsystem<UCoinLeaderboardWorldSubsystem>();
-	if (IsValid(CoinLeaderboardWorldSubsystem) == false)
+	// CRGameState 검증
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == false)
 	{
 		return;
 	}
 
-	const TArray<FCoinLeaderboardEntry>& CoinLeaderboard = CoinLeaderboardWorldSubsystem->GetCoinLeaderboard();
+	const TArray<FCoinLeaderboardEntry>& CoinLeaderboard = CRGS->GetCoinLeaderboard();
 
 	// 등록된 플레이어 배열을 순회하여 코인 리더보드 업데이트 전달
 	for (ACRPlayerController* Controller : AllPlayerControllers)
