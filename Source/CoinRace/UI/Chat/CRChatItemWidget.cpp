@@ -3,7 +3,7 @@
 #include "CRChatItem.h"
 
 #include "Components/TextBlock.h"
-#include "Systems/ChatWorldSubsystem.h"
+#include "Frameworks/CRGameState.h"
 
 void UCRChatItemWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {

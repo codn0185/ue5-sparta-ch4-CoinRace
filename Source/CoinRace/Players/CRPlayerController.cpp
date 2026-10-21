@@ -4,10 +4,10 @@
 #include "EnhancedInputSubsystems.h"
 
 #include "Frameworks/CRGameMode.h"
+#include "Frameworks/CRGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Players/CRPlayerState.h"
-#include "Systems/ChatWorldSubsystem.h"
 #include "UI/CRHUD.h"
 #include "Vehicles/CRWheeledVehiclePawn.h"
 
@@ -33,11 +33,11 @@ void ACRPlayerController::ClientRPCReciveChatMessage_Implementation(const FChatD
 	// 채팅 UI에 채팅 메시지 추가
 	VehicleUI->AddChatMessage(ChatData);
 
-	// ChatWorldSubsystem의 채팅 로그에 추가
-	UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
-	if (IsValid(ChatWorldSubsystem) == true)
+	// GameState의 채팅 로그에 추가
+	ACRGameState* CRGS = GetWorld()->GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == true)
 	{
-		ChatWorldSubsystem->AddChatData(ChatData);
+		CRGS->AddChatData(ChatData);
 	}
 }
 
@@ -49,11 +49,11 @@ void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChat
 		VehicleUI->AddChatMessage(ChatData);
 	}
 
-	// ChatWorldSubsystem의 채팅 로그 동기화
-	UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
-	if (IsValid(ChatWorldSubsystem) == true)
+	// CRGameMode의 채팅 로그 동기화
+	ACRGameState* CRGS = GetWorld()->GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == true)
 	{
-		ChatWorldSubsystem->SetChatLog(ChatLog);
+		CRGS->SetChatLog(ChatLog);
 	}
 }
 

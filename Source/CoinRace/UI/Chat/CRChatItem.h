@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 
-#include "Systems/ChatWorldSubsystem.h"
+#include "Frameworks/CRGameState.h"
 #include "UObject/NoExportTypes.h"
 
 #include "CRChatItem.generated.h"

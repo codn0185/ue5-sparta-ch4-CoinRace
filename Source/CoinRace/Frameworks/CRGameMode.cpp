@@ -7,7 +7,6 @@
 #include "GameFramework/PlayerStart.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
-#include "Systems/ChatWorldSubsystem.h"
 #include "Systems/CoinLeaderboardWorldSubsystem.h"
 
 ACRGameMode::ACRGameMode()
@@ -84,10 +83,10 @@ void ACRGameMode::OnPlayerInitialized(ACRPlayerController* Player)
 	const FString& PlayerName = PlayerState->GetPlayerName();
 
 	// 이전 채팅 내역 동기화
-	UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
-	if (IsValid(ChatWorldSubsystem) == true)
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == true)
 	{
-		const TArray<FChatData>& ChatLog = ChatWorldSubsystem->GetChatLog();
+		const TArray<FChatData>& ChatLog = CRGS->GetChatLog();
 		Player->ClientRPCSyncChatLog(ChatLog);
 	}
 
@@ -169,10 +168,10 @@ void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, co
 	}
 
 	// 채팅 로그에 저장
-	UChatWorldSubsystem* ChatWorldSubsystem = GetWorld()->GetSubsystem<UChatWorldSubsystem>();
-	if (IsValid(ChatWorldSubsystem) == true)
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == true)
 	{
-		ChatWorldSubsystem->AddChatData(ChatData);
+		CRGS->AddChatData(ChatData);
 	}
 }
 

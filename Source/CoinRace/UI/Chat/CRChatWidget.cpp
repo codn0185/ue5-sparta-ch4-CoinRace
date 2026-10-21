@@ -2,7 +2,7 @@
 
 #include "Components/EditableTextBox.h"
 #include "Components/ListView.h"
-#include "Systems/ChatWorldSubsystem.h"
+#include "Frameworks/CRGameState.h"
 #include "UI/Chat/CRChatItem.h"
 
 void UCRChatWidget::NativeConstruct()
