@@ -9,6 +9,11 @@
 struct FChatEntry;
 struct FCoinLeaderboardEntry;
 
+// 코인 리더보드 변경 알림 델리게이트
+DECLARE_MULTICAST_DELEGATE_OneParam(
+	FOnCoinLeaderboardUpdated,
+	const TArray<FCoinLeaderboardEntry>&);
+
 UCLASS()
 class COINRACE_API ACRGameState : public AGameStateBase
 {
@@ -45,9 +50,17 @@ class COINRACE_API ACRGameState : public AGameStateBase
 	// 코인 리더보드 관리
   protected:
 	// 코인 리더보드 (내림차순 정렬)
+	UPROPERTY(ReplicatedUsing = OnRep_CoinLeaderboard)
 	TArray<FCoinLeaderboardEntry> CoinLeaderboard;
 	// 플레이어 ID -> 코인 리더보드 인덱스
 	TMap<int32, int32> CoinLeaderboardIndexMap;
+
+  public:
+	FOnCoinLeaderboardUpdated OnCoinLeaderboardUpdated;
+
+  protected:
+	UFUNCTION()
+	void OnRep_CoinLeaderboard();
 
   public:
 	// 코인 리더보드 반환

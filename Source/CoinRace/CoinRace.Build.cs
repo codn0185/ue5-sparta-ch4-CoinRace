@@ -14,6 +14,8 @@ public class CoinRace : ModuleRules
 			"UMG", "SlateCore",
 
 			"Niagara",
+
+			"NetCore",
 		});
 
 		PublicIncludePaths.Add(ModuleDirectory);

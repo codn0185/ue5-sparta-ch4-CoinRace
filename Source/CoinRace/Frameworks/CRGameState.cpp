@@ -2,6 +2,7 @@
 
 #include "Data/ChatEntry.h"
 #include "Data/CoinLeaderboardEntry.h"
+#include "Net/Core/PushModel/PushModel.h"
 #include "Net/UnrealNetwork.h"
 
 void ACRGameState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -9,6 +10,7 @@ void ACRGameState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, MaxChatLogCount);
+	DOREPLIFETIME(ThisClass, CoinLeaderboard);
 }
 
 void ACRGameState::AddChatData(const FChatEntry& NewChatData)
@@ -36,6 +38,11 @@ const TArray<FChatEntry>& ACRGameState::GetChatLog() const
 	return ChatLog;
 }
 
+void ACRGameState::OnRep_CoinLeaderboard()
+{
+	OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
+}
+
 const TArray<FCoinLeaderboardEntry>& ACRGameState::GetCoinLeaderboard() const
 {
 	return CoinLeaderboard;
@@ -45,6 +52,9 @@ void ACRGameState::ClearCoinLeaderboard()
 {
 	CoinLeaderboard.Empty();
 	CoinLeaderboardIndexMap.Empty();
+
+	// CoinLeaderboard가 변경됨을 명시적으로 표시
+	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
 }
 
 void ACRGameState::AddPlayerToCoinLeaderboard(const int32 PlayerId, const FString& PlayerName)
@@ -67,6 +77,9 @@ void ACRGameState::AddPlayerToCoinLeaderboard(const int32 PlayerId, const FStrin
 
 	// 순위 갱신
 	RefreshCoinLeaderboardRanks();
+
+	// CoinLeaderboard가 변경됨을 명시적으로 표시
+	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
 }
 
 void ACRGameState::RemovePlayerFromCoinLeaderboard(const int32 PlayerId)
@@ -92,6 +105,9 @@ void ACRGameState::RemovePlayerFromCoinLeaderboard(const int32 PlayerId)
 
 	// 순위 갱신
 	RefreshCoinLeaderboardRanks();
+
+	// CoinLeaderboard가 변경됨을 명시적으로 표시
+	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
 }
 
 void ACRGameState::UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCoins)
@@ -154,6 +170,9 @@ void ACRGameState::UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCo
 
 	// 순위 갱신
 	RefreshCoinLeaderboardRanks();
+
+	// CoinLeaderboard가 변경됨을 명시적으로 표시
+	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
 }
 
 void ACRGameState::RefreshCoinLeaderboardRanks()

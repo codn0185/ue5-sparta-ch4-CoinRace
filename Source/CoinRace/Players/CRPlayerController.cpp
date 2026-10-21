@@ -152,6 +152,13 @@ void ACRPlayerController::BeginPlay()
 
 	// 플레이어 준비됨을 서버에 알림
 	ServerRPCNotifyPlayerInitialized();
+
+	// 코인 리더보드 변경 델리게이트 바인딩
+	ACRGameState* CRGS = GetWorld()->GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == true)
+	{
+		CRGS->OnCoinLeaderboardUpdated.AddUObject(this, &ThisClass::ClientRPCUpdateCoinLeaderboard);
+	}
 }
 
 void ACRPlayerController::SetupInputComponent()

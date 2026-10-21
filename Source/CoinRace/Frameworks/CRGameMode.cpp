@@ -56,7 +56,6 @@ void ACRGameMode::Logout(AController* Exiting)
 				const int32 PlayerId = PlayerState->GetPlayerId();
 
 				CRGS->RemovePlayerFromCoinLeaderboard(PlayerId);
-				BroadcastCoinLeaderboardUpdate(); // 코인 리더보드 변경 알림
 			}
 		}
 	}
@@ -92,7 +91,6 @@ void ACRGameMode::OnPlayerInitialized(ACRPlayerController* Player)
 
 		// 코인 리더보드에 플레이어 추가
 		CRGS->AddPlayerToCoinLeaderboard(PlayerId, PlayerName);
-		BroadcastCoinLeaderboardUpdate(); // 코인 리더보드 변경 알림
 	}
 }
 
@@ -189,27 +187,5 @@ void ACRGameMode::UpdateCoinLeaderboard(ACRPlayerController* Player, const int32
 	if (IsValid(CRGS) == true)
 	{
 		CRGS->UpdateCoinLeaderboard(PlayerId, NewCoins);
-		BroadcastCoinLeaderboardUpdate(); // 코인 리더보드 변경 알림
-	}
-}
-
-void ACRGameMode::BroadcastCoinLeaderboardUpdate() const
-{
-	// CRGameState 검증
-	ACRGameState* CRGS = GetGameState<ACRGameState>();
-	if (IsValid(CRGS) == false)
-	{
-		return;
-	}
-
-	const TArray<FCoinLeaderboardEntry>& CoinLeaderboard = CRGS->GetCoinLeaderboard();
-
-	// 등록된 플레이어 배열을 순회하여 코인 리더보드 업데이트 전달
-	for (ACRPlayerController* Controller : AllPlayerControllers)
-	{
-		if (IsValid(Controller) == true)
-		{
-			Controller->ClientRPCUpdateCoinLeaderboard(CoinLeaderboard);
-		}
 	}
 }

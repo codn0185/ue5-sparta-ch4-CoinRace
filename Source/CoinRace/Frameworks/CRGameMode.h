@@ -50,7 +50,4 @@ class ACRGameMode : public AGameModeBase
 
 	// 코인 개수 변경 시 호출해서 코인 리더보드 업데이트
 	void UpdateCoinLeaderboard(ACRPlayerController* Player, const int32 NewCoins) const;
-
-	// 코인 리더보드 업데이트 시 호출되어 모든 플레이어게 전달
-	void BroadcastCoinLeaderboardUpdate() const;
 };
