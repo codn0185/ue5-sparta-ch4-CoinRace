@@ -9,18 +9,13 @@
 struct FChatEntry;
 struct FCoinLeaderboardEntry;
 
-// 코인 리더보드 변경 알림 델리게이트
-DECLARE_MULTICAST_DELEGATE_OneParam(
-	FOnCoinLeaderboardUpdated,
-	const TArray<FCoinLeaderboardEntry>&);
-
 UCLASS()
 class COINRACE_API ACRGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
   protected:
-	 virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 	// 레플리케이션 대상 등록
   protected:
@@ -57,9 +52,6 @@ class COINRACE_API ACRGameState : public AGameStateBase
 	TArray<FCoinLeaderboardEntry> CoinLeaderboard;
 	// 플레이어 ID -> 코인 리더보드 인덱스
 	TMap<int32, int32> CoinLeaderboardIndexMap;
-
-  public:
-	FOnCoinLeaderboardUpdated OnCoinLeaderboardUpdated;
 
   protected:
 	UFUNCTION()

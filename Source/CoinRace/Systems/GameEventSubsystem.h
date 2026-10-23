@@ -7,6 +7,7 @@
 #include "GameEventSubsystem.generated.h"
 
 class ACRPlayerState;
+struct FCoinLeaderboardEntry;
 
 /**
  * 코인 변경 알림 델리게이트
@@ -28,6 +29,15 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(
 	const ACRPlayerState*,
 	float); // NewBonusMaxSpeed
 
+/**
+ * 코인 리더보드 변경 알림 델리게이트
+ * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
+ * - 클라이언트: UI 갱신 등 후속 처리
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(
+	FOnCoinLeaderboardUpdated,
+	const TArray<FCoinLeaderboardEntry>&); // CoinLeaderboard
+
 UCLASS()
 class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
 {
@@ -39,4 +49,7 @@ class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
 
 	// 보너스 최대 속도 변경 알림 델리게이트
 	FOnBonusMaxSpeedUpdated OnBonusMaxSpeedUpdated;
+
+	// 코인 리더보드 변경 알림 델리게이트
+	FOnCoinLeaderboardUpdated OnCoinLeaderboardUpdated;
 };

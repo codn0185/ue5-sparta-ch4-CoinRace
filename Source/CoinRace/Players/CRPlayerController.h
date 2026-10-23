@@ -55,10 +55,6 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	UFUNCTION(Client, Reliable)
 	void ClientRPCSyncChatLog(const TArray<FChatEntry>& ChatLog);
 
-	// 서버로부터 코인 리더보드를 받아 업데이트
-	UFUNCTION(Client, Reliable)
-	void ClientRPCUpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard);
-
   protected:
 	// BeginPlay() 직후 호출되어, 플레이어가 준비됨을 서버에 알림
 	UFUNCTION(Server, Reliable)

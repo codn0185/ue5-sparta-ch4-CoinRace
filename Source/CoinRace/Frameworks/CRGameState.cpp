@@ -70,7 +70,14 @@ const TArray<FChatEntry>& ACRGameState::GetChatLog() const
 
 void ACRGameState::OnRep_CoinLeaderboard()
 {
-	OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
+		}
+	}
 }
 
 const TArray<FCoinLeaderboardEntry>& ACRGameState::GetCoinLeaderboard() const

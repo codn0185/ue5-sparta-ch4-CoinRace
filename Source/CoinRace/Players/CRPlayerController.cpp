@@ -59,11 +59,6 @@ void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChat
 	}
 }
 
-void ACRPlayerController::ClientRPCUpdateCoinLeaderboard_Implementation(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
-{
-	VehicleUI->UpdateCoinLeaderboard(CoinLeaderboard);
-}
-
 void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
 {
 	// GameMode에 플레이어 초기화 완료 알림
@@ -103,13 +98,6 @@ void ACRPlayerController::BeginPlay()
 
 	// 플레이어 준비됨을 서버에 알림
 	ServerRPCNotifyPlayerInitialized();
-
-	// 코인 리더보드 변경 델리게이트 바인딩
-	ACRGameState* CRGS = GetWorld()->GetGameState<ACRGameState>();
-	if (IsValid(CRGS) == true)
-	{
-		CRGS->OnCoinLeaderboardUpdated.AddUObject(this, &ThisClass::ClientRPCUpdateCoinLeaderboard);
-	}
 }
 
 void ACRPlayerController::SetupInputComponent()
@@ -185,7 +173,6 @@ void ACRPlayerController::OnRep_PlayerState()
 			if (WeakThis.IsValid())
 			{
 				WeakThis->VehicleUI->SetCoins(NewCoins);
-				// WeakThis->ServerRPCOnCoinsUpdated(NewCoins);
 			}
 		});
 
@@ -195,6 +182,15 @@ void ACRPlayerController::OnRep_PlayerState()
 			if (WeakThis.IsValid())
 			{
 				WeakThis->VehicleUI->SetBonusMaxSpeed(NewBonusMaxSpeed);
+			}
+		});
+
+	GameEventSubsystem->OnCoinLeaderboardUpdated.AddLambda(
+		[WeakThis](const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->VehicleUI->UpdateCoinLeaderboard(CoinLeaderboard);
 			}
 		});
 }
