@@ -8,8 +8,6 @@
 #include "Frameworks/CRGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
-#include "Players/CRPlayerState.h"
-#include "Systems/GameEventSubsystem.h"
 #include "UI/CRHUD.h"
 #include "Vehicles/CRWheeledVehiclePawn.h"
 
@@ -96,9 +94,6 @@ void ACRPlayerController::BeginPlay()
 	// 채팅 입력 커밋 델리게이트 바인딩
 	VehicleUI->OnChatMessageSubmitted.BindUObject(this, &ThisClass::ServerRPCSendChatMessage);
 
-	// GameEventSubsystem 델리게이트 바인딩
-	BindGameEventDelegates();
-
 	// 플레이어 준비됨을 서버에 알림
 	ServerRPCNotifyPlayerInitialized();
 }
@@ -150,32 +145,4 @@ void ACRPlayerController::OnPossess(APawn* InPawn)
 void ACRPlayerController::FocusChatInput()
 {
 	VehicleUI->FocusChatInput();
-}
-
-void ACRPlayerController::BindGameEventDelegates()
-{
-	// this 약한 참조
-	TWeakObjectPtr<ACRPlayerController> WeakThis(this);
-
-	UGameInstance* GameInstance = GetGameInstance();
-	if (IsValid(GameInstance) == false)
-	{
-		return;
-	}
-
-	UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-	if (IsValid(GameEventSubsystem) == false)
-	{
-		return;
-	}
-
-	// OnCoinLeaderboardUpdated 바인딩
-	GameEventSubsystem->OnCoinLeaderboardUpdated.AddLambda(
-		[WeakThis](const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
-		{
-			if (WeakThis.IsValid())
-			{
-				WeakThis->VehicleUI->UpdateCoinLeaderboard(CoinLeaderboard);
-			}
-		});
 }

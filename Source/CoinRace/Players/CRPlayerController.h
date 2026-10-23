@@ -79,8 +79,4 @@ class COINRACE_API ACRPlayerController : public APlayerController
 
   public:
 	void FocusChatInput();
-
-  protected:
-	// GameEventSubsystem 델리게이트 바인딩
-	void BindGameEventDelegates();
 };

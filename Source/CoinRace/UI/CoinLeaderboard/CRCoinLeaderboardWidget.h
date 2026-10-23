@@ -7,6 +7,8 @@
 
 #include "CRCoinLeaderboardWidget.generated.h"
 
+struct FCoinLeaderboardEntry;
+
 UCLASS()
 class COINRACE_API UCRCoinLeaderboardWidget : public UUserWidget
 {
@@ -17,10 +19,21 @@ class COINRACE_API UCRCoinLeaderboardWidget : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UListView> ListView_CoinLeaderboard;
 
+  protected:
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+
   public:
 	// 코인 리더보드 업데이트
 	void UpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard);
 
 	// 코인 리더보드 초기화
 	void ClearCoinLeaderboard();
+
+	/** OnCoinLeaderboardUpdated 델리게이트 관리 */
+  protected:
+	FDelegateHandle CoinLeaderboardUpdatedHandle;
+
+	UFUNCTION()
+	void HandleCoinLeaderboardUpdated(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard);
 };

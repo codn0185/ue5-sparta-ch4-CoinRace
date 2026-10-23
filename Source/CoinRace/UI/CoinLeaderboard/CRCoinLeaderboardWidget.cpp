@@ -1,8 +1,54 @@
 ﻿#include "CRCoinLeaderboardWidget.h"
 
 #include "Components/ListView.h"
+#include "Frameworks/CRGameState.h"
 #include "GameFramework/PlayerState.h"
+#include "Systems/GameEventSubsystem.h"
 #include "UI/CoinLeaderboard/CRCoinLeaderboardItem.h"
+
+void UCRCoinLeaderboardWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	// OnCoinLeaderboardUpdated 델리게이트 바인딩
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == true)
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			CoinLeaderboardUpdatedHandle = GameEventSubsystem->OnCoinLeaderboardUpdated.AddUObject(this, &ThisClass::HandleCoinLeaderboardUpdated);
+		}
+	}
+
+	// 초기 CoinLeaderboard 설정
+	ACRGameState* CRGM = GetWorld()->GetGameState<ACRGameState>();
+	if (IsValid(CRGM) == true)
+	{
+		UpdateCoinLeaderboard(CRGM->GetCoinLeaderboard());
+	}
+	else
+	{
+		ClearCoinLeaderboard();
+	}
+}
+
+void UCRCoinLeaderboardWidget::NativeDestruct()
+{
+	// OnCoinLeaderboardUpdated 델리게이트 바인딩 제거
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == true)
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnCoinLeaderboardUpdated.Remove(CoinLeaderboardUpdatedHandle);
+			CoinLeaderboardUpdatedHandle.Reset();
+		}
+	}
+
+	Super::NativeDestruct();
+}
 
 void UCRCoinLeaderboardWidget::UpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
 {
@@ -41,4 +87,9 @@ void UCRCoinLeaderboardWidget::UpdateCoinLeaderboard(const TArray<FCoinLeaderboa
 void UCRCoinLeaderboardWidget::ClearCoinLeaderboard()
 {
 	ListView_CoinLeaderboard->ClearListItems();
+}
+
+void UCRCoinLeaderboardWidget::HandleCoinLeaderboardUpdated(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
+{
+	UpdateCoinLeaderboard(CoinLeaderboard);
 }
