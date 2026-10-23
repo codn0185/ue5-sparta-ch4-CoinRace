@@ -4,6 +4,36 @@
 #include "Data/CoinLeaderboardEntry.h"
 #include "Net/Core/PushModel/PushModel.h"
 #include "Net/UnrealNetwork.h"
+#include "Players/CRPlayerState.h"
+#include "Systems/GameEventSubsystem.h"
+
+void ACRGameState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TWeakObjectPtr<ACRGameState> WeakThis(this);
+
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnCoinsUpdated.AddLambda(
+				[WeakThis](const ACRPlayerState* CRPS, int32 NewCoins)
+				{
+					if (WeakThis.IsValid())
+					{
+						if (IsValid(CRPS) == false)
+						{
+							return;
+						}
+
+						WeakThis->UpdateCoinLeaderboard(CRPS->GetPlayerId(), NewCoins);
+					}
+				});
+		}
+	}
+}
 
 void ACRGameState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {

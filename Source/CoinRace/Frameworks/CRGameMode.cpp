@@ -169,23 +169,3 @@ void ACRGameMode::BroadcastChatMessage(ACRPlayerController* SenderController, co
 		CRGS->AddChatData(ChatData);
 	}
 }
-
-void ACRGameMode::UpdateCoinLeaderboard(ACRPlayerController* Player, const int32 NewCoins) const
-{
-	// PlayerState 검증
-	ACRPlayerState* PlayerState = Player->GetPlayerState<ACRPlayerState>();
-	if (IsValid(PlayerState) == false)
-	{
-		return;
-	}
-
-	// 플레이어 ID
-	const int32 PlayerId = PlayerState->GetPlayerId();
-
-	// 코인 리더보드에 추가
-	ACRGameState* CRGS = GetGameState<ACRGameState>();
-	if (IsValid(CRGS) == true)
-	{
-		CRGS->UpdateCoinLeaderboard(PlayerId, NewCoins);
-	}
-}

@@ -59,23 +59,6 @@ void ACRPlayerController::ClientRPCSyncChatLog_Implementation(const TArray<FChat
 	}
 }
 
-void ACRPlayerController::ServerRPCOnCoinsUpdated_Implementation(const int32 NewCoins)
-{
-	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this);
-	if (IsValid(GameMode) == false)
-	{
-		return;
-	}
-
-	ACRGameMode* CRGameMode = Cast<ACRGameMode>(GameMode);
-	if (IsValid(CRGameMode) == false)
-	{
-		return;
-	}
-
-	CRGameMode->UpdateCoinLeaderboard(this, NewCoins);
-}
-
 void ACRPlayerController::ClientRPCUpdateCoinLeaderboard_Implementation(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
 {
 	VehicleUI->UpdateCoinLeaderboard(CoinLeaderboard);
@@ -202,7 +185,7 @@ void ACRPlayerController::OnRep_PlayerState()
 			if (WeakThis.IsValid())
 			{
 				WeakThis->VehicleUI->SetCoins(NewCoins);
-				WeakThis->ServerRPCOnCoinsUpdated(NewCoins);
+				// WeakThis->ServerRPCOnCoinsUpdated(NewCoins);
 			}
 		});
 

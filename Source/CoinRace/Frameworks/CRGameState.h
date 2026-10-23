@@ -19,6 +19,9 @@ class COINRACE_API ACRGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
+  protected:
+	 virtual void BeginPlay() override;
+
 	// 레플리케이션 대상 등록
   protected:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;

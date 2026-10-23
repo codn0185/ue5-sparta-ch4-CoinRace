@@ -55,9 +55,6 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	UFUNCTION(Client, Reliable)
 	void ClientRPCSyncChatLog(const TArray<FChatEntry>& ChatLog);
 
-	// 코인 개수 변경 시 호출되어, 플레이어의 코인 개수가 변경됨을 서버에 알림
-	UFUNCTION(Server, Reliable)
-	void ServerRPCOnCoinsUpdated(const int32 NewCoins);
 	// 서버로부터 코인 리더보드를 받아 업데이트
 	UFUNCTION(Client, Reliable)
 	void ClientRPCUpdateCoinLeaderboard(const TArray<FCoinLeaderboardEntry>& CoinLeaderboard);
