@@ -1,15 +1,30 @@
 ﻿#include "CRPlayerState.h"
 
 #include "Net/UnrealNetwork.h"
+#include "Systems/GameEventSubsystem.h"
 
 void ACRPlayerState::OnRep_Coins()
 {
-	OnCoinsChanged.Broadcast(Coins);
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
+		}
+	}
 }
 
 void ACRPlayerState::OnRep_BonusMaxSpeed()
 {
-	OnBonusMaxSpeedChanged.Broadcast(BonusMaxSpeed);
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
+		}
+	}
 }
 
 void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

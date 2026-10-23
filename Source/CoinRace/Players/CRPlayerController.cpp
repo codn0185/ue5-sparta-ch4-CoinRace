@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Players/CRPlayerState.h"
+#include "Systems/GameEventSubsystem.h"
 #include "UI/CRHUD.h"
 #include "Vehicles/CRWheeledVehiclePawn.h"
 
@@ -183,8 +184,20 @@ void ACRPlayerController::OnRep_PlayerState()
 	// PlayerState의 델리게이트 바인딩
 	TWeakObjectPtr<ACRPlayerController> WeakThis(this);
 
-	CRPS->OnCoinsChanged.AddLambda(
-		[WeakThis](int32 NewCoins)
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == false)
+	{
+		return;
+	}
+
+	UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+	if (IsValid(GameEventSubsystem) == false)
+	{
+		return;
+	}
+
+	GameEventSubsystem->OnCoinsUpdated.AddLambda(
+		[WeakThis](const ACRPlayerState* CRPS, int32 NewCoins)
 		{
 			if (WeakThis.IsValid())
 			{
@@ -193,8 +206,8 @@ void ACRPlayerController::OnRep_PlayerState()
 			}
 		});
 
-	CRPS->OnBonusMaxSpeedChanged.AddLambda(
-		[WeakThis](float NewBonusMaxSpeed)
+	GameEventSubsystem->OnBonusMaxSpeedUpdated.AddLambda(
+		[WeakThis](const ACRPlayerState* CRPS, float NewBonusMaxSpeed)
 		{
 			if (WeakThis.IsValid())
 			{

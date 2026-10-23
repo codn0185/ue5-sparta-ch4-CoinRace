@@ -6,26 +6,10 @@
 
 #include "CRPlayerState.generated.h"
 
-// Coins 변경 시 실행되는 델리게이트
-DECLARE_MULTICAST_DELEGATE_OneParam(
-	FOnCoinsChanged,
-	int32);
-
-// BonusMaxSpeed 변경 시 실행되는 델리게이트
-DECLARE_MULTICAST_DELEGATE_OneParam(
-	FOnBonusMaxSpeedChanged,
-	float);
-
 UCLASS()
 class COINRACE_API ACRPlayerState : public APlayerState
 {
 	GENERATED_BODY()
-
-  public:
-	// Coins 변경 델리게이트
-	FOnCoinsChanged OnCoinsChanged;
-	// BonusMaxSpeed 변경 델리게이트
-	FOnBonusMaxSpeedChanged OnBonusMaxSpeedChanged;
 
   protected:
 	// Coins 변경 시 호출
