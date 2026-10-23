@@ -96,11 +96,11 @@ void ACRPlayerController::BeginPlay()
 	// 채팅 입력 커밋 델리게이트 바인딩
 	VehicleUI->OnChatMessageSubmitted.BindUObject(this, &ThisClass::ServerRPCSendChatMessage);
 
-	// 플레이어 준비됨을 서버에 알림
-	ServerRPCNotifyPlayerInitialized();
-
 	// GameEventSubsystem 델리게이트 바인딩
 	BindGameEventDelegates();
+
+	// 플레이어 준비됨을 서버에 알림
+	ServerRPCNotifyPlayerInitialized();
 }
 
 void ACRPlayerController::SetupInputComponent()
