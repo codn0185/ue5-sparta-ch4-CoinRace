@@ -328,6 +328,12 @@ void ACRWheeledVehiclePawn::PlayCoinStolenEffect(const FVector& HitLocation, con
 
 void ACRWheeledVehiclePawn::AddCoins(int32 Amount)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
 	// ACRPlayerController 검증
 	ACRPlayerController* CRPC = GetController<ACRPlayerController>();
 	if (IsValid(CRPC) == false)
@@ -341,6 +347,14 @@ void ACRWheeledVehiclePawn::AddCoins(int32 Amount)
 
 void ACRWheeledVehiclePawn::AddBonusMaxSpeed(float Amount)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	GetPlayerState<ACRPlayerState>();
+
 	// ACRPlayerController 검증
 	ACRPlayerController* CRPC = GetController<ACRPlayerController>();
 	if (IsValid(CRPC) == false)
