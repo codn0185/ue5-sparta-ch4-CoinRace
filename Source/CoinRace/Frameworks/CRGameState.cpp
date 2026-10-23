@@ -40,6 +40,7 @@ void ACRGameState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, CurrentGamePhase);
+	DOREPLIFETIME(ThisClass, RemainingTime);
 	DOREPLIFETIME(ThisClass, MaxChatLogCount);
 	DOREPLIFETIME(ThisClass, CoinLeaderboard);
 }
@@ -59,7 +60,7 @@ void ACRGameState::OnRep_CurrentGamePhase()
 
 EGamePhase ACRGameState::GetCurrentGamePhase() const
 {
-	CurrentGamePhase;
+	return CurrentGamePhase;
 }
 
 void ACRGameState::ChangeGamePhase(EGamePhase NewGamePhase)
@@ -86,6 +87,46 @@ void ACRGameState::ChangeGamePhase(EGamePhase NewGamePhase)
 		if (IsValid(GameEventSubsystem) == true)
 		{
 			GameEventSubsystem->OnGamePhaseUpdated.Broadcast(CurrentGamePhase);
+		}
+	}
+}
+
+void ACRGameState::OnRep_RemainingTime()
+{
+	// 클라이언트에서 OnRemainingTimeUpdated 델리게이트 송출
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnRemainingTimeUpdated.Broadcast(RemainingTime);
+		}
+	}
+}
+
+float ACRGameState::GetRemainingTime() const
+{
+	return RemainingTime;
+}
+
+void ACRGameState::SetRemainingTime(float NewRemainingTime)
+{
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// RemainingTime 설정 (음수 방지)
+	RemainingTime = FMath::Max(0.f, NewRemainingTime);
+
+	// 서버에서 OnRemainingTimeUpdated 델리게이트 송출
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnRemainingTimeUpdated.Broadcast(RemainingTime);
 		}
 	}
 }

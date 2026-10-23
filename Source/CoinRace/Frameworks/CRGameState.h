@@ -47,7 +47,24 @@ class COINRACE_API ACRGameState : public AGameStateBase
 	// 상태 변경
 	void ChangeGamePhase(EGamePhase NewGamePhase);
 
+	// ==================================================
+	// 게임 상태 머신
+  protected:
+	// 게임 플레이 중 남은 시간
+	UPROPERTY(ReplicatedUsing = OnRep_RemainingTime)
+	float RemainingTime = 0.f;
+
+  protected:
+	UFUNCTION()
+	void OnRep_RemainingTime();
+
   public:
+	// RemainingTime 반환
+	float GetRemainingTime() const;
+
+	// RemainingTime 설정
+	void SetRemainingTime(float NewRemainingTime);
+
 	// ==================================================
 	// 채팅 로그 관리
   protected:
