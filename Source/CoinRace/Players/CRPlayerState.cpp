@@ -3,27 +3,32 @@
 #include "Net/UnrealNetwork.h"
 #include "Systems/GameEventSubsystem.h"
 
-void ACRPlayerState::OnRep_Coins()
+void ACRPlayerState::BeginPlay()
 {
+	Super::BeginPlay();
+
+	// GameEventSubsystem 설정
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
-		}
+		GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+	}
+}
+
+void ACRPlayerState::OnRep_Coins()
+{
+	// 클라이언트에서 OnCoinsUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
 	}
 }
 
 void ACRPlayerState::OnRep_BonusMaxSpeed()
 {
-	if (UGameInstance* GameInstance = GetGameInstance())
+	// 클라이언트에서 OnBonusMaxSpeedUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
-		}
+		GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
 	}
 }
 
@@ -55,14 +60,10 @@ void ACRPlayerState::AddCoins(int32 Amount)
 
 	Coins += Amount;
 
-	// 서버에 OnCoinsUpdated 델리게이트 송출
-	if (UGameInstance* GameInstance = GetGameInstance())
+	// 서버에서 OnCoinsUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
-		}
+		GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
 	}
 }
 
@@ -81,14 +82,10 @@ bool ACRPlayerState::TryRemoveCoins(int32 Amount)
 
 	Coins -= Amount;
 
-	// 서버에 OnCoinsUpdated 델리게이트 송출
-	if (UGameInstance* GameInstance = GetGameInstance())
+	// 서버에서 OnCoinsUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
-		}
+		GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
 	}
 
 	return true;
@@ -114,13 +111,9 @@ void ACRPlayerState::AddBonusMaxSpeed(float Amount)
 
 	BonusMaxSpeed += Amount;
 
-	// 서버에 OnBonusMaxSpeedUpdated 델리게이트 송출
-	if (UGameInstance* GameInstance = GetGameInstance())
+	// 서버에서 OnBonusMaxSpeedUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
-		}
+		GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
 	}
 }

@@ -22,6 +22,10 @@ class COINRACE_API ACRGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
+  private:
+	// 게임 이벤트 서브시스템
+	TObjectPtr<class UGameEventSubsystem> GameEventSubsystem;
+
   protected:
 	virtual void BeginPlay() override;
 

@@ -11,27 +11,27 @@ void ACRGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TWeakObjectPtr<ACRGameState> WeakThis(this);
-
+	// GameEventSubsystem 설정
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnCoinsUpdated.AddLambda(
-				[WeakThis](const ACRPlayerState* CRPS, int32 NewCoins)
-				{
-					if (WeakThis.IsValid())
-					{
-						if (IsValid(CRPS) == false)
-						{
-							return;
-						}
+		GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+	}
 
-						WeakThis->UpdateCoinLeaderboard(CRPS->GetPlayerId(), NewCoins);
-					}
-				});
-		}
+	// GameState에 영향을 주는 게임 이벤트 바인딩
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		// 약한 참조
+		TWeakObjectPtr<ACRGameState> WeakThis(this);
+
+		// 코인 변경 이벤트를 수신하여 GameState의 코인 리더보드 갱신
+		GameEventSubsystem->OnCoinsUpdated.AddLambda(
+			[WeakThis](const ACRPlayerState* CRPS, int32 NewCoins)
+			{
+				if (WeakThis.IsValid() == true && IsValid(CRPS) == true)
+				{
+					WeakThis->UpdateCoinLeaderboard(CRPS->GetPlayerId(), NewCoins);
+				}
+			});
 	}
 }
 
@@ -48,13 +48,9 @@ void ACRGameState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& O
 void ACRGameState::OnRep_CurrentGamePhase()
 {
 	// 클라이언트에서 OnGamePhaseUpdated 델리게이트 송출
-	if (UGameInstance* GameInstance = GetGameInstance())
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnGamePhaseUpdated.Broadcast(CurrentGamePhase);
-		}
+		GameEventSubsystem->OnGamePhaseUpdated.Broadcast(CurrentGamePhase);
 	}
 }
 
@@ -81,26 +77,18 @@ void ACRGameState::ChangeGamePhase(EGamePhase NewGamePhase)
 	CurrentGamePhase = NewGamePhase;
 
 	// 서버에서 OnGamePhaseUpdated 델리게이트 송출
-	if (UGameInstance* GameInstance = GetGameInstance())
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnGamePhaseUpdated.Broadcast(CurrentGamePhase);
-		}
+		GameEventSubsystem->OnGamePhaseUpdated.Broadcast(CurrentGamePhase);
 	}
 }
 
 void ACRGameState::OnRep_RemainingTime()
 {
 	// 클라이언트에서 OnRemainingTimeUpdated 델리게이트 송출
-	if (UGameInstance* GameInstance = GetGameInstance())
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnRemainingTimeUpdated.Broadcast(RemainingTime);
-		}
+		GameEventSubsystem->OnRemainingTimeUpdated.Broadcast(RemainingTime);
 	}
 }
 
@@ -121,13 +109,9 @@ void ACRGameState::SetRemainingTime(float NewRemainingTime)
 	RemainingTime = FMath::Max(0.f, NewRemainingTime);
 
 	// 서버에서 OnRemainingTimeUpdated 델리게이트 송출
-	if (UGameInstance* GameInstance = GetGameInstance())
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnRemainingTimeUpdated.Broadcast(RemainingTime);
-		}
+		GameEventSubsystem->OnRemainingTimeUpdated.Broadcast(RemainingTime);
 	}
 }
 
@@ -180,13 +164,10 @@ const TArray<FChatEntry>& ACRGameState::GetChatLog() const
 
 void ACRGameState::OnRep_CoinLeaderboard()
 {
-	if (UGameInstance* GameInstance = GetGameInstance())
+	// 클라이언트에서 OnCoinLeaderboardUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
 	{
-		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
-		if (IsValid(GameEventSubsystem) == true)
-		{
-			GameEventSubsystem->OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
-		}
+		GameEventSubsystem->OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
 	}
 }
 
@@ -207,8 +188,11 @@ void ACRGameState::ClearCoinLeaderboard()
 	CoinLeaderboard.Empty();
 	CoinLeaderboardIndexMap.Empty();
 
-	// CoinLeaderboard가 변경됨을 명시적으로 표시
-	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
+	// 서버에서 OnCoinLeaderboardUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
+	}
 }
 
 void ACRGameState::AddPlayerToCoinLeaderboard(const int32 PlayerId, const FString& PlayerName)
@@ -238,8 +222,11 @@ void ACRGameState::AddPlayerToCoinLeaderboard(const int32 PlayerId, const FStrin
 	// 순위 갱신
 	RefreshCoinLeaderboardRanks();
 
-	// CoinLeaderboard가 변경됨을 명시적으로 표시
-	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
+	// 서버에서 OnCoinLeaderboardUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
+	}
 }
 
 void ACRGameState::RemovePlayerFromCoinLeaderboard(const int32 PlayerId)
@@ -272,8 +259,11 @@ void ACRGameState::RemovePlayerFromCoinLeaderboard(const int32 PlayerId)
 	// 순위 갱신
 	RefreshCoinLeaderboardRanks();
 
-	// CoinLeaderboard가 변경됨을 명시적으로 표시
-	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
+	// 서버에서 OnCoinLeaderboardUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
+	}
 }
 
 void ACRGameState::UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCoins)
@@ -343,7 +333,13 @@ void ACRGameState::UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCo
 	// 순위 갱신
 	RefreshCoinLeaderboardRanks();
 
-	// CoinLeaderboard가 변경됨을 명시적으로 표시
+	// 서버에서 OnCoinLeaderboardUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnCoinLeaderboardUpdated.Broadcast(CoinLeaderboard);
+	}
+
+	// CoinLeaderboard의 변경 사항이 레플리케이션되도록 설정
 	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
 }
 
