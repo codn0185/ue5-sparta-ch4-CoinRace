@@ -92,21 +92,43 @@ void ACRGameState::ChangeGamePhase(EGamePhase NewGamePhase)
 
 void ACRGameState::AddChatData(const FChatEntry& NewChatData)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// 최대 보관 개수 초과 시 오래된 로그 제거
 	if (ChatLog.Num() >= MaxChatLogCount)
 	{
 		ChatLog.RemoveAt(0);
 	}
 
+	// 채팅 로그 추가
 	ChatLog.Add(NewChatData);
 }
 
 void ACRGameState::SetChatLog(const TArray<FChatEntry>& InChatLog)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// 새 채팅 로그로 덮어씌우기
 	ChatLog = InChatLog;
 }
 
 void ACRGameState::ClearChatLog()
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// 채팅 로그 클리어
 	ChatLog.Empty();
 }
 
@@ -134,6 +156,13 @@ const TArray<FCoinLeaderboardEntry>& ACRGameState::GetCoinLeaderboard() const
 
 void ACRGameState::ClearCoinLeaderboard()
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// CoinLeaderboard & CoinLeaderboardIndexMap 클리어
 	CoinLeaderboard.Empty();
 	CoinLeaderboardIndexMap.Empty();
 
@@ -143,6 +172,12 @@ void ACRGameState::ClearCoinLeaderboard()
 
 void ACRGameState::AddPlayerToCoinLeaderboard(const int32 PlayerId, const FString& PlayerName)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
 	// 플레이어 중복
 	if (CoinLeaderboardIndexMap.Contains(PlayerId) == true)
 	{
@@ -168,6 +203,12 @@ void ACRGameState::AddPlayerToCoinLeaderboard(const int32 PlayerId, const FStrin
 
 void ACRGameState::RemovePlayerFromCoinLeaderboard(const int32 PlayerId)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
 	// 플레이어 없음
 	if (CoinLeaderboardIndexMap.Contains(PlayerId) == false)
 	{
@@ -196,6 +237,12 @@ void ACRGameState::RemovePlayerFromCoinLeaderboard(const int32 PlayerId)
 
 void ACRGameState::UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCoins)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
 	// 플레이어 없음
 	if (CoinLeaderboardIndexMap.Contains(PlayerId) == false)
 	{
