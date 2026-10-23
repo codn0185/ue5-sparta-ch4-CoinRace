@@ -19,7 +19,7 @@ void UCRBonusMaxSpeedWidget::NativeConstruct()
 		}
 	}
 
-	// 초기 BonusMaxSpeed & Speed 설정
+	// 초기 BonusMaxSpeed & SpeedUnit 설정
 	const ACRPlayerState* CRPS = GetOwningPlayerState<ACRPlayerState>();
 	if (IsValid(CRPS) == true)
 	{
