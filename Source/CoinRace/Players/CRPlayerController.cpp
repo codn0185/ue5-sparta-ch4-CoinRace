@@ -98,6 +98,9 @@ void ACRPlayerController::BeginPlay()
 
 	// 플레이어 준비됨을 서버에 알림
 	ServerRPCNotifyPlayerInitialized();
+
+	// GameEventSubsystem 델리게이트 바인딩
+	BindGameEventDelegates();
 }
 
 void ACRPlayerController::SetupInputComponent()
@@ -144,9 +147,14 @@ void ACRPlayerController::OnPossess(APawn* InPawn)
 	VehiclePawn = CastChecked<ACRWheeledVehiclePawn>(InPawn);
 }
 
-void ACRPlayerController::OnRep_PlayerState()
+void ACRPlayerController::FocusChatInput()
 {
-	// GameEventSubsystem의 델리게이트 바인딩
+	VehicleUI->FocusChatInput();
+}
+
+void ACRPlayerController::BindGameEventDelegates()
+{
+	// this 약한 참조
 	TWeakObjectPtr<ACRPlayerController> WeakThis(this);
 
 	UGameInstance* GameInstance = GetGameInstance();
@@ -188,9 +196,4 @@ void ACRPlayerController::OnRep_PlayerState()
 				WeakThis->VehicleUI->UpdateCoinLeaderboard(CoinLeaderboard);
 			}
 		});
-}
-
-void ACRPlayerController::FocusChatInput()
-{
-	VehicleUI->FocusChatInput();
 }
