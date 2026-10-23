@@ -152,7 +152,7 @@ void ACRPlayerController::OnRep_PlayerState()
 		return;
 	}
 
-	// PlayerState의 델리게이트 바인딩
+	// GameEventSubsystem의 델리게이트 바인딩
 	TWeakObjectPtr<ACRPlayerController> WeakThis(this);
 
 	UGameInstance* GameInstance = GetGameInstance();
@@ -167,6 +167,7 @@ void ACRPlayerController::OnRep_PlayerState()
 		return;
 	}
 
+	// OnCoinsUpdated 바인딩
 	GameEventSubsystem->OnCoinsUpdated.AddLambda(
 		[WeakThis](const ACRPlayerState* CRPS, int32 NewCoins)
 		{
@@ -175,7 +176,7 @@ void ACRPlayerController::OnRep_PlayerState()
 				WeakThis->VehicleUI->SetCoins(NewCoins);
 			}
 		});
-
+	// OnBonusMaxSpeedUpdated 바인딩
 	GameEventSubsystem->OnBonusMaxSpeedUpdated.AddLambda(
 		[WeakThis](const ACRPlayerState* CRPS, float NewBonusMaxSpeed)
 		{
@@ -184,7 +185,7 @@ void ACRPlayerController::OnRep_PlayerState()
 				WeakThis->VehicleUI->SetBonusMaxSpeed(NewBonusMaxSpeed);
 			}
 		});
-
+	// OnCoinLeaderboardUpdated 바인딩
 	GameEventSubsystem->OnCoinLeaderboardUpdated.AddLambda(
 		[WeakThis](const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)
 		{
