@@ -18,8 +18,6 @@ class COINRACE_API UCRCoinWidget : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_Coins;
 
-	FDelegateHandle CoinsUpdatedHandle;
-
   protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
@@ -27,7 +25,10 @@ class COINRACE_API UCRCoinWidget : public UUserWidget
   public:
 	void SetCoins(int32 Amount);
 
+	/** OnCoinsUpdated 델리게이트 관리 */
   protected:
+	FDelegateHandle CoinsUpdatedHandle;
+
 	UFUNCTION()
 	void HandleCoinsUpdated(const ACRPlayerState* PlayerState, int32 NewCoins);
 };
