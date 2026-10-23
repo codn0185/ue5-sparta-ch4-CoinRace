@@ -39,8 +39,55 @@ void ACRGameState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(ThisClass, CurrentGamePhase);
 	DOREPLIFETIME(ThisClass, MaxChatLogCount);
 	DOREPLIFETIME(ThisClass, CoinLeaderboard);
+}
+
+void ACRGameState::OnRep_CurrentGamePhase()
+{
+	// 클라이언트에서 OnGamePhaseUpdated 델리게이트 송출
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnGamePhaseUpdated.Broadcast(CurrentGamePhase);
+		}
+	}
+}
+
+EGamePhase ACRGameState::GetCurrentGamePhase() const
+{
+	CurrentGamePhase;
+}
+
+void ACRGameState::ChangeGamePhase(EGamePhase NewGamePhase)
+{
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// GamePhase 변화 없음
+	if (CurrentGamePhase == NewGamePhase)
+	{
+		return;
+	}
+
+	// GamePhase 업데이트
+	CurrentGamePhase = NewGamePhase;
+
+	// 서버에서 OnGamePhaseUpdated 델리게이트 송출
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnGamePhaseUpdated.Broadcast(CurrentGamePhase);
+		}
+	}
 }
 
 void ACRGameState::AddChatData(const FChatEntry& NewChatData)

@@ -9,6 +9,14 @@
 struct FChatEntry;
 struct FCoinLeaderboardEntry;
 
+UENUM()
+enum class EGamePhase : uint8
+{
+	Waiting,  // 시작 전 대기
+	Playing,  // 게임 플레이
+	Finished, // 게임 종료
+};
+
 UCLASS()
 class COINRACE_API ACRGameState : public AGameStateBase
 {
@@ -21,6 +29,25 @@ class COINRACE_API ACRGameState : public AGameStateBase
   protected:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+	// ==================================================
+	// 게임 상태 머신
+  protected:
+	// 현재 GamePhase
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentGamePhase)
+	EGamePhase CurrentGamePhase = EGamePhase::Waiting;
+
+  protected:
+	UFUNCTION()
+	void OnRep_CurrentGamePhase();
+
+  public:
+	// CurrentGamePhase 반환
+	EGamePhase GetCurrentGamePhase() const;
+
+	// 상태 변경
+	void ChangeGamePhase(EGamePhase NewGamePhase);
+
+  public:
 	// ==================================================
 	// 채팅 로그 관리
   protected:
