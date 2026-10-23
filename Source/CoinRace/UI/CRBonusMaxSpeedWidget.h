@@ -8,6 +8,7 @@
 #include "CRBonusMaxSpeedWidget.generated.h"
 
 class UTextBlock;
+class ACRPlayerState;
 
 UCLASS()
 class COINRACE_API UCRBonusMaxSpeedWidget : public UUserWidget
@@ -30,6 +31,7 @@ class COINRACE_API UCRBonusMaxSpeedWidget : public UUserWidget
 
   protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
   public:
 	// 속도 단위 설정
@@ -37,4 +39,11 @@ class COINRACE_API UCRBonusMaxSpeedWidget : public UUserWidget
 
 	// 속도 값 설정
 	void SetBonusMaxSpeed(float NewBonusMaxSpeed);
+
+	/** OnBonusMaxSpeedUpdated 델리게이트 관리 */
+  protected:
+	FDelegateHandle BonusMaxSpeedUpdatedHandle;
+
+	UFUNCTION()
+	void HandleBonusMaxSpeedUpdated(const ACRPlayerState* PlayerState, float NewBonusMaxSpeed);
 };

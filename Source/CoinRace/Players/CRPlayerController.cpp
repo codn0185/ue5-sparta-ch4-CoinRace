@@ -169,15 +169,6 @@ void ACRPlayerController::BindGameEventDelegates()
 		return;
 	}
 
-	// OnBonusMaxSpeedUpdated 바인딩
-	GameEventSubsystem->OnBonusMaxSpeedUpdated.AddLambda(
-		[WeakThis](const ACRPlayerState* CRPS, float NewBonusMaxSpeed)
-		{
-			if (WeakThis.IsValid())
-			{
-				WeakThis->VehicleUI->SetBonusMaxSpeed(NewBonusMaxSpeed);
-			}
-		});
 	// OnCoinLeaderboardUpdated 바인딩
 	GameEventSubsystem->OnCoinLeaderboardUpdated.AddLambda(
 		[WeakThis](const TArray<FCoinLeaderboardEntry>& CoinLeaderboard)

@@ -1,13 +1,53 @@
 ﻿#include "CRBonusMaxSpeedWidget.h"
 
 #include "Components/TextBlock.h"
+#include "Players/CRPlayerState.h"
+#include "Systems/GameEventSubsystem.h"
 
 void UCRBonusMaxSpeedWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	SetBonusMaxSpeed(0);
-	TextBlock_SpeedUnit->SetText(FText::FromString(UISpeedUnit.DisplayString));
+	// OnBonusMaxSpeedUpdated 델리게이트 바인딩
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == true)
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			BonusMaxSpeedUpdatedHandle = GameEventSubsystem->OnBonusMaxSpeedUpdated.AddUObject(this, &ThisClass::HandleBonusMaxSpeedUpdated);
+		}
+	}
+
+	// 초기 BonusMaxSpeed & Speed 설정
+	const ACRPlayerState* CRPS = GetOwningPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == true)
+	{
+		SetBonusMaxSpeed(CRPS->GetBonusMaxSpeed());
+	}
+	else
+	{
+		SetBonusMaxSpeed(0);
+	}
+
+	SetSpeedUnit(UISpeedUnit);
+}
+
+void UCRBonusMaxSpeedWidget::NativeDestruct()
+{
+	// OnBonusMaxSpeedUpdated 델리게이트 바인딩 제거
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == true)
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnBonusMaxSpeedUpdated.Remove(BonusMaxSpeedUpdatedHandle);
+			BonusMaxSpeedUpdatedHandle.Reset();
+		}
+	}
+
+	Super::NativeDestruct();
 }
 
 void UCRBonusMaxSpeedWidget::SetSpeedUnit(const FSpeedUnit& NewSpeedUnit)
@@ -32,4 +72,9 @@ void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 	TextBlock_SpeedValue->SetText(FText::AsNumber(
 		UISpeedUnit.ConvertSpeed(FMath::Abs(CurrentBonusMaxSpeed)), // 단위에 맞춰 속도 값 변환
 		&Options));
+}
+
+void UCRBonusMaxSpeedWidget::HandleBonusMaxSpeedUpdated(const ACRPlayerState* PlayerState, float NewBonusMaxSpeed)
+{
+	SetBonusMaxSpeed(NewBonusMaxSpeed);
 }
