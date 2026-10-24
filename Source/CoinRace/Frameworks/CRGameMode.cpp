@@ -3,6 +3,7 @@
 #include "EngineUtils.h"
 
 #include "Data/ChatEntry.h"
+#include "Data/CoinLeaderboardEntry.h"
 #include "Engine/World.h"
 #include "Frameworks/CRGameState.h"
 #include "GameFramework/PlayerStart.h"
@@ -151,6 +152,7 @@ void ACRGameMode::StartGame()
 
 	// Playing 단계 설정
 	CRGS->ChangeGamePhase(EGamePhase::Playing);
+	CRGS->SetWaitingTimeRemaining(0.f);
 	CRGS->SetPlayingTimeRemaining(PlayinigTime); // 게임 시간 설정
 
 	// 남은 게임 시간
@@ -213,8 +215,40 @@ void ACRGameMode::FinishGame()
 
 	// Finished 단계 설정
 	CRGS->ChangeGamePhase(EGamePhase::Finished);
+	CRGS->SetPlayingTimeRemaining(0.f);
+	CRGS->ClearWinnerPlayerIds();
 
-	// TODO : 우승자들 확인 및 설정
+	// 우승 플레이어 ID 배열
+	TArray<int32> WinnerPlayerIds;
+
+	// 플레이어 순회하여 순위 확인 및 처리
+	for (const ACRPlayerController* CRPC : AllPlayerControllers)
+	{
+		ACRPlayerState* CRPS = CRPC->GetPlayerState<ACRPlayerState>();
+		if (IsValid(CRPS) == false)
+		{
+			continue;
+		}
+
+		// 플레이어 ID
+		const int32 PlayerId = CRPS->GetPlayerId();
+		const int32 Rank = CRGS->GetPlayerRank(PlayerId);
+
+		// 승리 플레이어
+		if (Rank == 1)
+		{
+			WinnerPlayerIds.Add(PlayerId);
+			CRPS->SetGameResult(EGameResult::Win);
+		}
+		// 패배 플레이어
+		else
+		{
+			CRPS->SetGameResult(EGameResult::Lose);
+		}
+	}
+
+	// 우승 플레이어 설정
+	CRGS->SetWinnerPlayerIds(WinnerPlayerIds);
 }
 
 void ACRGameMode::OnPlayerInitialized(ACRPlayerController* Player)
