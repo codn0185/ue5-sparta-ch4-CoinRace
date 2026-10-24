@@ -422,6 +422,19 @@ void ACRGameState::UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCo
 	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, CoinLeaderboard, this);
 }
 
+int32 ACRGameState::GetPlayerRank(int32 PlayerId)
+{
+	if (CoinLeaderboardIndexMap.Contains(PlayerId) == false)
+	{
+		return -1;
+	}
+
+	const int32 Index = CoinLeaderboardIndexMap[PlayerId];
+	const int32 Rank = CoinLeaderboard[Index].Rank;
+
+	return Rank;
+}
+
 void ACRGameState::RefreshCoinLeaderboardRanks()
 {
 	for (int32 Index = 0; Index < CoinLeaderboard.Num(); ++Index)

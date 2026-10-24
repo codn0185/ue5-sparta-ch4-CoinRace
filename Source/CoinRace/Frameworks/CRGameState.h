@@ -147,14 +147,21 @@ class COINRACE_API ACRGameState : public AGameStateBase
   public:
 	// 코인 리더보드 반환
 	const TArray<FCoinLeaderboardEntry>& GetCoinLeaderboard() const;
+
 	// 코인 리더보드 초기화
 	void ClearCoinLeaderboard();
+
 	// 코인 리더보드에 플레이어 추가
 	void AddPlayerToCoinLeaderboard(const int32 PlayerId, const FString& PlayerName);
+
 	// 코인 리더보드에서 플레이어 제거
 	void RemovePlayerFromCoinLeaderboard(const int32 PlayerId);
+
 	// 코인 리더보드 업데이트
 	void UpdateCoinLeaderboard(const int32 PlayerId, const int32 NewCoins);
+
+	// 플레이어 순위 조회 (유효하지 않은 PlayerId면 -1 반환)
+	int32 GetPlayerRank(int32 PlayerId);
 
   protected:
 	// 리더보드 순위 갱신
