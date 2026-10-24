@@ -14,6 +14,15 @@ void ACRPlayerState::BeginPlay()
 	}
 }
 
+void ACRPlayerState::OnRep_GameResult()
+{
+	// 클라이언트에서 OnGameResultUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnGameResultUpdated.Broadcast(this, GameResult);
+	}
+}
+
 void ACRPlayerState::OnRep_Coins()
 {
 	// 클라이언트에서 OnCoinsUpdated 델리게이트 송출
@@ -38,6 +47,28 @@ void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 	DOREPLIFETIME_CONDITION(ThisClass, Coins, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(ThisClass, BonusMaxSpeed, COND_OwnerOnly);
+}
+
+EGameResult ACRPlayerState::GetGameResult() const
+{
+	return EGameResult();
+}
+
+void ACRPlayerState::SetGameResult(EGameResult NewGameResult)
+{
+	// 서버에서만 수정 가능하도록 제한
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	GameResult = NewGameResult;
+
+	// 서버에서 OnGameResultUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnGameResultUpdated.Broadcast(this, GameResult);
+	}
 }
 
 int32 ACRPlayerState::GetCoins() const
