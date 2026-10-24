@@ -70,6 +70,24 @@ class COINRACE_API ACRGameState : public AGameStateBase
 	void SetWaitingTimeRemaining(float NewRemainingTime);
 
 	// ==================================================
+	// 남은 게임 시간
+  protected:
+	// 남은 게임 시간
+	UPROPERTY(ReplicatedUsing = OnRep_PlayingTimeRemaining)
+	float PlayingTimeRemaining = 0.f;
+
+  protected:
+	UFUNCTION()
+	void OnRep_PlayingTimeRemaining();
+
+  public:
+	// PlayingTimeRemaining 반환
+	float GetPlayingTimeRemaining() const;
+
+	// PlayingTimeRemaining 설정
+	void SetPlayingTimeRemaining(float NewRemainingTime);
+
+	// ==================================================
 	// 채팅 로그 관리
   protected:
 	// 채팅 로그의 최대 보관 개수

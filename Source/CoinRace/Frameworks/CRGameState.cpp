@@ -115,6 +115,37 @@ void ACRGameState::SetWaitingTimeRemaining(float NewRemainingTime)
 	}
 }
 
+void ACRGameState::OnRep_PlayingTimeRemaining()
+{
+	// 클라이언트에서 OnPlayingTimeRemainingUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnPlayingTimeRemainingUpdated.Broadcast(PlayingTimeRemaining);
+	}
+}
+
+float ACRGameState::GetPlayingTimeRemaining() const
+{
+	return PlayingTimeRemaining;
+}
+
+void ACRGameState::SetPlayingTimeRemaining(float NewRemainingTime)
+{
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	PlayingTimeRemaining = NewRemainingTime;
+
+	// 서버에서 OnPlayingTimeRemainingUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnPlayingTimeRemainingUpdated.Broadcast(PlayingTimeRemaining);
+	}
+}
+
 void ACRGameState::AddChatData(const FChatEntry& NewChatData)
 {
 	// 서버 권한 검증

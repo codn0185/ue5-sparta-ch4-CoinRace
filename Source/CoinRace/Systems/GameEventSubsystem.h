@@ -40,12 +40,21 @@ DECLARE_MULTICAST_DELEGATE_OneParam(
 	EGamePhase); // NewGamePhase
 
 /**
- *  게임의 남은 시간 변경 알림 델리게이트
+ *  남은 대기 시간 변경 알림 델리게이트
  * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
  * - 클라이언트: UI 갱신 등 후속 처리
  */
 DECLARE_MULTICAST_DELEGATE_OneParam(
 	FOnWaitingTimeRemainingUpdated,
+	float); // NewRemainingTime
+
+/**
+ *  남은 게임 시간 변경 알림 델리게이트
+ * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
+ * - 클라이언트: UI 갱신 등 후속 처리
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(
+	FOnPlayingTimeRemainingUpdated,
 	float); // NewRemainingTime
 
 /**
@@ -72,8 +81,11 @@ class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
 	// Game Phase 변경 알림 델리게이트
 	FOnGamePhaseUpdated OnGamePhaseUpdated;
 
-	// 게임의 남은 시간 변경 알림 델리게이트
+	// 남은 대기 시간 변경 알림 델리게이트
 	FOnWaitingTimeRemainingUpdated OnWaitingTimeRemainingUpdated;
+
+	// 남은 게임 시간 변경 알림 델리게이트
+	FOnPlayingTimeRemainingUpdated OnPlayingTimeRemainingUpdated;
 
 	// 코인 리더보드 변경 알림 델리게이트
 	FOnCoinLeaderboardUpdated OnCoinLeaderboardUpdated;
