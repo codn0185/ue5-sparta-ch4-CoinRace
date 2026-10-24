@@ -63,6 +63,160 @@ void ACRGameMode::Logout(AController* Exiting)
 	Super::Logout(Exiting);
 }
 
+void ACRGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// ACRGameState 검증
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == false)
+	{
+		return;
+	}
+
+	// 대기 카운트다운 시작
+	StartWaitingCountdown();
+}
+
+void ACRGameMode::StartWaitingCountdown()
+{
+	// ACRGameState 검증
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == false)
+	{
+		return;
+	}
+
+	// Waiting 단계 설정
+	CRGS->ChangeGamePhase(EGamePhase::Waiting);
+	CRGS->SetWaitingTimeRemaining(WaitingTime); // 대기 시간 설정
+
+	// 남은 대기 시간
+	const float WaitingTimeRemaining = CRGS->GetWaitingTimeRemaining();
+
+	// 남은 시간이 0 이하면 바로 게임 시작
+	if (WaitingTimeRemaining <= 0.f)
+	{
+		StartGame();
+		return;
+	}
+
+	// 대기 시간 감소 타이머 설정 - 1초 반복
+	GetWorld()->GetTimerManager().SetTimer(
+		WaitingTimerHandle,
+		this,
+		&ThisClass::UpdateWaitingCountdown,
+		1.f,
+		true);
+}
+
+void ACRGameMode::UpdateWaitingCountdown()
+{
+	// ACRGameState 검증
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == false)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(WaitingTimerHandle);
+		return;
+	}
+
+	// 남은 대기 시간
+	const float WaitingTimeRemaining = CRGS->GetWaitingTimeRemaining();
+
+	// 대기 카운트다운 지속
+	if (WaitingTimeRemaining > 0.f)
+	{
+		// 대기 시간 1초 감소
+		CRGS->SetWaitingTimeRemaining(WaitingTimeRemaining - 1.f);
+	}
+	// 대기 카운트다운 종료
+	else
+	{
+		// 대기 타이머 제거
+		GetWorld()->GetTimerManager().ClearTimer(WaitingTimerHandle);
+
+		// 게임 시작
+		StartGame();
+	}
+}
+
+void ACRGameMode::StartGame()
+{
+	// ACRGameState 검증
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == false)
+	{
+		return;
+	}
+
+	// Playing 단계 설정
+	CRGS->ChangeGamePhase(EGamePhase::Playing);
+	CRGS->SetPlayingTimeRemaining(PlayinigTime); // 게임 시간 설정
+
+	// 남은 게임 시간
+	const float PlayingTimeRemaining = CRGS->GetPlayingTimeRemaining();
+
+	// 남은 시간이 0 이하면 바로 게임 종료
+	if (PlayingTimeRemaining <= 0.f)
+	{
+		FinishGame();
+		return;
+	}
+
+	// 남은 게임 시간 감소 타이머 설정 - 1초 반복
+	GetWorld()->GetTimerManager().SetTimer(
+		PlayingTimerHandle,
+		this,
+		&ThisClass::UpdatePlayingCountdown,
+		1.f,
+		true);
+}
+
+void ACRGameMode::UpdatePlayingCountdown()
+{
+	// ACRGameState 검증
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == false)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(PlayingTimerHandle);
+		return;
+	}
+
+	// 남은 게임 시간
+	const float PlayingTimeRemaining = CRGS->GetPlayingTimeRemaining();
+
+	// 게임 카운트다운 지속
+	if (PlayingTimeRemaining > 0.f)
+	{
+		// 게임 시간 1초 감소
+		CRGS->SetPlayingTimeRemaining(PlayingTimeRemaining - 1.f);
+	}
+	// 게임 카운트다운 종료
+	else
+	{
+		// 게임 타이머 제거
+		GetWorld()->GetTimerManager().ClearTimer(PlayingTimerHandle);
+
+		// 게임 시작
+		FinishGame();
+	}
+}
+
+void ACRGameMode::FinishGame()
+{
+	// ACRGameState 검증
+	ACRGameState* CRGS = GetGameState<ACRGameState>();
+	if (IsValid(CRGS) == false)
+	{
+		return;
+	}
+
+	// Finished 단계 설정
+	CRGS->ChangeGamePhase(EGamePhase::Finished);
+
+	// TODO : 우승자들 확인 및 설정
+}
+
 void ACRGameMode::OnPlayerInitialized(ACRPlayerController* Player)
 {
 	if (IsValid(Player) == false)
