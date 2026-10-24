@@ -52,7 +52,7 @@ class COINRACE_API ACRGameState : public AGameStateBase
 	void ChangeGamePhase(EGamePhase NewGamePhase);
 
 	// ==================================================
-	// 게임 상태 머신
+	// 남은 대기 시간
   protected:
 	// 게임 플레이 중 남은 시간
 	UPROPERTY(ReplicatedUsing = OnRep_RemainingTime)
