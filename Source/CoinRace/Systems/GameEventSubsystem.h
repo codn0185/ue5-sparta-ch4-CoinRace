@@ -45,7 +45,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(
  * - 클라이언트: UI 갱신 등 후속 처리
  */
 DECLARE_MULTICAST_DELEGATE_OneParam(
-	FOnRemainingTimeUpdated,
+	FOnWaitingTimeRemainingUpdated,
 	float); // NewRemainingTime
 
 /**
@@ -73,7 +73,7 @@ class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
 	FOnGamePhaseUpdated OnGamePhaseUpdated;
 
 	// 게임의 남은 시간 변경 알림 델리게이트
-	FOnRemainingTimeUpdated OnRemainingTimeUpdated;
+	FOnWaitingTimeRemainingUpdated OnWaitingTimeRemainingUpdated;
 
 	// 코인 리더보드 변경 알림 델리게이트
 	FOnCoinLeaderboardUpdated OnCoinLeaderboardUpdated;
