@@ -6,6 +6,7 @@
 
 #include "CRGameState.generated.h"
 
+class ACRPlayerState;
 struct FChatEntry;
 struct FCoinLeaderboardEntry;
 
@@ -86,6 +87,27 @@ class COINRACE_API ACRGameState : public AGameStateBase
 
 	// PlayingTimeRemaining 설정
 	void SetPlayingTimeRemaining(float NewRemainingTime);
+
+	// ==================================================
+	// 우승 플레이어
+  protected:
+	// 게임을 승리한 플레이어 배열
+	UPROPERTY(ReplicatedUsing = OnRep_Winners)
+	TArray<TObjectPtr<ACRPlayerState>> Winners;
+
+  protected:
+	UFUNCTION()
+	void OnRep_Winners();
+
+  public:
+	// Winners 반환
+	const TArray<TObjectPtr<ACRPlayerState>>& GetWinners() const;
+
+	// Winners 설정
+	void SetWinners(const TArray<TObjectPtr<ACRPlayerState>>& NewWinners);
+
+	// Winners 초기화
+	void ClearWinners();
 
 	// ==================================================
 	// 채팅 로그 관리

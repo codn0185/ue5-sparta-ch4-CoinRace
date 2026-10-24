@@ -146,6 +146,54 @@ void ACRGameState::SetPlayingTimeRemaining(float NewRemainingTime)
 	}
 }
 
+void ACRGameState::OnRep_Winners()
+{
+	// 클라이언트에서 OnWinnersUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnWinnersUpdated.Broadcast(Winners);
+	}
+}
+
+const TArray<TObjectPtr<ACRPlayerState>>& ACRGameState::GetWinners() const
+{
+	return Winners;
+}
+
+void ACRGameState::SetWinners(const TArray<TObjectPtr<ACRPlayerState>>& NewWinners)
+{
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	Winners = NewWinners;
+
+	// 서버에서 OnWinnersUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnWinnersUpdated.Broadcast(Winners);
+	}
+}
+
+void ACRGameState::ClearWinners()
+{
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	Winners.Empty();
+
+	// 서버에서 OnWinnersUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnWinnersUpdated.Broadcast(Winners);
+	}
+}
+
 void ACRGameState::AddChatData(const FChatEntry& NewChatData)
 {
 	// 서버 권한 검증

@@ -58,6 +58,15 @@ DECLARE_MULTICAST_DELEGATE_OneParam(
 	float); // NewRemainingTime
 
 /**
+ *  우승 플레이어 변경 알림 델리게이트
+ * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
+ * - 클라이언트: UI 갱신 등 후속 처리
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(
+	FOnWinnersUpdated,
+	const TArray<TObjectPtr<ACRPlayerState>>&); // NewWinners
+
+/**
  * 코인 리더보드 변경 알림 델리게이트
  * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
  * - 클라이언트: UI 갱신 등 후속 처리
@@ -86,6 +95,9 @@ class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
 
 	// 남은 게임 시간 변경 알림 델리게이트
 	FOnPlayingTimeRemainingUpdated OnPlayingTimeRemainingUpdated;
+
+	// 우승 플레이어 변경 알림 델리게이트
+	FOnWinnersUpdated OnWinnersUpdated;
 
 	// 코인 리더보드 변경 알림 델리게이트
 	FOnCoinLeaderboardUpdated OnCoinLeaderboardUpdated;
