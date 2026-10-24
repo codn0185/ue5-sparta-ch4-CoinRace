@@ -63,8 +63,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(
  * - 클라이언트: UI 갱신 등 후속 처리
  */
 DECLARE_MULTICAST_DELEGATE_OneParam(
-	FOnWinnersUpdated,
-	const TArray<TObjectPtr<ACRPlayerState>>&); // NewWinners
+	FOnWinnerPlayerIdsUpdated,
+	const TArray<int32>&); // NewWinners
 
 /**
  * 코인 리더보드 변경 알림 델리게이트
@@ -97,7 +97,7 @@ class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
 	FOnPlayingTimeRemainingUpdated OnPlayingTimeRemainingUpdated;
 
 	// 우승 플레이어 변경 알림 델리게이트
-	FOnWinnersUpdated OnWinnersUpdated;
+	FOnWinnerPlayerIdsUpdated OnWinnerPlayerIdsUpdated;
 
 	// 코인 리더보드 변경 알림 델리게이트
 	FOnCoinLeaderboardUpdated OnCoinLeaderboardUpdated;

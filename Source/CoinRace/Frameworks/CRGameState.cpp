@@ -146,21 +146,21 @@ void ACRGameState::SetPlayingTimeRemaining(float NewRemainingTime)
 	}
 }
 
-void ACRGameState::OnRep_Winners()
+void ACRGameState::OnRep_WinnerPlayerIds()
 {
-	// 클라이언트에서 OnWinnersUpdated 델리게이트 송출
+	// 클라이언트에서 OnWinnerPlayerIdsUpdated 델리게이트 송출
 	if (IsValid(GameEventSubsystem) == true)
 	{
-		GameEventSubsystem->OnWinnersUpdated.Broadcast(Winners);
+		GameEventSubsystem->OnWinnerPlayerIdsUpdated.Broadcast(WinnerPlayerIds);
 	}
 }
 
-const TArray<TObjectPtr<ACRPlayerState>>& ACRGameState::GetWinners() const
+const TArray<int32>& ACRGameState::GetWinnerPlayerIds() const
 {
-	return Winners;
+	return WinnerPlayerIds;
 }
 
-void ACRGameState::SetWinners(const TArray<TObjectPtr<ACRPlayerState>>& NewWinners)
+void ACRGameState::SetWinnerPlayerIds(const TArray<int32>& NewWinnerPlayerIds)
 {
 	// 서버 권한 검증
 	if (HasAuthority() == false)
@@ -168,16 +168,16 @@ void ACRGameState::SetWinners(const TArray<TObjectPtr<ACRPlayerState>>& NewWinne
 		return;
 	}
 
-	Winners = NewWinners;
+	WinnerPlayerIds = NewWinnerPlayerIds;
 
-	// 서버에서 OnWinnersUpdated 델리게이트 송출
+	// 서버에서 OnWinnerPlayerIdsUpdated 델리게이트 송출
 	if (IsValid(GameEventSubsystem) == true)
 	{
-		GameEventSubsystem->OnWinnersUpdated.Broadcast(Winners);
+		GameEventSubsystem->OnWinnerPlayerIdsUpdated.Broadcast(WinnerPlayerIds);
 	}
 }
 
-void ACRGameState::ClearWinners()
+void ACRGameState::ClearWinnerPlayerIds()
 {
 	// 서버 권한 검증
 	if (HasAuthority() == false)
@@ -185,12 +185,12 @@ void ACRGameState::ClearWinners()
 		return;
 	}
 
-	Winners.Empty();
+	WinnerPlayerIds.Empty();
 
-	// 서버에서 OnWinnersUpdated 델리게이트 송출
+	// 서버에서 OnWinnerPlayerIdsUpdated 델리게이트 송출
 	if (IsValid(GameEventSubsystem) == true)
 	{
-		GameEventSubsystem->OnWinnersUpdated.Broadcast(Winners);
+		GameEventSubsystem->OnWinnerPlayerIdsUpdated.Broadcast(WinnerPlayerIds);
 	}
 }
 
