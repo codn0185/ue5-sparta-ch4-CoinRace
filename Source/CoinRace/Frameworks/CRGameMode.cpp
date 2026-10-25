@@ -33,6 +33,13 @@ void ACRGameMode::OnPostLogin(AController* NewPlayer)
 			FString PlayerName = FString::Printf(TEXT("Player %d"), AllPlayerControllers.Num());
 			PlayerState->SetPlayerName(PlayerName);
 		}
+
+		// 플레이어 수 증가
+		ACRGameState* CRGS = GetGameState<ACRGameState>();
+		if (IsValid(CRGS) == true)
+		{
+			CRGS->AddPlayerCount();
+		}
 	}
 
 	Super::OnPostLogin(NewPlayer);
@@ -58,6 +65,13 @@ void ACRGameMode::Logout(AController* Exiting)
 
 				CRGS->RemovePlayerFromCoinLeaderboard(PlayerId);
 			}
+		}
+
+		// 플레이어 수 감소
+		ACRGameState* CRGS = GetGameState<ACRGameState>();
+		if (IsValid(CRGS) == true)
+		{
+			CRGS->RemovePlayerCount();
 		}
 	}
 
