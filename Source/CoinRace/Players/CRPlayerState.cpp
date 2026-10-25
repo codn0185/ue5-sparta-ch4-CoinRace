@@ -45,6 +45,7 @@ void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME_CONDITION(ThisClass, GameResult, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(ThisClass, Coins, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(ThisClass, BonusMaxSpeed, COND_OwnerOnly);
 }
