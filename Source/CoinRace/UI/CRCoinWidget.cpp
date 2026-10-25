@@ -55,5 +55,11 @@ void UCRCoinWidget::SetCoins(int32 Amount)
 
 void UCRCoinWidget::HandleCoinsUpdated(const ACRPlayerState* PlayerState, int32 NewCoins)
 {
+	// 로컬 플레이어에만 반영
+	if (PlayerState != GetOwningPlayerState<ACRPlayerState>())
+	{
+		return;
+	}
+
 	SetCoins(NewCoins);
 }

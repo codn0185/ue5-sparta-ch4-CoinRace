@@ -76,5 +76,11 @@ void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 
 void UCRBonusMaxSpeedWidget::HandleBonusMaxSpeedUpdated(const ACRPlayerState* PlayerState, float NewBonusMaxSpeed)
 {
+	// 로컬 플레이어에만 반영
+	if (PlayerState != GetOwningPlayerState<ACRPlayerState>())
+	{
+		return;
+	}
+
 	SetBonusMaxSpeed(NewBonusMaxSpeed);
 }
