@@ -10,6 +10,7 @@ class UInputMappingContext;
 class ACRWheeledVehiclePawn;
 class UCRHUD;
 class UCRLobbyWidget;
+class UCRGameResultWidget;
 struct FChatEntry;
 struct FCoinLeaderboardEntry;
 
@@ -50,6 +51,13 @@ class COINRACE_API ACRPlayerController : public APlayerController
 
 	/** 대기실 UI 위젯 */
 	TObjectPtr<UCRLobbyWidget> LobbyUI;
+
+	/** 게임 결과 UI 위젯 클래스 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = UI)
+	TSubclassOf<UCRGameResultWidget> GameResultUIClass;
+
+	/** 대기실 UI 위젯 */
+	TObjectPtr<UCRGameResultWidget> GameResultUI;
 
 	// GamePhase 변경 이벤트
 	UFUNCTION()

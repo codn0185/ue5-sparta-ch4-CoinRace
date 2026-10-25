@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Systems/GameEventSubsystem.h"
+#include "UI/CRGameResultWidget.h"
 #include "UI/CRHUD.h"
 #include "UI/CRLobbyWidget.h"
 #include "Vehicles/CRWheeledVehiclePawn.h"
@@ -84,14 +85,17 @@ void ACRPlayerController::HandleGamePhaseUpdated(EGamePhase NewGamePhase)
 	case EGamePhase::Waiting:
 		LobbyUI->SetVisibility(ESlateVisibility::Visible);
 		VehicleUI->SetVisibility(ESlateVisibility::Hidden);
+		GameResultUI->SetVisibility(ESlateVisibility::Hidden);
 		break;
 	case EGamePhase::Playing:
 		LobbyUI->SetVisibility(ESlateVisibility::Hidden);
 		VehicleUI->SetVisibility(ESlateVisibility::Visible);
+		GameResultUI->SetVisibility(ESlateVisibility::Hidden);
 		break;
 	case EGamePhase::Finished:
 		LobbyUI->SetVisibility(ESlateVisibility::Hidden);
 		VehicleUI->SetVisibility(ESlateVisibility::Hidden);
+		GameResultUI->SetVisibility(ESlateVisibility::Visible);
 		break;
 	}
 }
@@ -117,6 +121,11 @@ void ACRPlayerController::BeginPlay()
 	LobbyUI = CreateWidget<UCRLobbyWidget>(this, LobbyUIClass);
 	check(LobbyUI);
 	LobbyUI->AddToViewport();
+
+	// 게임 결과 UI 위젯
+	GameResultUI = CreateWidget<UCRGameResultWidget>(this, GameResultUIClass);
+	check(GameResultUI);
+	GameResultUI->AddToViewport();
 
 	// OnGamePhaseUpdated 델리게이트 바인딩
 	UGameInstance* GameInstance = GetGameInstance();
