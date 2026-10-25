@@ -45,6 +45,48 @@ void ACRGameState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& O
 	DOREPLIFETIME(ThisClass, CoinLeaderboard);
 }
 
+void ACRGameState::OnRep_PlayerCount()
+{
+	// 클라이언트에서 OnPlayerCountUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnPlayerCountUpdated.Broadcast(PlayerCount);
+	}
+}
+
+int32 ACRGameState::GetPlayerCount() const
+{
+	return PlayerCount;
+}
+
+void ACRGameState::SetPlayerCount(int32 NewPlayerCount)
+{
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// PlayerCount 설정 (음수 방지)
+	PlayerCount = FMath::Max(0, NewPlayerCount);
+
+	// 서버에서 OnPlayerCountUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnPlayerCountUpdated.Broadcast(PlayerCount);
+	}
+}
+
+void ACRGameState::AddPlayerCount(int32 Amount)
+{
+	SetPlayerCount(PlayerCount + Amount);
+}
+
+void ACRGameState::RemovePlayerCount(int32 Amount)
+{
+	SetPlayerCount(PlayerCount - Amount);
+}
+
 void ACRGameState::OnRep_CurrentGamePhase()
 {
 	// 클라이언트에서 OnGamePhaseUpdated 델리게이트 송출

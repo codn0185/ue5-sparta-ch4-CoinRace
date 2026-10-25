@@ -34,6 +34,30 @@ class COINRACE_API ACRGameState : public AGameStateBase
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// ==================================================
+	// 플레이어
+  protected:
+	// 입장한 플레이어 수
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerCount)
+	int32 PlayerCount = 0;
+
+  protected:
+	UFUNCTION()
+	void OnRep_PlayerCount();
+
+  public:
+	// PlayerCount 반환
+	int32 GetPlayerCount() const;
+
+	// PlayerCount 설정
+	void SetPlayerCount(int32 NewPlayerCount);
+
+	// PlayerCount 증가
+	void AddPlayerCount(int32 Amount = 1);
+
+	// PlayerCount 감소
+	void RemovePlayerCount(int32 Amount = 1);
+
+	// ==================================================
 	// 게임 상태 머신
   protected:
 	// 현재 GamePhase
