@@ -42,6 +42,15 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(
 	float); // NewBonusMaxSpeed
 
 /**
+ * 플레이어 수 변경 알림 델리게이트
+ * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
+ * - 클라이언트: UI 갱신 등 후속 처리
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(
+	FOnPlayerCountUpdated,
+	int32); // NewPlayerCount
+
+/**
  *  Game Phase 변경 알림 델리게이트
  * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
  * - 클라이언트: UI 갱신 등 후속 처리
@@ -100,6 +109,9 @@ class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
 
 	// 보너스 최대 속도 변경 알림 델리게이트
 	FOnBonusMaxSpeedUpdated OnBonusMaxSpeedUpdated;
+
+	// 플레이어 수 변경 알림 델리게이트
+	FOnPlayerCountUpdated OnPlayerCountUpdated;
 
 	// Game Phase 변경 알림 델리게이트
 	FOnGamePhaseUpdated OnGamePhaseUpdated;
