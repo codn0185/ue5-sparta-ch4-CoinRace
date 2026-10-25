@@ -8,7 +8,9 @@
 #include "Frameworks/CRGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Systems/GameEventSubsystem.h"
 #include "UI/CRHUD.h"
+#include "UI/CRLobbyWidget.h"
 #include "Vehicles/CRWheeledVehiclePawn.h"
 
 void ACRPlayerController::ServerRPCSendChatMessage_Implementation(const FString& ChatMessage)
@@ -75,6 +77,26 @@ void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
 	CRGameMode->OnPlayerInitialized(this);
 }
 
+void ACRPlayerController::HandleGamePhaseUpdated(EGamePhase NewGamePhase)
+{
+	// TODO: 해당 이벤트 바인딩
+	switch (NewGamePhase)
+	{
+	case EGamePhase::Waiting:
+		LobbyUI->SetVisibility(ESlateVisibility::Visible);
+		VehicleUI->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	case EGamePhase::Playing:
+		LobbyUI->SetVisibility(ESlateVisibility::Hidden);
+		VehicleUI->SetVisibility(ESlateVisibility::Visible);
+		break;
+	case EGamePhase::Finished:
+		LobbyUI->SetVisibility(ESlateVisibility::Hidden);
+		VehicleUI->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	}
+}
+
 void ACRPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -86,16 +108,48 @@ void ACRPlayerController::BeginPlay()
 
 	// spawn the UI widget and add it to the viewport
 	VehicleUI = CreateWidget<UCRHUD>(this, VehicleUIClass);
-
 	check(VehicleUI);
-
 	VehicleUI->AddToViewport();
 
 	// 채팅 입력 커밋 델리게이트 바인딩
 	VehicleUI->OnChatMessageSubmitted.BindUObject(this, &ThisClass::ServerRPCSendChatMessage);
 
+	// 대기실 UI 위젯
+	LobbyUI = CreateWidget<UCRLobbyWidget>(this, LobbyUIClass);
+	check(LobbyUI);
+	LobbyUI->AddToViewport();
+
+	// OnGamePhaseUpdated 델리게이트 바인딩
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == true)
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnGamePhaseUpdated.AddUObject(this, &ThisClass::HandleGamePhaseUpdated);
+		}
+	}
+
+	HandleGamePhaseUpdated(EGamePhase::Waiting);
+
 	// 플레이어 준비됨을 서버에 알림
 	ServerRPCNotifyPlayerInitialized();
+}
+
+void ACRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	// OnGamePhaseUpdated 델리게이트 바인딩 해제
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == true)
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnGamePhaseUpdated.RemoveAll(this);
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void ACRPlayerController::SetupInputComponent()

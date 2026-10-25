@@ -9,6 +9,7 @@
 class UInputMappingContext;
 class ACRWheeledVehiclePawn;
 class UCRHUD;
+class UCRLobbyWidget;
 struct FChatEntry;
 struct FCoinLeaderboardEntry;
 
@@ -43,6 +44,17 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	/** Pointer to the UI widget */
 	TObjectPtr<UCRHUD> VehicleUI;
 
+	/** 대기실 UI 위젯 클래스 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = UI)
+	TSubclassOf<UCRLobbyWidget> LobbyUIClass;
+
+	/** 대기실 UI 위젯 */
+	TObjectPtr<UCRLobbyWidget> LobbyUI;
+
+	// GamePhase 변경 이벤트
+	UFUNCTION()
+	void HandleGamePhaseUpdated(EGamePhase NewGamePhase);
+
 	// RPC 메서드
   public:
 	// 서버에 채팅 메시지 전송을 요청
@@ -63,6 +75,7 @@ class COINRACE_API ACRPlayerController : public APlayerController
 	// Begin Actor interface
   protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void SetupInputComponent() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
