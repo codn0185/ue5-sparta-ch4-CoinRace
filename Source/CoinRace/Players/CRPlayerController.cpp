@@ -79,7 +79,6 @@ void ACRPlayerController::ServerRPCNotifyPlayerInitialized_Implementation()
 
 void ACRPlayerController::HandleGamePhaseUpdated(EGamePhase NewGamePhase)
 {
-	// TODO: 해당 이벤트 바인딩
 	switch (NewGamePhase)
 	{
 	case EGamePhase::Waiting:
