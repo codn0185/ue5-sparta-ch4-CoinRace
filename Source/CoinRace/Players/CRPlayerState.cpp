@@ -14,33 +14,6 @@ void ACRPlayerState::BeginPlay()
 	}
 }
 
-void ACRPlayerState::OnRep_GameResult()
-{
-	// 클라이언트에서 OnGameResultUpdated 델리게이트 송출
-	if (IsValid(GameEventSubsystem) == true)
-	{
-		GameEventSubsystem->OnGameResultUpdated.Broadcast(this, GameResult);
-	}
-}
-
-void ACRPlayerState::OnRep_Coins()
-{
-	// 클라이언트에서 OnCoinsUpdated 델리게이트 송출
-	if (IsValid(GameEventSubsystem) == true)
-	{
-		GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
-	}
-}
-
-void ACRPlayerState::OnRep_BonusMaxSpeed()
-{
-	// 클라이언트에서 OnBonusMaxSpeedUpdated 델리게이트 송출
-	if (IsValid(GameEventSubsystem) == true)
-	{
-		GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
-	}
-}
-
 void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -48,6 +21,15 @@ void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	DOREPLIFETIME_CONDITION(ThisClass, GameResult, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(ThisClass, Coins, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(ThisClass, BonusMaxSpeed, COND_OwnerOnly);
+}
+
+void ACRPlayerState::OnRep_GameResult()
+{
+	// 클라이언트에서 OnGameResultUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnGameResultUpdated.Broadcast(this, GameResult);
+	}
 }
 
 EGameResult ACRPlayerState::GetGameResult() const
@@ -69,6 +51,15 @@ void ACRPlayerState::SetGameResult(EGameResult NewGameResult)
 	if (IsValid(GameEventSubsystem) == true)
 	{
 		GameEventSubsystem->OnGameResultUpdated.Broadcast(this, GameResult);
+	}
+}
+
+void ACRPlayerState::OnRep_Coins()
+{
+	// 클라이언트에서 OnCoinsUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnCoinsUpdated.Broadcast(this, Coins);
 	}
 }
 
@@ -121,6 +112,15 @@ bool ACRPlayerState::TryRemoveCoins(int32 Amount)
 	}
 
 	return true;
+}
+
+void ACRPlayerState::OnRep_BonusMaxSpeed()
+{
+	// 클라이언트에서 OnBonusMaxSpeedUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
+	}
 }
 
 float ACRPlayerState::GetBonusMaxSpeed() const
