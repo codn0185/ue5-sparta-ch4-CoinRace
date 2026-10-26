@@ -19,6 +19,7 @@ void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(ThisClass, GameResult, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(ThisClass, bCanThrottle, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(ThisClass, Coins, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(ThisClass, BonusMaxSpeed, COND_OwnerOnly);
 }
@@ -51,6 +52,37 @@ void ACRPlayerState::SetGameResult(EGameResult NewGameResult)
 	if (IsValid(GameEventSubsystem) == true)
 	{
 		GameEventSubsystem->OnGameResultUpdated.Broadcast(this, GameResult);
+	}
+}
+
+void ACRPlayerState::OnRep_CanThrottle()
+{
+	// 클라이언트에서 OnCanThrottleUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnCanThrottleUpdated.Broadcast(this, bCanThrottle);
+	}
+}
+
+bool ACRPlayerState::CanThrottle() const
+{
+	return bCanThrottle;
+}
+
+void ACRPlayerState::SetCanThrottle(bool bNewCanThrottle)
+{
+	// 서버에서만 수정 가능하도록 제한
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	bCanThrottle = bNewCanThrottle;
+
+	// 서버에서 OnCanThrottleUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnCanThrottleUpdated.Broadcast(this, bCanThrottle);
 	}
 }
 

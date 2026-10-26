@@ -126,8 +126,21 @@ void ACRWheeledVehiclePawn::Steering(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::Throttle(const FInputActionValue& Value)
 {
+	const float CurrentThrottle = ChaosVehicleMovement->GetThrottleInput();
+	const bool bCanThrottle = CanThrottle();
+
+	GEngine->AddOnScreenDebugMessage(
+		1,
+		0.f,
+		bCanThrottle ? FColor::Green : FColor::Red,
+		FString::Printf(
+			TEXT("Current Throttle: %.2f | CanThrottle: %s"),
+			CurrentThrottle,
+			bCanThrottle ? TEXT("True") : TEXT("False")));
+
 	if (CanThrottle() == false)
 	{
+		ChaosVehicleMovement->SetThrottleInput(0.f);
 		return;
 	}
 
@@ -290,7 +303,14 @@ void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVect
 
 bool ACRWheeledVehiclePawn::CanThrottle() const
 {
-	return GetWorldTimerManager().IsTimerActive(DisableThrottleTimerHandle) == false;
+	// ACRPlayerState 검증
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return true;
+	}
+
+	return CRPS->CanThrottle();
 }
 
 int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
@@ -405,6 +425,19 @@ void ACRWheeledVehiclePawn::AddBonusMaxSpeed(float Amount)
 
 void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
 {
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// ACRPlayerState 검증
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return;
+	}
+
 	if (Duration <= 0.f)
 	{
 		return;
@@ -412,6 +445,9 @@ void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
 
 	// 기존 가속 입력 초기화
 	ChaosVehicleMovement->SetThrottleInput(0.f);
+
+	// 전진 가속 비활성화
+	CRPS->SetCanThrottle(false);
 
 	// 남은 비활성화 시간
 	const float RemainingTime = GetWorldTimerManager().GetTimerRemaining(DisableThrottleTimerHandle);
@@ -421,6 +457,19 @@ void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
 	{
 		GetWorldTimerManager().SetTimer(
 			DisableThrottleTimerHandle,
+			FTimerDelegate::CreateLambda(
+				[this]()
+				{
+					// ACRPlayerState 검증
+					ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+					if (IsValid(CRPS) == false)
+					{
+						return;
+					}
+
+					// 전진 가속 활성화
+					CRPS->SetCanThrottle(true);
+				}),
 			Duration,
 			false);
 	}

@@ -22,6 +22,16 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(
 	EGameResult); // NewGameResult
 
 /**
+ *  전진 가속 활성화 여부 변경 알림 델리게이트
+ * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
+ * - 클라이언트: UI 갱신 등 후속 처리
+ */
+DECLARE_MULTICAST_DELEGATE_TwoParams(
+	FOnCanThrottleUpdated,
+	const ACRPlayerState*,
+	bool); // bNewCanThrottle
+
+/**
  * 코인 변경 알림 델리게이트
  * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
  * - 클라이언트: UI 갱신 등 후속 처리
@@ -103,6 +113,9 @@ class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
   public:
 	// 게임 결과 변경 알림 델리게이트
 	FOnGameResultUpdated OnGameResultUpdated;
+
+	// 전진 가속 활성화 여부 변경 알림 델리게이트
+	FOnCanThrottleUpdated OnCanThrottleUpdated;
 
 	// 코인 변경 알림 델리게이트
 	FOnCoinsUpdated OnCoinsUpdated;

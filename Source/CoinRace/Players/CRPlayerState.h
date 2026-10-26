@@ -50,6 +50,24 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	void SetGameResult(EGameResult NewGameResult);
 
 	// ==================================================
+	// 전진 가속 활성화
+  protected:
+	// 전진 가속 활성화 여부
+	UPROPERTY(ReplicatedUsing = OnRep_CanThrottle)
+	bool bCanThrottle = true;
+
+  protected:
+	UFUNCTION()
+	void OnRep_CanThrottle();
+
+  public:
+	// bCanThrottle 반환
+	bool CanThrottle() const;
+
+	// bCanThrottle 설정
+	void SetCanThrottle(bool bNewCanThrottle);
+
+	// ==================================================
 	// Coins
   protected:
 	// 코인 개수
