@@ -4,15 +4,15 @@
 
 #include "UObject/Interface.h"
 
-#include "CoinStealableInterface.generated.h"
+#include "AttackableInterface.generated.h"
 
 UINTERFACE(MinimalAPI)
-class UCoinStealableInterface : public UInterface
+class UAttackableInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class COINRACE_API ICoinStealableInterface
+class COINRACE_API IAttackableInterface
 {
 	GENERATED_BODY()
 

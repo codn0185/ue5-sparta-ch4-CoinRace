@@ -406,13 +406,13 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 			return;
 		}
 
-		if (ICoinStealableInterface* CoinStealable = Cast<ICoinStealableInterface>(HitResult.GetActor()))
+		if (IAttackableInterface* Attackable = Cast<IAttackableInterface>(HitResult.GetActor()))
 		{
 			// 코인 빼앗기
-			const int32 StolenCoins = CoinStealable->StealCoins(5);
+			const int32 StolenCoins = Attackable->StealCoins(5);
 
 			// 피격 이펙트 재생
-			CoinStealable->PlayCoinStolenEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
+			Attackable->PlayCoinStolenEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
 
 			// 빼앗은 코인 추가
 			if (StolenCoins > 0)

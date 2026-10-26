@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "WheeledVehiclePawn.h"
 
-#include "Interfaces/CoinStealableInterface.h"
+#include "Interfaces/AttackableInterface.h"
 #include "Interfaces/ItemEffectReceiverInterface.h"
 
 #include "CRWheeledVehiclePawn.generated.h"
@@ -20,7 +20,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
 
 UCLASS()
 class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
-										   public ICoinStealableInterface,
+										   public IAttackableInterface,
 										   public IItemEffectReceiverInterface
 {
 	GENERATED_BODY()
@@ -189,7 +189,7 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	}
 
   public:
-	/** ICoinStealableInterface 인터페이스 구현 */
+	/** IAttackableInterface 인터페이스 구현 */
 	// 코인을 빼앗기고, 실제로 빼앗긴 수량을 반환
 	virtual int32 StealCoins(int32 Amount) override;
 	// 코인을 빼앗길 때 이펙트 재생
