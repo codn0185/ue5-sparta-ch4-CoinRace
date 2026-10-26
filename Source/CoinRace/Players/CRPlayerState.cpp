@@ -52,7 +52,7 @@ void ACRPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 EGameResult ACRPlayerState::GetGameResult() const
 {
-	return EGameResult();
+	return GameResult;
 }
 
 void ACRPlayerState::SetGameResult(EGameResult NewGameResult)
