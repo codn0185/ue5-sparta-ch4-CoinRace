@@ -64,20 +64,22 @@ void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 	// 현재 보너스 최대 속도 설정
 	CurrentBonusMaxSpeed = NewBonusMaxSpeed;
 
+	// 부호
+	const FString Sign = CurrentBonusMaxSpeed >= 0.f ? TEXT("+") : TEXT("-");
+
+	// 표시 값
+	const float DisplaySpeed = UISpeedUnit.ConvertSpeed(FMath::Abs(CurrentBonusMaxSpeed));
+
 	// 텍스트 변환 설정
 	FNumberFormattingOptions Options;
 	Options.SetRoundingMode(ERoundingMode::HalfFromZero); // 반올림
 	Options.SetMaximumFractionalDigits(2);                // 소수점 2자리 표시
 
-	TextBlock_SpeedValue->SetText(FText::AsNumber(
-		UISpeedUnit.ConvertSpeed(FMath::Abs(CurrentBonusMaxSpeed)), // 단위에 맞춰 속도 값 변환
-		&Options));
-
-	// 0이면 숨기기
-	SetVisibility(
-		FMath::IsNearlyZero(CurrentBonusMaxSpeed) == true
-			? ESlateVisibility::Hidden
-			: ESlateVisibility::Visible);
+	// 텍스트 UI 설정
+	TextBlock_SpeedValue->SetText(FText::Format(
+		FText::FromString(TEXT("{0} {1}")),
+		FText::FromString(Sign),
+		FText::AsNumber(DisplaySpeed, &Options)));
 }
 
 void UCRBonusMaxSpeedWidget::HandleBonusMaxSpeedUpdated(const ACRPlayerState* PlayerState, float NewBonusMaxSpeed)
