@@ -169,4 +169,23 @@ void ACRPlayerState::ReduceBonusMaxSpeed(float Amount)
 	{
 		GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
 	}
+
+	// 타이머 활성화 - 초당 1 회복 반복
+	GetWorldTimerManager().SetTimer(
+		RecoveryBonusMaxSpeedTimerHandle,
+		FTimerDelegate::CreateLambda(
+			[this]()
+			{
+				// 회복 중단
+				if (BonusMaxSpeed >= 0.f)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(RecoveryBonusMaxSpeedTimerHandle);
+					return;
+				}
+
+				// 0 초과 방지
+				BonusMaxSpeed = FMath::Min(BonusMaxSpeed + 1.f, 0.f);
+			}),
+		1.0f,
+		true);
 }

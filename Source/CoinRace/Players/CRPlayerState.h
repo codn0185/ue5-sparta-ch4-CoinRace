@@ -77,6 +77,9 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	UPROPERTY(ReplicatedUsing = OnRep_BonusMaxSpeed)
 	float BonusMaxSpeed = 0.f;
 
+	// 회복 타이머 핸들
+	FTimerHandle RecoveryBonusMaxSpeedTimerHandle;
+
   protected:
 	UFUNCTION()
 	void OnRep_BonusMaxSpeed();
