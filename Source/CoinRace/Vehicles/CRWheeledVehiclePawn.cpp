@@ -405,6 +405,14 @@ void ACRWheeledVehiclePawn::AddBonusMaxSpeed(float Amount)
 
 void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
 {
+	if (Duration <= 0.f)
+	{
+		return;
+	}
+
+	// 기존 가속 입력 초기화
+	ChaosVehicleMovement->SetThrottleInput(0.f);
+
 	// 남은 비활성화 시간
 	const float RemainingTime = GetWorldTimerManager().GetTimerRemaining(DisableThrottleTimerHandle);
 
