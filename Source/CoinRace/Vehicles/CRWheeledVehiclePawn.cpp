@@ -8,7 +8,9 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Items/MineItem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystem.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
@@ -88,11 +90,14 @@ void ACRWheeledVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		// reset the vehicle
 		EnhancedInputComponent->BindAction(ResetVehicleAction, ETriggerEvent::Triggered, this, &ThisClass::ResetVehicle);
 
-		// Focus Chat Input
+		// focus chat input
 		EnhancedInputComponent->BindAction(FocusChatAction, ETriggerEvent::Started, this, &ThisClass::FocusChatInput);
 
-		// Attack
+		// attack
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ThisClass::AttackInput);
+
+		// deploy mine
+		EnhancedInputComponent->BindAction(DeployMineAction, ETriggerEvent::Started, this, &ThisClass::DeployMine);
 	}
 	else
 	{
@@ -126,18 +131,6 @@ void ACRWheeledVehiclePawn::Steering(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::Throttle(const FInputActionValue& Value)
 {
-	const float CurrentThrottle = ChaosVehicleMovement->GetThrottleInput();
-	const bool bCanThrottle = CanThrottle();
-
-	GEngine->AddOnScreenDebugMessage(
-		1,
-		0.f,
-		bCanThrottle ? FColor::Green : FColor::Red,
-		FString::Printf(
-			TEXT("Current Throttle: %.2f | CanThrottle: %s"),
-			CurrentThrottle,
-			bCanThrottle ? TEXT("True") : TEXT("False")));
-
 	if (CanThrottle() == false)
 	{
 		ChaosVehicleMovement->SetThrottleInput(0.f);
@@ -245,6 +238,65 @@ void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 {
 	// 서버로 공격 입력함을 알림
 	ServerRPCAttack();
+}
+
+void ACRWheeledVehiclePawn::DeployMine(const FInputActionValue& Value)
+{
+	ServerRPCDeployMine();
+}
+
+void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
+{
+	// 지뢰 아이템 클래스 검증
+	if (IsValid(MineItemClass) == false)
+	{
+		return;
+	}
+
+	// 지면 탐색 시작 위치와 방향
+	const FVector StartLocation = GetActorLocation();
+	const FVector EndLocation = StartLocation - FVector(0.f, 0.f, 100.f);
+
+	// 콜리전 설정
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	// 충돌 결과
+	FHitResult HitResult;
+
+	// 아래 방향으로 라인 트레이스
+	const bool bHit = GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		StartLocation,
+		EndLocation,
+		ECC_Visibility,
+		QueryParams);
+
+	if (bHit == false)
+	{
+		return;
+	}
+
+	// 소환 Transform
+	const FTransform SpawnTransform(
+		UKismetMathLibrary::MakeRotFromZ(HitResult.ImpactNormal), // 소환 방향 (지면에 수직)
+		HitResult.ImpactPoint);                                   // 소환 위치
+
+	// Mine 지연 소환
+	AMineItem* MineItem = GetWorld()->SpawnActorDeferred<AMineItem>(
+		MineItemClass,
+		SpawnTransform,
+		this,
+		nullptr,
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+	if (IsValid(MineItem) == false)
+	{
+		return;
+	}
+
+	// 소환 완료
+	MineItem->FinishSpawning(SpawnTransform);
 }
 
 void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVector& HitLocation, const FVector& HitNormal)

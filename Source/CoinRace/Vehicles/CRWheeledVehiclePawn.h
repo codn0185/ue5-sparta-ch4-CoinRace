@@ -14,6 +14,7 @@ class UCapsuleComponent;
 class UChaosWheeledVehicleMovementComponent;
 class UInputAction;
 class UParticleSystem;
+class AMineItem;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -82,6 +83,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* AttackAction;
 
+	/** Deploy Mine Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* DeployMineAction;
+
 	/** Keeps track of which camera is active */
 	bool bFrontCameraActive = false;
 
@@ -100,6 +105,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 
 	// 공격 쿨다운 타이머
 	FTimerHandle AttackCooldownTimerHandle;
+
+	// 지뢰 아이템 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TSubclassOf<AMineItem> MineItemClass;
 
   public:
 	ACRWheeledVehiclePawn();
@@ -143,15 +152,22 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	/** Handles reset vehicle input */
 	void ResetVehicle(const FInputActionValue& Value);
 
-	/** 채팅 입력 포커스 처리 */
+	/** Handles focus chat input */
 	void FocusChatInput(const FInputActionValue& Value);
 
-	/** 공격 입력 처리 */
+	/** Handles attack input */
 	void AttackInput(const FInputActionValue& Value);
+
+	/** Handles deploy mine input */
+	void DeployMine(const FInputActionValue& Value);
 
 	// 공격 입력함을 서버에 알림
 	UFUNCTION(Server, Reliable)
 	void ServerRPCAttack();
+
+	// 지뢰 배치 입력함을 서버에 알림
+	UFUNCTION(Server, Reliable)
+	void ServerRPCDeployMine();
 
 	// 피격 시 모든 클라이언트에게 보여야 하는 이펙트 재생
 	UFUNCTION(NetMulticast, Unreliable)
