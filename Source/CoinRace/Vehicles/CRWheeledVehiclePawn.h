@@ -153,9 +153,9 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	UFUNCTION(Server, Reliable)
 	void ServerRPCAttack();
 
-	// 충돌 시 모든 클라이언트에게 보여야 하는 이펙트 재생
+	// 피격 시 모든 클라이언트에게 보여야 하는 이펙트 재생
 	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastRPCPlayCoinStolenEffect(const FVector& HitLocation, const FVector& HitNormal);
+	void MulticastRPCPlayHitEffect(const FVector& HitLocation, const FVector& HitNormal);
 
 	/** Called when the brake lights are turned on or off */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Vehicle")
@@ -188,15 +188,16 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 		return ChaosVehicleMovement;
 	}
 
-  public:
 	/** IAttackableInterface 인터페이스 구현 */
+  public:
 	// 코인을 빼앗기고, 실제로 빼앗긴 수량을 반환
 	virtual int32 StealCoins(int32 Amount) override;
-	// 코인을 빼앗길 때 이펙트 재생
-	virtual void PlayCoinStolenEffect(const FVector& HitLocation, const FVector& HitNormal) override;
 
-  public:
+	// 피격 이펙트 재생
+	virtual void PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal) override;
+
 	/** IItemEffectReceiverInterface 인터페이스 구현 */
+  public:
 	// 코인 추가
 	virtual void AddCoins(int32 Amount) override;
 	// 추가 최대 속도 증가

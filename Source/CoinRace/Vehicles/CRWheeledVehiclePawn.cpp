@@ -229,7 +229,7 @@ void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 	ServerRPCAttack();
 }
 
-void ACRWheeledVehiclePawn::MulticastRPCPlayCoinStolenEffect_Implementation(const FVector& HitLocation, const FVector& HitNormal)
+void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVector& HitLocation, const FVector& HitNormal)
 {
 	// 클라이언트만 이펙트 재생
 	if (HasAuthority() == true)
@@ -307,9 +307,9 @@ int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
 			   : 0;
 }
 
-void ACRWheeledVehiclePawn::PlayCoinStolenEffect(const FVector& HitLocation, const FVector& HitNormal)
+void ACRWheeledVehiclePawn::PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal)
 {
-	MulticastRPCPlayCoinStolenEffect(HitLocation, HitNormal);
+	MulticastRPCPlayHitEffect(HitLocation, HitNormal);
 }
 
 void ACRWheeledVehiclePawn::AddCoins(int32 Amount)
@@ -412,7 +412,7 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 			const int32 StolenCoins = Attackable->StealCoins(5);
 
 			// 피격 이펙트 재생
-			Attackable->PlayCoinStolenEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
+			Attackable->PlayHitEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
 
 			// 빼앗은 코인 추가
 			if (StolenCoins > 0)
