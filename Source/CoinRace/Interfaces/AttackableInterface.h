@@ -36,5 +36,5 @@ class COINRACE_API IAttackableInterface
 	virtual void PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal) = 0;
 
 	// 피격 부위 확인 (유효한 피격 부위 여부를 반환)
-	virtual bool GetHitBody(UPrimitiveComponent* HitComponent, EHitPart& OutHitPart) const = 0;
+	virtual bool GetHitBody(const FHitResult& HitResult, EHitPart& OutHitPart) const = 0;
 };

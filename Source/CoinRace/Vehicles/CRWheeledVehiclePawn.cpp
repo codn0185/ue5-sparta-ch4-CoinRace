@@ -331,32 +331,28 @@ void ACRWheeledVehiclePawn::PlayHitEffect(const FVector& HitLocation, const FVec
 	MulticastRPCPlayHitEffect(HitLocation, HitNormal);
 }
 
-bool ACRWheeledVehiclePawn::GetHitBody(UPrimitiveComponent* HitComponent, EHitPart& OutHitPart) const
+bool ACRWheeledVehiclePawn::GetHitBody(const FHitResult& HitResult, EHitPart& OutHitPart) const
 {
-	if (IsValid(HitComponent) == false)
-	{
-		OutHitPart = EHitPart::None;
-		return false;
-	}
+	OutHitPart = EHitPart::None;
 
-	// 피격 컴포넌트 이름
-	const FName ComponentName = HitComponent->GetFName();
+	// Bone 이름
+	const FName BoneName = HitResult.BoneName;
 
-	UE_LOG(LogTemplateVehicle, Warning, TEXT("Hit Component Name: %s"), *ComponentName.ToString());
-
-	// 바퀴
-	if (ComponentName == FName("Tire Front Left") ||
-		ComponentName == FName("Tire Front Right") ||
-		ComponentName == FName("Tire Rear Left") ||
-		ComponentName == FName("Tire Rear Right"))
+	// Wheel
+	if (HitResult.BoneName.ToString().Contains(TEXT("Wheel")))
 	{
 		OutHitPart = EHitPart::Wheel;
 		return true;
 	}
 
-	// 몸통 피격
-	OutHitPart = EHitPart::Body;
-	return true;
+	// Body
+	if (IsValid(HitResult.GetComponent()))
+	{
+		OutHitPart = EHitPart::Body;
+		return true;
+	}
+
+	return false;
 }
 
 void ACRWheeledVehiclePawn::AddCoins(int32 Amount)
@@ -469,7 +465,7 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 
 			// 피격 부위 확인
 			EHitPart HitPart;
-			if (GetHitBody(HitResult.GetComponent(), HitPart) == true)
+			if (GetHitBody(HitResult, HitPart) == true)
 			{
 				// 바퀴
 				if (HitPart == EHitPart::Wheel)
