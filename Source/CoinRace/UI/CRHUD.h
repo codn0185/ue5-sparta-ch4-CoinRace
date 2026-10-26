@@ -45,6 +45,10 @@ class COINRACE_API UCRHUD : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCRCoinLeaderboardWidget> CoinLeaderboardWidget;
 
+	// UCRPlayingTimeWidget - 남은 게임 시간 UI
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UCRPlayingTimeWidget> PlayingTimeWidget;
+
   protected:
 	// UI에 표시할 속도 단위
 	FSpeedUnit UISpeedUnit = SpeedUnit::KPH;
