@@ -126,6 +126,11 @@ void ACRWheeledVehiclePawn::Steering(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::Throttle(const FInputActionValue& Value)
 {
+	if (CanThrottle() == false)
+	{
+		return;
+	}
+
 	// get the input magnitude for the throttle
 	float ThrottleValue = Value.Get<float>();
 
@@ -283,6 +288,11 @@ void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVect
 	}
 }
 
+bool ACRWheeledVehiclePawn::CanThrottle() const
+{
+	return GetWorldTimerManager().IsTimerActive(DisableThrottleTimerHandle) == false;
+}
+
 int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
 {
 	// 서버 권한 검증
@@ -391,6 +401,21 @@ void ACRWheeledVehiclePawn::AddBonusMaxSpeed(float Amount)
 
 	// 추가 최대 속도 증가
 	CRPS->AddBonusMaxSpeed(Amount);
+}
+
+void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
+{
+	// 남은 비활성화 시간
+	const float RemainingTime = GetWorldTimerManager().GetTimerRemaining(DisableThrottleTimerHandle);
+
+	// 기존 남은 시간보다 긴 경우 타이머 갱신
+	if (Duration > RemainingTime)
+	{
+		GetWorldTimerManager().SetTimer(
+			DisableThrottleTimerHandle,
+			Duration,
+			false);
+	}
 }
 
 void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()

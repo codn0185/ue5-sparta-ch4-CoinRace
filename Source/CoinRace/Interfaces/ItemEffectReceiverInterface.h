@@ -19,6 +19,10 @@ class COINRACE_API IItemEffectReceiverInterface
   public:
 	// 코인 추가
 	virtual void AddCoins(int32 Amount) = 0;
+
 	// 추가 최대 속도 증가
 	virtual void AddBonusMaxSpeed(float Amount) = 0;
+
+	// 전진 가속 비활성화 (가속 페달 고장)
+	virtual void DisableThrottle(float Duration) = 0;
 };

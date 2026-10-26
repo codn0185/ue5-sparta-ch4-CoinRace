@@ -188,6 +188,13 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 		return ChaosVehicleMovement;
 	}
 
+  protected:
+	// 전진 가속 비활성화 타이머 핸들
+	FTimerHandle DisableThrottleTimerHandle;
+
+	// 전진 가속 가능 여부
+	bool CanThrottle() const;
+
 	/** IAttackableInterface 인터페이스 구현 */
   public:
 	// 코인을 빼앗기고, 실제로 빼앗긴 수량을 반환
@@ -206,6 +213,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
   public:
 	// 코인 추가
 	virtual void AddCoins(int32 Amount) override;
+
 	// 추가 최대 속도 증가
 	virtual void AddBonusMaxSpeed(float Amount) override;
+
+	// 전진 가속 비활성화 (가속 페달 고장)
+	virtual void DisableThrottle(float Duration) override;
 };
