@@ -72,6 +72,12 @@ void UCRBonusMaxSpeedWidget::SetBonusMaxSpeed(float NewBonusMaxSpeed)
 	TextBlock_SpeedValue->SetText(FText::AsNumber(
 		UISpeedUnit.ConvertSpeed(FMath::Abs(CurrentBonusMaxSpeed)), // 단위에 맞춰 속도 값 변환
 		&Options));
+
+	// 0 이하면 숨기기
+	SetVisibility(
+		CurrentBonusMaxSpeed > 0.f
+			? ESlateVisibility::Visible
+			: ESlateVisibility::Hidden);
 }
 
 void UCRBonusMaxSpeedWidget::HandleBonusMaxSpeedUpdated(const ACRPlayerState* PlayerState, float NewBonusMaxSpeed)
