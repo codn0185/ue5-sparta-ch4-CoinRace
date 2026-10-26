@@ -307,6 +307,25 @@ int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
 			   : 0;
 }
 
+void ACRWheeledVehiclePawn::ApplyBonusMaxSpeedPenalty(float Amount)
+{
+	// 서버 권한 검증
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	// ACRPlayerState 검증
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return;
+	}
+
+	// 추가 최대 속도 감소
+	CRPS->ReduceBonusMaxSpeed(Amount);
+}
+
 void ACRWheeledVehiclePawn::PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal)
 {
 	MulticastRPCPlayHitEffect(HitLocation, HitNormal);

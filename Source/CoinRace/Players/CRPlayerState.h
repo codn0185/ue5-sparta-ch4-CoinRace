@@ -85,6 +85,9 @@ class COINRACE_API ACRPlayerState : public APlayerState
 	// BonusMaxSpeed 반환
 	float GetBonusMaxSpeed() const;
 
-	// BonusMaxSpeed 추가
+	// BonusMaxSpeed 증가
 	void AddBonusMaxSpeed(float Amount);
+
+	// BonusMaxSpeed 감소
+	void ReduceBonusMaxSpeed(float Amount);
 };

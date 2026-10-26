@@ -149,3 +149,24 @@ void ACRPlayerState::AddBonusMaxSpeed(float Amount)
 		GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
 	}
 }
+
+void ACRPlayerState::ReduceBonusMaxSpeed(float Amount)
+{ // 서버에서만 수정 가능하도록 제한
+	if (HasAuthority() == false)
+	{
+		return;
+	}
+
+	if (Amount <= 0.f)
+	{
+		return;
+	}
+
+	BonusMaxSpeed -= Amount;
+
+	// 서버에서 OnBonusMaxSpeedUpdated 델리게이트 송출
+	if (IsValid(GameEventSubsystem) == true)
+	{
+		GameEventSubsystem->OnBonusMaxSpeedUpdated.Broadcast(this, BonusMaxSpeed);
+	}
+}
