@@ -199,6 +199,9 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	// 피격 이펙트 재생
 	virtual void PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal) override;
 
+	// 피격 부위 확인 (유효한 피격 부위 여부를 반환)
+	virtual bool GetHitBody(UPrimitiveComponent* HitComponent, EHitPart& OutHitPart) const override;
+
 	/** IItemEffectReceiverInterface 인터페이스 구현 */
   public:
 	// 코인 추가

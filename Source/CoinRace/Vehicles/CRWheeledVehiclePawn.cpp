@@ -331,6 +331,34 @@ void ACRWheeledVehiclePawn::PlayHitEffect(const FVector& HitLocation, const FVec
 	MulticastRPCPlayHitEffect(HitLocation, HitNormal);
 }
 
+bool ACRWheeledVehiclePawn::GetHitBody(UPrimitiveComponent* HitComponent, EHitPart& OutHitPart) const
+{
+	if (IsValid(HitComponent) == false)
+	{
+		OutHitPart = EHitPart::None;
+		return false;
+	}
+
+	// 피격 컴포넌트 이름
+	const FName ComponentName = HitComponent->GetFName();
+
+	UE_LOG(LogTemplateVehicle, Warning, TEXT("Hit Component Name: %s"), *ComponentName.ToString());
+
+	// 바퀴
+	if (ComponentName == FName("Tire Front Left") ||
+		ComponentName == FName("Tire Front Right") ||
+		ComponentName == FName("Tire Rear Left") ||
+		ComponentName == FName("Tire Rear Right"))
+	{
+		OutHitPart = EHitPart::Wheel;
+		return true;
+	}
+
+	// 몸통 피격
+	OutHitPart = EHitPart::Body;
+	return true;
+}
+
 void ACRWheeledVehiclePawn::AddCoins(int32 Amount)
 {
 	// 서버 권한 검증
@@ -438,6 +466,19 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 			{
 				CRPS->AddCoins(StolenCoins);
 			}
+
+			// 피격 부위 확인
+			EHitPart HitPart;
+			if (GetHitBody(HitResult.GetComponent(), HitPart) == true)
+			{
+				// 바퀴
+				if (HitPart == EHitPart::Wheel)
+				{
+					Attackable->ApplyBonusMaxSpeedPenalty(5.f);
+				}
+			}
+
+			UE_LOG(LogTemplateVehicle, Warning, TEXT("Hit Part: %s"), *UEnum::GetValueAsString(HitPart));
 		}
 	}
 }
