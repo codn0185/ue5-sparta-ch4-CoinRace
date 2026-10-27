@@ -12,8 +12,8 @@ class UCameraComponent;
 class USpringArmComponent;
 class UCapsuleComponent;
 class UChaosWheeledVehicleMovementComponent;
+class UStealCoinSkillComponent;
 class UInputAction;
-class UParticleSystem;
 class ACRPlayerState;
 class AMineItem;
 struct FInputActionValue;
@@ -46,6 +46,12 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 
 	/** Cast pointer to the Chaos Vehicle movement component */
 	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;
+
+	/** 스킬 컴포넌트 */
+  protected:
+	// 공격하여 코인을 빼앗는 스킬 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Skill, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStealCoinSkillComponent> StealCoinSkillComponent;
 
   protected:
 	/** Steering Action */
@@ -96,21 +102,6 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	TObjectPtr<ACRPlayerState> CRPlayerState;
 
   protected:
-	// 충돌 파티클
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effects)
-	UParticleSystem* HitParticle;
-	// 충돌 사운드
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effects)
-	USoundBase* HitSound;
-
-  protected:
-	// 공격 딜레이
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float AttackCooldown = 1.f;
-
-	// 공격 쿨다운 타이머
-	FTimerHandle AttackCooldownTimerHandle;
-
 	// 지뢰 아이템 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TSubclassOf<AMineItem> MineItemClass;
@@ -175,17 +166,9 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	/** Handles deploy mine input */
 	void DeployMine(const FInputActionValue& Value);
 
-	// 공격 입력함을 서버에 알림
-	UFUNCTION(Server, Reliable)
-	void ServerRPCAttack();
-
 	// 지뢰 배치 입력함을 서버에 알림
 	UFUNCTION(Server, Reliable)
 	void ServerRPCDeployMine();
-
-	// 피격 시 모든 클라이언트에게 보여야 하는 이펙트 재생
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastRPCPlayHitEffect(const FVector& HitLocation, const FVector& HitNormal);
 
 	/** Called when the brake lights are turned on or off */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Vehicle")
@@ -232,9 +215,6 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 
 	// 추가 최대 속도 감소 패널티 적용
 	virtual void ApplyBonusMaxSpeedPenalty(float Amount) override;
-
-	// 피격 이펙트 재생
-	virtual void PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal) override;
 
 	// 피격 부위 확인 (유효한 피격 부위 여부를 반환)
 	virtual bool GetHitBody(const FHitResult& HitResult, EHitPart& OutHitPart) const override;

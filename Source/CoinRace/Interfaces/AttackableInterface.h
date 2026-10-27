@@ -32,9 +32,6 @@ class COINRACE_API IAttackableInterface
 	// 추가 최대 속도 감소 패널티 적용
 	virtual void ApplyBonusMaxSpeedPenalty(float Amount) = 0;
 
-	// 피격 이펙트 재생
-	virtual void PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal) = 0;
-
 	// 피격 부위 확인 (유효한 피격 부위 여부를 반환)
 	virtual bool GetHitBody(const FHitResult& HitResult, EHitPart& OutHitPart) const = 0;
 };

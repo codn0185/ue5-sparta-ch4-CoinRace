@@ -14,6 +14,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
+#include "Players/Components/StealCoinSkillComponent.h"
 #include "Sound/SoundBase.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
@@ -56,6 +57,9 @@ ACRWheeledVehiclePawn::ACRWheeledVehiclePawn()
 
 	// get the Chaos Wheeled movement component
 	ChaosVehicleMovement = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
+
+	// 스킬 컴포넌트
+	StealCoinSkillComponent = CreateDefaultSubobject<UStealCoinSkillComponent>(TEXT("StealCoin Skill"));
 }
 
 void ACRWheeledVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -244,99 +248,13 @@ void ACRWheeledVehiclePawn::FocusChatInput(const FInputActionValue& Value)
 void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 {
 	// 서버로 공격 입력함을 알림
-	ServerRPCAttack();
+	StealCoinSkillComponent->ServerRPCUse();
 }
 
 void ACRWheeledVehiclePawn::DeployMine(const FInputActionValue& Value)
 {
 	// 지뢰 배치 입력함을 서버에 알림
 	ServerRPCDeployMine();
-}
-
-void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
-{
-	UWorld* World = GetWorld();
-
-	// 공격 가능 여부 확인
-	if (World->GetTimerManager().IsTimerActive(AttackCooldownTimerHandle) == true) // 공격 쿨다운
-	{
-		return;
-	}
-
-	// 시작 & 종료 위치
-	const FVector StartLocation = GetActorLocation() + 50 * GetActorUpVector();
-	const FVector EndLocation = StartLocation + GetActorForwardVector() * 700.f;
-
-	// 콜리전 설정
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this); // 자기 자신 무시
-
-	// 충돌 결과
-	FHitResult HitResult;
-
-	// 라인 트레이스 실행
-	const bool bHit = World->LineTraceSingleByChannel(
-		HitResult,
-		StartLocation,
-		EndLocation,
-		ECC_Visibility,
-		QueryParams);
-
-	// 디버그 라인 그리기
-	DrawDebugLine(
-		World,
-		StartLocation,
-		EndLocation,
-		bHit ? FColor::Green : FColor::Red, // 충돌 성공: 빨간색 / 충돌 실패: 초록색
-		false,
-		2.0f,
-		0,
-		2.0f);
-
-	// 피격 여부 확인
-	if (bHit == false)
-	{
-		return;
-	}
-
-	// CRPlayerState 검증
-	if (IsValid(CRPlayerState) == false)
-	{
-		return;
-	}
-
-	// 공격 가능한 액터인지 확인
-	if (IAttackableInterface* Attackable = Cast<IAttackableInterface>(HitResult.GetActor()))
-	{
-		// 코인 빼앗기
-		const int32 StolenCoins = Attackable->StealCoins(5);
-
-		// 피격 이펙트 재생
-		Attackable->PlayHitEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
-
-		// 빼앗은 코인 추가
-		if (StolenCoins > 0)
-		{
-			CRPlayerState->AddCoins(StolenCoins);
-		}
-
-		// 피격 부위 확인
-		EHitPart HitPart;
-		if (GetHitBody(HitResult, HitPart) == true)
-		{
-			// 바퀴
-			if (HitPart == EHitPart::Wheel)
-			{
-				Attackable->ApplyBonusMaxSpeedPenalty(5.f);
-			}
-		}
-
-		// 공격 쿨다운 활성화
-		World->GetTimerManager().SetTimer(
-			AttackCooldownTimerHandle,
-			AttackCooldown,
-			false);
-	}
 }
 
 void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
@@ -407,60 +325,6 @@ void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
 		false);
 }
 
-void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVector& HitLocation, const FVector& HitNormal)
-{
-	// 클라이언트만 이펙트 재생
-	if (HasAuthority() == true)
-	{
-		return;
-	}
-
-	// 파티클 재생
-	if (IsValid(HitParticle) == true)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(),
-			HitParticle,
-			HitLocation,
-			HitNormal.Rotation());
-	}
-	else
-	{
-		// 충돌 위치 표시
-		DrawDebugSphere(
-			GetWorld(),
-			HitLocation,
-			15.0f,
-			12,
-			FColor::Red,
-			false,
-			3.0f,
-			0,
-			2.0f);
-
-		// 충돌 노멀 방향 표시
-		DrawDebugDirectionalArrow(
-			GetWorld(),
-			HitLocation,
-			HitLocation + HitNormal * 100.0f,
-			20.0f,
-			FColor::Yellow,
-			false,
-			3.0f,
-			0,
-			2.0f);
-	}
-
-	// 사운드 재생
-	if (IsValid(HitSound) == true)
-	{
-		UGameplayStatics::PlaySoundAtLocation(
-			GetWorld(),
-			HitSound,
-			HitLocation);
-	}
-}
-
 bool ACRWheeledVehiclePawn::CanThrottle() const
 {
 	// CRPlayerState 검증
@@ -511,11 +375,6 @@ void ACRWheeledVehiclePawn::ApplyBonusMaxSpeedPenalty(float Amount)
 
 	// 추가 최대 속도 감소
 	CRPlayerState->ReduceBonusMaxSpeed(Amount);
-}
-
-void ACRWheeledVehiclePawn::PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal)
-{
-	MulticastRPCPlayHitEffect(HitLocation, HitNormal);
 }
 
 bool ACRWheeledVehiclePawn::GetHitBody(const FHitResult& HitResult, EHitPart& OutHitPart) const
