@@ -7,11 +7,13 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Frameworks/CRGameState.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
 #include "Players/Components/DeployMineSkillComponent.h"
 #include "Players/Components/StealCoinSkillComponent.h"
+#include "Systems/GameEventSubsystem.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -57,6 +59,38 @@ ACRWheeledVehiclePawn::ACRWheeledVehiclePawn()
 	// 스킬 컴포넌트
 	StealCoinSkillComponent = CreateDefaultSubobject<UStealCoinSkillComponent>(TEXT("StealCoin Skill"));
 	DeployMineSkillComponent = CreateDefaultSubobject<UDeployMineSkillComponent>(TEXT("DeployMine Skill"));
+}
+
+void ACRWheeledVehiclePawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// GameEventSubsystem 델리게이트 바인딩
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == true)
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnGamePhaseUpdated.AddUObject(this, &ThisClass::HandleGamePhaseUpdated);
+		}
+	}
+}
+
+void ACRWheeledVehiclePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	// GameEventSubsystem 델리게이트 바인딩 해제
+	UGameInstance* GameInstance = GetGameInstance();
+	if (IsValid(GameInstance) == true)
+	{
+		UGameEventSubsystem* GameEventSubsystem = GameInstance->GetSubsystem<UGameEventSubsystem>();
+		if (IsValid(GameEventSubsystem) == true)
+		{
+			GameEventSubsystem->OnGamePhaseUpdated.RemoveAll(this);
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void ACRWheeledVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -137,6 +171,12 @@ void ACRWheeledVehiclePawn::Tick(float Delta)
 
 void ACRWheeledVehiclePawn::Steering(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// get the input magnitude for steering
 	float SteeringValue = Value.Get<float>();
 
@@ -146,6 +186,12 @@ void ACRWheeledVehiclePawn::Steering(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::Throttle(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	if (CanThrottle() == false)
 	{
 		ChaosVehicleMovement->SetThrottleInput(0.f);
@@ -161,6 +207,12 @@ void ACRWheeledVehiclePawn::Throttle(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::Brake(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// get the input magnitude for the brakes
 	float BreakValue = Value.Get<float>();
 
@@ -170,12 +222,24 @@ void ACRWheeledVehiclePawn::Brake(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::StartBrake(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// call the Blueprint hook for the break lights
 	BrakeLights(true);
 }
 
 void ACRWheeledVehiclePawn::StopBrake(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// call the Blueprint hook for the break lights
 	BrakeLights(false);
 
@@ -185,6 +249,12 @@ void ACRWheeledVehiclePawn::StopBrake(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::StartHandbrake(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// add the input
 	ChaosVehicleMovement->SetHandbrakeInput(true);
 
@@ -194,6 +264,12 @@ void ACRWheeledVehiclePawn::StartHandbrake(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::StopHandbrake(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// add the input
 	ChaosVehicleMovement->SetHandbrakeInput(false);
 
@@ -221,6 +297,12 @@ void ACRWheeledVehiclePawn::ToggleCamera(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::ResetVehicle(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// reset to a location slightly above our current one
 	FVector ResetLocation = GetActorLocation() + FVector(0.0f, 0.0f, 50.0f);
 
@@ -251,14 +333,56 @@ void ACRWheeledVehiclePawn::FocusChatInput(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// 코인 스틸 스킬 사용
 	StealCoinSkillComponent->ServerRPCUse();
 }
 
 void ACRWheeledVehiclePawn::DeployMine(const FInputActionValue& Value)
 {
+	// 조작 가능 여부 확인
+	if (bCanControl == false)
+	{
+		return;
+	}
+
 	// 지뢰 배치 스킬 사용
 	DeployMineSkillComponent->ServerRPCUse();
+}
+
+void ACRWheeledVehiclePawn::HandleGamePhaseUpdated(EGamePhase NewGamePhase)
+{
+	switch (NewGamePhase)
+	{
+	case EGamePhase::Waiting:
+		SetCanControl(false);
+		break;
+	case EGamePhase::Playing:
+		SetCanControl(true);
+		break;
+	case EGamePhase::Finished:
+		SetCanControl(false);
+		break;
+	}
+}
+
+void ACRWheeledVehiclePawn::SetCanControl(bool bNewFlag)
+{
+	if (bNewFlag == true)
+	{
+		bCanControl = true;
+		ChaosVehicleMovement->SetHandbrakeInput(false);
+	}
+	else
+	{
+		bCanControl = false;
+		ChaosVehicleMovement->SetHandbrakeInput(true);
+	}
 }
 
 bool ACRWheeledVehiclePawn::CanThrottle() const

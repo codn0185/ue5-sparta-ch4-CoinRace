@@ -18,6 +18,7 @@ class UInputAction;
 class ACRPlayerState;
 class AMineItem;
 struct FInputActionValue;
+enum class EGamePhase : uint8;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
 
@@ -111,6 +112,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 
 	// Begin Pawn interface
 
+	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
 	virtual void PossessedBy(AController* NewController) override;
@@ -191,6 +196,16 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	{
 		return ChaosVehicleMovement;
 	}
+
+  protected:
+	UFUNCTION()
+	void HandleGamePhaseUpdated(EGamePhase NewGamePhase);
+
+	/** 조작 플래그 */
+  protected:
+	bool bCanControl = true;
+
+	void SetCanControl(bool bNewFlag);
 
   protected:
 	// 전진 가속 비활성화 타이머 핸들
