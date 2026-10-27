@@ -41,6 +41,7 @@ void USkillWidget::NativeConstruct()
 	// 초기 설정
 	UpdateCooldown(0.f, 1.f);
 	SetSkillActive(true);
+	TextBlock_SkillName->SetText(FText::FromString(SkillName));
 }
 
 void USkillWidget::NativeDestruct()

@@ -28,8 +28,12 @@ class COINRACE_API USkillWidget : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_SkillName;
 
+	// 스킬 이름
+	UPROPERTY(EditAnywhere, Category = Skill)
+	FString SkillName;
+
 	// 원본 쿨다운 머티리얼
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	UPROPERTY(EditAnywhere, Category = Skill)
 	TObjectPtr<UMaterialInterface> CooldownMaterial;
 
 	// 동적 쿨다운 머티리얼
@@ -37,12 +41,12 @@ class COINRACE_API USkillWidget : public UUserWidget
 	TObjectPtr<UMaterialInstanceDynamic> DynamicCooldownMaterial;
 
 	// 쿨다운 색상
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill)
+	UPROPERTY(EditAnywhere, Category = Skill)
 	FLinearColor CooldownColor = FLinearColor::White;
 
   protected:
 	// 스킬 타입
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill)
+	UPROPERTY(EditAnywhere, Category = Skill)
 	ESkillType SkillType = ESkillType();
 
   protected:
