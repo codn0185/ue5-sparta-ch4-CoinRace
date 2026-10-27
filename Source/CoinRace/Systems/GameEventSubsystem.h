@@ -7,9 +7,35 @@
 #include "GameEventSubsystem.generated.h"
 
 class ACRPlayerState;
+enum class ESkillType : uint8;
 enum class EGameResult : uint8;
 enum class EGamePhase : uint8;
 struct FCoinLeaderboardEntry;
+
+USTRUCT(BlueprintType)
+struct FSkillState
+{
+	GENERATED_BODY()
+
+  public:
+	UPROPERTY()
+	ESkillType SkillType = ESkillType();
+
+	UPROPERTY()
+	float CooldownRemainingTime = 0.f;
+
+	UPROPERTY()
+	bool bCanUseSkill = true;
+};
+
+/**
+ * 스킬 상태 업데이트 알림 델리게이트
+ * - 서버: 게임 데이터 동기화 및 관련 상태 갱신
+ * - 클라이언트: UI 갱신 등 후속 처리
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(
+	FOnSkillStateUpdated,
+	const FSkillState&); // 스킬 정보
 
 /**
  * 게임 결과 변경 알림 델리게이트
@@ -111,6 +137,9 @@ class COINRACE_API UGameEventSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
   public:
+	// 스킬 상태 업데이트 알림 델리게이트
+	FOnSkillStateUpdated OnSkillStateUpdated;
+
 	// 게임 결과 변경 알림 델리게이트
 	FOnGameResultUpdated OnGameResultUpdated;
 
