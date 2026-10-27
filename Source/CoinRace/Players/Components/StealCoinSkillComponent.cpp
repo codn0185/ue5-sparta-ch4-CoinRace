@@ -6,6 +6,12 @@
 #include "Players/CRPlayerState.h"
 #include "Sound/SoundBase.h"
 
+UStealCoinSkillComponent::UStealCoinSkillComponent()
+{
+	SkillType = ESkillType::StealCoin;
+	CooldownDuration = 1.f;
+}
+
 void UStealCoinSkillComponent::ActivateSkill()
 {
 	UWorld* World = GetWorld();

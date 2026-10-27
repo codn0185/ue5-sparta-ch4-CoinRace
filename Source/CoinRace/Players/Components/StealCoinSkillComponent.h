@@ -31,6 +31,9 @@ class COINRACE_API UStealCoinSkillComponent : public USkillComponentBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Properties)
 	float BonusMaxSpeedPenalty = 5.f;
 
+  public:
+	UStealCoinSkillComponent();
+
   protected:
 	virtual void ActivateSkill() override;
 

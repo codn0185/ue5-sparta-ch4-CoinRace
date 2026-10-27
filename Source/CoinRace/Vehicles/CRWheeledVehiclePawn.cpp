@@ -8,14 +8,10 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Items/MineItem.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Particles/ParticleSystem.h"
 #include "Players/CRPlayerController.h"
 #include "Players/CRPlayerState.h"
+#include "Players/Components/DeployMineSkillComponent.h"
 #include "Players/Components/StealCoinSkillComponent.h"
-#include "Sound/SoundBase.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -60,6 +56,7 @@ ACRWheeledVehiclePawn::ACRWheeledVehiclePawn()
 
 	// 스킬 컴포넌트
 	StealCoinSkillComponent = CreateDefaultSubobject<UStealCoinSkillComponent>(TEXT("StealCoin Skill"));
+	DeployMineSkillComponent = CreateDefaultSubobject<UDeployMineSkillComponent>(TEXT("DeployMine Skill"));
 }
 
 void ACRWheeledVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -254,82 +251,14 @@ void ACRWheeledVehiclePawn::FocusChatInput(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 {
-	// 서버로 공격 입력함을 알림
+	// 코인 스틸 스킬 사용
 	StealCoinSkillComponent->ServerRPCUse();
 }
 
 void ACRWheeledVehiclePawn::DeployMine(const FInputActionValue& Value)
 {
-	// 지뢰 배치 입력함을 서버에 알림
-	ServerRPCDeployMine();
-}
-
-void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
-{
-	UWorld* World = GetWorld();
-
-	// 지뢰 배치 가능 여부 확인
-	if (World->GetTimerManager().IsTimerActive(DeployMineCooldownTimerHandle) == true) // 지뢰 배치 쿨다운
-	{
-		return;
-	}
-
-	// 지뢰 아이템 클래스 검증
-	if (IsValid(MineItemClass) == false)
-	{
-		return;
-	}
-
-	// 지면 탐색 시작 위치와 방향
-	const FVector StartLocation = GetActorLocation();
-	const FVector EndLocation = StartLocation - FVector(0.f, 0.f, 100.f);
-
-	// 콜리전 설정
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);
-
-	// 충돌 결과
-	FHitResult HitResult;
-
-	// 아래 방향으로 라인 트레이스
-	const bool bHit = World->LineTraceSingleByChannel(
-		HitResult,
-		StartLocation,
-		EndLocation,
-		ECC_Visibility,
-		QueryParams);
-
-	if (bHit == false)
-	{
-		return;
-	}
-
-	// 소환 Transform
-	const FTransform SpawnTransform(
-		UKismetMathLibrary::MakeRotFromZ(HitResult.ImpactNormal), // 소환 방향 (지면에 수직)
-		HitResult.ImpactPoint);                                   // 소환 위치
-
-	// Mine 지연 소환
-	AMineItem* MineItem = World->SpawnActorDeferred<AMineItem>(
-		MineItemClass,
-		SpawnTransform,
-		this,
-		nullptr,
-		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-
-	if (IsValid(MineItem) == false)
-	{
-		return;
-	}
-
-	// 소환 완료
-	MineItem->FinishSpawning(SpawnTransform);
-
-	// 지뢰 배치 활성화
-	World->GetTimerManager().SetTimer(
-		DeployMineCooldownTimerHandle,
-		DeployMineCooldown,
-		false);
+	// 지뢰 배치 스킬 사용
+	DeployMineSkillComponent->ServerRPCUse();
 }
 
 bool ACRWheeledVehiclePawn::CanThrottle() const
