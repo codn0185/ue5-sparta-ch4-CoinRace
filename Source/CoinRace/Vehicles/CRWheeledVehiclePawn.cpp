@@ -109,6 +109,13 @@ void ACRWheeledVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	}
 }
 
+void ACRWheeledVehiclePawn::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	CRPlayerState = GetPlayerState<ACRPlayerState>();
+}
+
 void ACRWheeledVehiclePawn::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();

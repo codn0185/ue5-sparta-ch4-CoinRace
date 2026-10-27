@@ -120,6 +120,8 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
+	virtual void PossessedBy(AController* NewController) override;
+
 	virtual void OnRep_PlayerState() override;
 
 	// End Pawn interface
