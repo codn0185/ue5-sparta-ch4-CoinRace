@@ -245,6 +245,92 @@ void ACRWheeledVehiclePawn::DeployMine(const FInputActionValue& Value)
 	ServerRPCDeployMine();
 }
 
+void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
+{
+	UWorld* World = GetWorld();
+
+	// 공격 가능 여부 확인
+	if (World->GetTimerManager().IsTimerActive(AttackCooldownTimerHandle) == true) // 공격 쿨다운
+	{
+		return;
+	}
+
+	// 공격 쿨다운 활성화
+	World->GetTimerManager().SetTimer(
+		AttackCooldownTimerHandle,
+		AttackCooldown,
+		false);
+
+	// 시작 & 종료 위치
+	const FVector StartLocation = GetActorLocation() + 50 * GetActorUpVector();
+	const FVector EndLocation = StartLocation + GetActorForwardVector() * 700.f;
+
+	// 콜리전 설정
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this); // 자기 자신 무시
+
+	// 충돌 결과
+	FHitResult HitResult;
+
+	// 라인 트레이스 실행
+	const bool bHit = World->LineTraceSingleByChannel(
+		HitResult,
+		StartLocation,
+		EndLocation,
+		ECC_Visibility,
+		QueryParams);
+
+	// 디버그 라인 그리기
+	DrawDebugLine(
+		World,
+		StartLocation,
+		EndLocation,
+		bHit ? FColor::Green : FColor::Red, // 충돌 성공: 빨간색 / 충돌 실패: 초록색
+		false,
+		2.0f,
+		0,
+		2.0f);
+
+	// 공격 성공
+	if (bHit == true)
+	{
+		// ACRPlayerState 검증
+		ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+		if (IsValid(CRPS) == false)
+		{
+			return;
+		}
+
+		if (IAttackableInterface* Attackable = Cast<IAttackableInterface>(HitResult.GetActor()))
+		{
+			// 코인 빼앗기
+			const int32 StolenCoins = Attackable->StealCoins(5);
+
+			// 피격 이펙트 재생
+			Attackable->PlayHitEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
+
+			// 빼앗은 코인 추가
+			if (StolenCoins > 0)
+			{
+				CRPS->AddCoins(StolenCoins);
+			}
+
+			// 피격 부위 확인
+			EHitPart HitPart;
+			if (GetHitBody(HitResult, HitPart) == true)
+			{
+				// 바퀴
+				if (HitPart == EHitPart::Wheel)
+				{
+					Attackable->ApplyBonusMaxSpeedPenalty(5.f);
+				}
+			}
+
+			UE_LOG(LogTemplateVehicle, Warning, TEXT("Hit Part: %s"), *UEnum::GetValueAsString(HitPart));
+		}
+	}
+}
+
 void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
 {
 	// 지뢰 아이템 클래스 검증
@@ -524,92 +610,6 @@ void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
 				}),
 			Duration,
 			false);
-	}
-}
-
-void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
-{
-	UWorld* World = GetWorld();
-
-	// 공격 가능 여부 확인
-	if (World->GetTimerManager().IsTimerActive(AttackCooldownTimerHandle) == true) // 공격 쿨다운
-	{
-		return;
-	}
-
-	// 공격 쿨다운 활성화
-	World->GetTimerManager().SetTimer(
-		AttackCooldownTimerHandle,
-		AttackCooldown,
-		false);
-
-	// 시작 & 종료 위치
-	const FVector StartLocation = GetActorLocation() + 50 * GetActorUpVector();
-	const FVector EndLocation = StartLocation + GetActorForwardVector() * 700.f;
-
-	// 콜리전 설정
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this); // 자기 자신 무시
-
-	// 충돌 결과
-	FHitResult HitResult;
-
-	// 라인 트레이스 실행
-	const bool bHit = World->LineTraceSingleByChannel(
-		HitResult,
-		StartLocation,
-		EndLocation,
-		ECC_Visibility,
-		QueryParams);
-
-	// 디버그 라인 그리기
-	DrawDebugLine(
-		World,
-		StartLocation,
-		EndLocation,
-		bHit ? FColor::Green : FColor::Red, // 충돌 성공: 빨간색 / 충돌 실패: 초록색
-		false,
-		2.0f,
-		0,
-		2.0f);
-
-	// 공격 성공
-	if (bHit == true)
-	{
-		// ACRPlayerState 검증
-		ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-		if (IsValid(CRPS) == false)
-		{
-			return;
-		}
-
-		if (IAttackableInterface* Attackable = Cast<IAttackableInterface>(HitResult.GetActor()))
-		{
-			// 코인 빼앗기
-			const int32 StolenCoins = Attackable->StealCoins(5);
-
-			// 피격 이펙트 재생
-			Attackable->PlayHitEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
-
-			// 빼앗은 코인 추가
-			if (StolenCoins > 0)
-			{
-				CRPS->AddCoins(StolenCoins);
-			}
-
-			// 피격 부위 확인
-			EHitPart HitPart;
-			if (GetHitBody(HitResult, HitPart) == true)
-			{
-				// 바퀴
-				if (HitPart == EHitPart::Wheel)
-				{
-					Attackable->ApplyBonusMaxSpeedPenalty(5.f);
-				}
-			}
-
-			UE_LOG(LogTemplateVehicle, Warning, TEXT("Hit Part: %s"), *UEnum::GetValueAsString(HitPart));
-		}
 	}
 }
 
