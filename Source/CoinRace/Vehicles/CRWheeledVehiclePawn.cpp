@@ -326,7 +326,11 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 				}
 			}
 
-			UE_LOG(LogTemplateVehicle, Warning, TEXT("Hit Part: %s"), *UEnum::GetValueAsString(HitPart));
+			// 공격 쿨다운 활성화
+			World->GetTimerManager().SetTimer(
+				AttackCooldownTimerHandle,
+				AttackCooldown,
+				false);
 		}
 	}
 }
