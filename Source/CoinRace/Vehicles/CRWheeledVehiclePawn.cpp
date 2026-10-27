@@ -291,9 +291,12 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 		0,
 		2.0f);
 
-	// 공격 성공
-	if (bHit == true)
+	// 피격 여부 확인
+	if (bHit == false)
 	{
+		return;
+	}
+
 		// ACRPlayerState 검증
 		ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
 		if (IsValid(CRPS) == false)
@@ -301,6 +304,7 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 			return;
 		}
 
+	// 공격 가능한 액터인지 확인
 		if (IAttackableInterface* Attackable = Cast<IAttackableInterface>(HitResult.GetActor()))
 		{
 			// 코인 빼앗기
@@ -333,7 +337,6 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 				false);
 		}
 	}
-}
 
 void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
 {
