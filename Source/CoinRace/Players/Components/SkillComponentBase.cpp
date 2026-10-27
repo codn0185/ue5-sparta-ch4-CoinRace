@@ -29,6 +29,7 @@ void USkillComponentBase::OnRep_CooldownRemainingTime()
 			GameEventSubsystem->OnSkillStateUpdated.Broadcast(
 				FSkillState(
 					SkillType,
+					CooldownDuration,
 					CooldownRemainingTime,
 					CanActivateSkill()));
 		}

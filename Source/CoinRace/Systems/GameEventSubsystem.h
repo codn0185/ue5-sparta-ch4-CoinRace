@@ -22,6 +22,9 @@ struct FSkillState
 	ESkillType SkillType = ESkillType();
 
 	UPROPERTY()
+	float CooldownDuration = 0.f;
+
+	UPROPERTY()
 	float CooldownRemainingTime = 0.f;
 
 	UPROPERTY()
