@@ -105,6 +105,13 @@ void ACRWheeledVehiclePawn::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	}
 }
 
+void ACRWheeledVehiclePawn::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	CRPlayerState = GetPlayerState<ACRPlayerState>();
+}
+
 void ACRWheeledVehiclePawn::Tick(float Delta)
 {
 	Super::Tick(Delta);
@@ -292,9 +299,8 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 		return;
 	}
 
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// CRPlayerState 검증
+	if (IsValid(CRPlayerState) == false)
 	{
 		return;
 	}
@@ -311,7 +317,7 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 		// 빼앗은 코인 추가
 		if (StolenCoins > 0)
 		{
-			CRPS->AddCoins(StolenCoins);
+			CRPlayerState->AddCoins(StolenCoins);
 		}
 
 		// 피격 부위 확인
@@ -457,14 +463,13 @@ void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVect
 
 bool ACRWheeledVehiclePawn::CanThrottle() const
 {
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// CRPlayerState 검증
+	if (IsValid(CRPlayerState) == false)
 	{
 		return true;
 	}
 
-	return CRPS->CanThrottle();
+	return CRPlayerState->CanThrottle();
 }
 
 int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
@@ -475,15 +480,14 @@ int32 ACRWheeledVehiclePawn::StealCoins(int32 Amount)
 		return 0;
 	}
 
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// CRPlayerState 검증
+	if (IsValid(CRPlayerState) == false)
 	{
 		return 0;
 	}
 
 	// 코인 감소
-	const bool bSuccess = CRPS->TryRemoveCoins(Amount);
+	const bool bSuccess = CRPlayerState->TryRemoveCoins(Amount);
 
 	// 빼앗긴 코인 반환
 	return bSuccess
@@ -499,15 +503,14 @@ void ACRWheeledVehiclePawn::ApplyBonusMaxSpeedPenalty(float Amount)
 		return;
 	}
 
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// CRPlayerState 검증
+	if (IsValid(CRPlayerState) == false)
 	{
 		return;
 	}
 
 	// 추가 최대 속도 감소
-	CRPS->ReduceBonusMaxSpeed(Amount);
+	CRPlayerState->ReduceBonusMaxSpeed(Amount);
 }
 
 void ACRWheeledVehiclePawn::PlayHitEffect(const FVector& HitLocation, const FVector& HitNormal)
@@ -547,15 +550,14 @@ void ACRWheeledVehiclePawn::AddCoins(int32 Amount)
 		return;
 	}
 
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// CRPlayerState 검증
+	if (IsValid(CRPlayerState) == false)
 	{
 		return;
 	}
 
 	// 코인 추가
-	CRPS->AddCoins(Amount);
+	CRPlayerState->AddCoins(Amount);
 }
 
 void ACRWheeledVehiclePawn::AddBonusMaxSpeed(float Amount)
@@ -566,15 +568,14 @@ void ACRWheeledVehiclePawn::AddBonusMaxSpeed(float Amount)
 		return;
 	}
 
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// CRPlayerState 검증
+	if (IsValid(CRPlayerState) == false)
 	{
 		return;
 	}
 
 	// 추가 최대 속도 증가
-	CRPS->AddBonusMaxSpeed(Amount);
+	CRPlayerState->AddBonusMaxSpeed(Amount);
 }
 
 void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
@@ -585,9 +586,8 @@ void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
 		return;
 	}
 
-	// ACRPlayerState 검증
-	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-	if (IsValid(CRPS) == false)
+	// CRPlayerState 검증
+	if (IsValid(CRPlayerState) == false)
 	{
 		return;
 	}
@@ -601,7 +601,7 @@ void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
 	ChaosVehicleMovement->SetThrottleInput(0.f);
 
 	// 전진 가속 비활성화
-	CRPS->SetCanThrottle(false);
+	CRPlayerState->SetCanThrottle(false);
 
 	// 남은 비활성화 시간
 	const float RemainingTime = GetWorldTimerManager().GetTimerRemaining(DisableThrottleTimerHandle);
@@ -614,15 +614,14 @@ void ACRWheeledVehiclePawn::DisableThrottle(float Duration)
 			FTimerDelegate::CreateLambda(
 				[this]()
 				{
-					// ACRPlayerState 검증
-					ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-					if (IsValid(CRPS) == false)
+					// CRPlayerState 검증
+					if (IsValid(CRPlayerState) == false)
 					{
 						return;
 					}
 
 					// 전진 가속 활성화
-					CRPS->SetCanThrottle(true);
+					CRPlayerState->SetCanThrottle(true);
 				}),
 			Duration,
 			false);

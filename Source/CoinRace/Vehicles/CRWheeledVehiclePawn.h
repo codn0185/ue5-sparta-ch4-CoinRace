@@ -14,6 +14,7 @@ class UCapsuleComponent;
 class UChaosWheeledVehicleMovementComponent;
 class UInputAction;
 class UParticleSystem;
+class ACRPlayerState;
 class AMineItem;
 struct FInputActionValue;
 
@@ -91,6 +92,10 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	bool bFrontCameraActive = false;
 
   protected:
+	// ACRPlayerState 포인터 캐시
+	TObjectPtr<ACRPlayerState> CRPlayerState;
+
+  protected:
 	// 충돌 파티클
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effects)
 	UParticleSystem* HitParticle;
@@ -123,6 +128,8 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	// Begin Pawn interface
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+
+	virtual void OnRep_PlayerState() override;
 
 	// End Pawn interface
 
