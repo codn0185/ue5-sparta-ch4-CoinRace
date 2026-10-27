@@ -110,6 +110,13 @@ class COINRACE_API ACRWheeledVehiclePawn : public AWheeledVehiclePawn,
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TSubclassOf<AMineItem> MineItemClass;
 
+	// 지뢰 설치 딜레이
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float DeployMineCooldown = 2.f;
+
+	// 지뢰 설치 쿨다운 타이머
+	FTimerHandle DeployMineCooldownTimerHandle;
+
   public:
 	ACRWheeledVehiclePawn();
 

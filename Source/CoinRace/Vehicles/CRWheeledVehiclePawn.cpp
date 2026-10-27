@@ -242,6 +242,7 @@ void ACRWheeledVehiclePawn::AttackInput(const FInputActionValue& Value)
 
 void ACRWheeledVehiclePawn::DeployMine(const FInputActionValue& Value)
 {
+	// 지뢰 배치 입력함을 서버에 알림
 	ServerRPCDeployMine();
 }
 
@@ -254,12 +255,6 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 	{
 		return;
 	}
-
-	// 공격 쿨다운 활성화
-	World->GetTimerManager().SetTimer(
-		AttackCooldownTimerHandle,
-		AttackCooldown,
-		false);
 
 	// 시작 & 종료 위치
 	const FVector StartLocation = GetActorLocation() + 50 * GetActorUpVector();
@@ -297,49 +292,57 @@ void ACRWheeledVehiclePawn::ServerRPCAttack_Implementation()
 		return;
 	}
 
-		// ACRPlayerState 검증
-		ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
-		if (IsValid(CRPS) == false)
-		{
-			return;
-		}
+	// ACRPlayerState 검증
+	ACRPlayerState* CRPS = GetPlayerState<ACRPlayerState>();
+	if (IsValid(CRPS) == false)
+	{
+		return;
+	}
 
 	// 공격 가능한 액터인지 확인
-		if (IAttackableInterface* Attackable = Cast<IAttackableInterface>(HitResult.GetActor()))
+	if (IAttackableInterface* Attackable = Cast<IAttackableInterface>(HitResult.GetActor()))
+	{
+		// 코인 빼앗기
+		const int32 StolenCoins = Attackable->StealCoins(5);
+
+		// 피격 이펙트 재생
+		Attackable->PlayHitEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
+
+		// 빼앗은 코인 추가
+		if (StolenCoins > 0)
 		{
-			// 코인 빼앗기
-			const int32 StolenCoins = Attackable->StealCoins(5);
-
-			// 피격 이펙트 재생
-			Attackable->PlayHitEffect(HitResult.ImpactPoint, HitResult.ImpactNormal);
-
-			// 빼앗은 코인 추가
-			if (StolenCoins > 0)
-			{
-				CRPS->AddCoins(StolenCoins);
-			}
-
-			// 피격 부위 확인
-			EHitPart HitPart;
-			if (GetHitBody(HitResult, HitPart) == true)
-			{
-				// 바퀴
-				if (HitPart == EHitPart::Wheel)
-				{
-					Attackable->ApplyBonusMaxSpeedPenalty(5.f);
-				}
-			}
-
-			// 공격 쿨다운 활성화
-			World->GetTimerManager().SetTimer(
-				AttackCooldownTimerHandle,
-				AttackCooldown,
-				false);
+			CRPS->AddCoins(StolenCoins);
 		}
+
+		// 피격 부위 확인
+		EHitPart HitPart;
+		if (GetHitBody(HitResult, HitPart) == true)
+		{
+			// 바퀴
+			if (HitPart == EHitPart::Wheel)
+			{
+				Attackable->ApplyBonusMaxSpeedPenalty(5.f);
+			}
+		}
+
+		// 공격 쿨다운 활성화
+		World->GetTimerManager().SetTimer(
+			AttackCooldownTimerHandle,
+			AttackCooldown,
+			false);
 	}
+}
 
 void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
 {
+	UWorld* World = GetWorld();
+
+	// 지뢰 배치 가능 여부 확인
+	if (World->GetTimerManager().IsTimerActive(DeployMineCooldownTimerHandle) == true) // 지뢰 배치 쿨다운
+	{
+		return;
+	}
+
 	// 지뢰 아이템 클래스 검증
 	if (IsValid(MineItemClass) == false)
 	{
@@ -358,7 +361,7 @@ void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
 	FHitResult HitResult;
 
 	// 아래 방향으로 라인 트레이스
-	const bool bHit = GetWorld()->LineTraceSingleByChannel(
+	const bool bHit = World->LineTraceSingleByChannel(
 		HitResult,
 		StartLocation,
 		EndLocation,
@@ -376,7 +379,7 @@ void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
 		HitResult.ImpactPoint);                                   // 소환 위치
 
 	// Mine 지연 소환
-	AMineItem* MineItem = GetWorld()->SpawnActorDeferred<AMineItem>(
+	AMineItem* MineItem = World->SpawnActorDeferred<AMineItem>(
 		MineItemClass,
 		SpawnTransform,
 		this,
@@ -390,6 +393,12 @@ void ACRWheeledVehiclePawn::ServerRPCDeployMine_Implementation()
 
 	// 소환 완료
 	MineItem->FinishSpawning(SpawnTransform);
+
+	// 지뢰 배치 활성화
+	World->GetTimerManager().SetTimer(
+		DeployMineCooldownTimerHandle,
+		DeployMineCooldown,
+		false);
 }
 
 void ACRWheeledVehiclePawn::MulticastRPCPlayHitEffect_Implementation(const FVector& HitLocation, const FVector& HitNormal)
